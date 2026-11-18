@@ -1,428 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduPortal - Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduPortal - Login & Registration</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #f7f5ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
 
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    .login-container {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(124, 58, 237, 0.08);
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 380px;
+      box-sizing: border-box;
+      position: relative;
+    }
 
-body {
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #f4f1ff, #e8f1ff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    .lang-toggle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #f4f0ff;
+      border: 1px solid #ddd6fe;
+      color: #6b21a8;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+    }
 
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  background: white;
-  border-radius: 24px;
-  padding: 30px 24px;
-  box-shadow: 0 15px 45px rgba(60,40,130,.12);
-}
+    .logo-badge {
+      width: 56px;
+      height: 56px;
+      background: #7c3aed;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      font-size: 28px;
+    }
 
-.logo {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 14px;
-  background: #6854e8;
-  color: white;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-}
+    .login-container h2 {
+      text-align: center;
+      color: #4c1d95;
+      margin: 0 0 6px 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
 
-h1 {
-  text-align: center;
-  color: #4935bc;
-  font-size: 28px;
-}
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      margin: 0 0 24px 0;
+    }
 
-.subtitle {
-  text-align: center;
-  color: #777;
-  margin: 10px 0 25px;
-}
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
 
-label {
-  display: block;
-  font-weight: bold;
-  color: #333;
-  margin: 16px 0 8px;
-}
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1f2937;
+      margin-bottom: 6px;
+    }
 
-input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 16px;
-  outline: none;
-}
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      background: #fdfdfd;
+      border-radius: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+    }
 
-input:focus {
-  border-color: #6854e8;
-  box-shadow: 0 0 0 3px rgba(104,84,232,.12);
-}
+    .form-group input:focus {
+      border-color: #7c3aed;
+      background: #fff;
+    }
 
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 12px;
-  background: #6854e8;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .btn-submit {
+      width: 100%;
+      background: #7c3aed;
+      color: #ffffff;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s ease;
+    }
 
-button:disabled {
-  opacity: .6;
-  cursor: wait;
-}
+    .btn-submit:hover {
+      background: #6d28d9;
+    }
 
-.secondary {
-  background: #eeeaff;
-  color: #4935bc;
-}
+    .links-area {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
 
-.links {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 18px;
-}
+    .links-area a {
+      color: #6b21a8;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
 
-.links button {
-  width: auto;
-  margin: 0;
-  padding: 8px;
-  background: transparent;
-  color: #6854e8;
-  font-size: 14px;
-}
+    .status-msg {
+      margin-top: 14px;
+      font-size: 13px;
+      text-align: center;
+      font-weight: 500;
+      min-height: 18px;
+    }
 
-#message {
-  margin-top: 16px;
-  text-align: center;
-  font-size: 14px;
-  line-height: 1.5;
-}
+    .status-msg.success {
+      color: #059669;
+    }
 
-.back {
-  display: block;
-  text-align: center;
-  margin-top: 22px;
-  text-decoration: none;
-  color: #777;
-  font-size: 14px;
-}
+    .status-msg.error {
+      color: #dc2626;
+    }
 
-.language {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: auto;
-  padding: 9px 14px;
-  margin: 0;
-  border-radius: 20px;
-  background: white;
-  color: #4935bc;
-  border: 1px solid #ddd;
-}
-
-.hidden {
-  display: none !important;
-}
-</style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="login-container">
+    <button class="lang-toggle" id="lang-btn">தமிழ்</button>
 
-<button class="language" id="languageBtn">தமிழ்</button>
+    <div class="logo-badge">📚</div>
+    <h2>EduPortal</h2>
+    <p class="subtitle" id="portal-sub">Sign in to your learning portal</p>
 
-<main class="login-card">
+    <form id="auth-form">
+      <div class="form-group">
+        <label id="lbl-email" for="email">Email address</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
 
-  <div class="logo">📚</div>
-  <h1>EduPortal</h1>
+      <div class="form-group">
+        <label id="lbl-pass" for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
 
-  <p class="subtitle" id="subtitle">
-    Sign in to your learning portal
-  </p>
+      <div class="form-group hidden" id="confirm-pass-group">
+        <label id="lbl-confirm" for="confirm-password">Confirm password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm your password" />
+      </div>
 
-  <form id="accountForm">
+      <button type="submit" class="btn-submit" id="btn-submit">Login</button>
+    </form>
 
-    <label for="email" id="emailLabel">Email address</label>
-    <input
-      type="email"
-      id="email"
-      autocomplete="email"
-      placeholder="Enter your email"
-      required
-    >
+    <div class="status-msg" id="status-msg"></div>
 
-    <label for="password" id="passwordLabel">Password</label>
-    <input
-      type="password"
-      id="password"
-      autocomplete="current-password"
-      placeholder="Enter your password"
-      minlength="6"
-      required
-    >
-
-    <div id="confirmGroup" class="hidden">
-      <label for="confirmPassword" id="confirmLabel">
-        Confirm password
-      </label>
-
-      <input
-        type="password"
-        id="confirmPassword"
-        autocomplete="new-password"
-        placeholder="Confirm your password"
-        minlength="6"
-      >
+    <div class="links-area">
+      <a id="btn-forgot" href="javascript:void(0)">Forgot password?</a>
+      <a id="btn-switch-mode" href="javascript:void(0)">Create Account</a>
+      <a href="index.html" id="link-home">&larr; Back to Home</a>
     </div>
-
-    <button type="submit" id="submitBtn">Login</button>
-
-  </form>
-
-  <div class="links">
-    <button type="button" id="forgotBtn">Forgot password?</button>
   </div>
 
-  <div class="links">
-    <button type="button" id="modeBtn">Create Account</button>
-  </div>
+  <script type="module">
+    import { registerUser, loginUser, resetPassword } from "./auth.js";
 
-  <p id="message" role="status"></p>
+    let isRegisterMode = false;
+    let currentLang = "en";
 
-  <a href="index.html" class="back" id="backLink">
-    ← Back to Home
-  </a>
+    const translations = {
+      en: {
+        loginSub: "Sign in to your learning portal",
+        registerSub: "Create your EduPortal account",
+        lblEmail: "Email address",
+        placeholderEmail: "Enter your email",
+        lblPass: "Password",
+        placeholderPass: "Enter your password",
+        lblConfirm: "Confirm password",
+        placeholderConfirm: "Confirm your password",
+        btnLogin: "Login",
+        btnRegister: "Create Account",
+        forgotPass: "Forgot password?",
+        switchToRegister: "Create Account",
+        switchToLogin: "Already have an account? Login",
+        backHome: "← Back to Home",
+        passMismatch: "Passwords do not match.",
+        passTooShort: "Password must be at least 6 characters.",
+        enterEmailFirst: "Please enter your email address first.",
+        resetSuccess: "Password reset link sent to your email.",
+        redirecting: "Redirecting to student dashboard..."
+      },
+      ta: {
+        loginSub: "உங்கள் கணக்கில் உள்நுழையவும்",
+        registerSub: "EduPortal கணக்கை உருவாக்கவும்",
+        lblEmail: "மின்னஞ்சல் முகவரி",
+        placeholderEmail: "மின்னஞ்சலை உள்ளிடவும்",
+        lblPass: "கடவுச்சொல்",
+        placeholderPass: "கடவுச்சொல்லை உள்ளிடவும்",
+        lblConfirm: "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
+        placeholderConfirm: "கடவுச்சொல்லை மீண்டும் உள்ளிடவும்",
+        btnLogin: "உள்நுழை",
+        btnRegister: "கணக்கு உருவாக்கு",
+        forgotPass: "கடவுச்சொல் மறந்துவிட்டதா?",
+        switchToRegister: "கணக்கு உருவாக்கு",
+        switchToLogin: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழை",
+        backHome: "← முகப்பு பக்கத்திற்கு",
+        passMismatch: "கடவுச்சொற்கள் பொருந்தவில்லை.",
+        passTooShort: "கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.",
+        enterEmailFirst: "முதலில் உங்கள் மின்னஞ்சலை உள்ளிடவும்.",
+        resetSuccess: "கடவுச்சொல் மீட்டமைப்பு இணைப்பு அனுப்பப்பட்டது.",
+        redirecting: "மாணவர் போர்ட்டலுக்கு செல்கிறது..."
+      }
+    };
 
-</main>
+    const authForm = document.getElementById("auth-form");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm-password");
+    const confirmPassGroup = document.getElementById("confirm-pass-group");
+    const btnSubmit = document.getElementById("btn-submit");
+    const btnSwitchMode = document.getElementById("btn-switch-mode");
+    const btnForgot = document.getElementById("btn-forgot");
+    const statusMsg = document.getElementById("status-msg");
+    const langBtn = document.getElementById("lang-btn");
+    const portalSub = document.getElementById("portal-sub");
+    const lblEmail = document.getElementById("lbl-email");
+    const lblPass = document.getElementById("lbl-pass");
+    const lblConfirm = document.getElementById("lbl-confirm");
+    const linkHome = document.getElementById("link-home");
 
-<script type="module">
-import { loginUser, registerUser, resetPassword }
-from "./auth.js";
-
-const form = document.getElementById("accountForm");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const confirmInput = document.getElementById("confirmPassword");
-const confirmGroup = document.getElementById("confirmGroup");
-const submitBtn = document.getElementById("submitBtn");
-const forgotBtn = document.getElementById("forgotBtn");
-const modeBtn = document.getElementById("modeBtn");
-const message = document.getElementById("message");
-const languageBtn = document.getElementById("languageBtn");
-
-let language = "en";
-let mode = "login";
-
-const translations = {
-  en: {
-    loginSubtitle: "Sign in to your learning portal",
-    registerSubtitle: "Create your EduPortal account",
-    emailLabel: "Email address",
-    emailPlaceholder: "Enter your email",
-    passwordLabel: "Password",
-    passwordPlaceholder: "Enter your password",
-    confirmLabel: "Confirm password",
-    confirmPlaceholder: "Confirm your password",
-    login: "Login",
-    create: "Create Account",
-    switchLogin: "Already have an account? Login",
-    forgot: "Forgot password?",
-    back: "← Back to Home",
-    logging: "Signing in...",
-    creating: "Creating account...",
-    loginSuccess: "Login successful!",
-    registerSuccess: "Account created successfully!",
-    resetSent: "Password reset email sent. Check your inbox.",
-    enterEmail: "Please enter your email first.",
-    mismatch: "Passwords do not match.",
-    errors: {
-      "auth/invalid-credential": "Incorrect email or password.",
-      "auth/invalid-email": "Please enter a valid email.",
-      "auth/user-disabled": "This account is disabled.",
-      "auth/too-many-requests": "Too many attempts. Try later.",
-      "auth/network-request-failed": "Check your internet connection.",
-      "auth/email-already-in-use": "This email already has an account. Please login.",
-      "auth/weak-password": "Password must be at least 6 characters.",
-      "auth/operation-not-allowed": "Email/password registration is not enabled.",
+    function updateLanguageUI() {
+      const t = translations[currentLang];
+      langBtn.textContent = currentLang === "en" ? "தமிழ்" : "English";
+      portalSub.textContent = isRegisterMode ? t.registerSub : t.loginSub;
+      lblEmail.textContent = t.lblEmail;
+      emailInput.placeholder = t.placeholderEmail;
+      lblPass.textContent = t.lblPass;
+      passwordInput.placeholder = t.placeholderPass;
+      lblConfirm.textContent = t.lblConfirm;
+      confirmPasswordInput.placeholder = t.placeholderConfirm;
+      btnSubmit.textContent = isRegisterMode ? t.btnRegister : t.btnLogin;
+      btnSwitchMode.textContent = isRegisterMode ? t.switchToLogin : t.switchToRegister;
+      linkHome.textContent = t.backHome;
+      btnForgot.textContent = t.forgotPass;
     }
-  },
 
-  ta: {
-    loginSubtitle: "உங்கள் கல்வி தளத்தில் உள்நுழையவும்",
-    registerSubtitle: "EduPortal கணக்கை உருவாக்கவும்",
-    emailLabel: "மின்னஞ்சல் முகவரி",
-    emailPlaceholder: "மின்னஞ்சலை உள்ளிடவும்",
-    passwordLabel: "கடவுச்சொல்",
-    passwordPlaceholder: "கடவுச்சொல்லை உள்ளிடவும்",
-    confirmLabel: "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
-    confirmPlaceholder: "மீண்டும் கடவுச்சொல்லை உள்ளிடவும்",
-    login: "உள்நுழை",
-    create: "கணக்கை உருவாக்கு",
-    switchLogin: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழையவும்",
-    forgot: "கடவுச்சொல் மறந்துவிட்டதா?",
-    back: "← முகப்புக்குத் திரும்பு",
-    logging: "உள்நுழைகிறது...",
-    creating: "கணக்கு உருவாக்கப்படுகிறது...",
-    loginSuccess: "உள்நுழைவு வெற்றி!",
-    registerSuccess: "கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!",
-    resetSent: "மீட்டமைப்பு மின்னஞ்சல் அனுப்பப்பட்டது.",
-    enterEmail: "முதலில் மின்னஞ்சலை உள்ளிடவும்.",
-    mismatch: "கடவுச்சொற்கள் பொருந்தவில்லை.",
-    errors: {
-      "auth/invalid-credential": "மின்னஞ்சல் அல்லது கடவுச்சொல் தவறு.",
-      "auth/invalid-email": "சரியான மின்னஞ்சலை உள்ளிடவும்.",
-      "auth/user-disabled": "இந்த கணக்கு முடக்கப்பட்டுள்ளது.",
-      "auth/too-many-requests": "பல முயற்சிகள். பின்னர் முயற்சிக்கவும்.",
-      "auth/network-request-failed": "இணைய இணைப்பை சரிபார்க்கவும்.",
-      "auth/email-already-in-use": "இந்த மின்னஞ்சலில் கணக்கு உள்ளது. உள்நுழையவும்.",
-      "auth/weak-password": "கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.",
-      "auth/operation-not-allowed": "மின்னஞ்சல் பதிவு வசதி செயல்படுத்தப்படவில்லை."
-    }
-  }
-};
+    langBtn.addEventListener("click", () => {
+      currentLang = currentLang === "en" ? "ta" : "en";
+      updateLanguageUI();
+    });
 
-function t() {
-  return translations[language];
-}
+    btnSwitchMode.addEventListener("click", () => {
+      isRegisterMode = !isRegisterMode;
+      statusMsg.textContent = "";
+      statusMsg.className = "status-msg";
 
-function showMessage(text, success = false) {
-  message.textContent = text;
-  message.style.color = success ? "#16803c" : "#d93025";
-}
+      if (isRegisterMode) {
+        confirmPassGroup.classList.remove("hidden");
+        confirmPasswordInput.setAttribute("required", "required");
+        btnForgot.classList.add("hidden");
+      } else {
+        confirmPassGroup.classList.add("hidden");
+        confirmPasswordInput.removeAttribute("required");
+        btnForgot.classList.remove("hidden");
+      }
+      updateLanguageUI();
+    });
 
-function applyLanguage() {
-  const tr = t();
+    authForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      statusMsg.textContent = "";
+      statusMsg.className = "status-msg";
 
-  document.getElementById("subtitle").textContent =
-    mode === "login" ? tr.loginSubtitle : tr.registerSubtitle;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const t = translations[currentLang];
 
-  document.getElementById("emailLabel").textContent = tr.emailLabel;
-  emailInput.placeholder = tr.emailPlaceholder;
+      if (isRegisterMode) {
+        const confirmPassword = confirmPasswordInput.value;
+        if (password !== confirmPassword) {
+          statusMsg.textContent = t.passMismatch;
+          statusMsg.className = "status-msg error";
+          return;
+        }
+        if (password.length < 6) {
+          statusMsg.textContent = t.passTooShort;
+          statusMsg.className = "status-msg error";
+          return;
+        }
 
-  document.getElementById("passwordLabel").textContent = tr.passwordLabel;
-  passwordInput.placeholder = tr.passwordPlaceholder;
+        const res = await registerUser(email, password);
+        if (res.success) {
+          statusMsg.textContent = t.redirecting;
+          statusMsg.className = "status-msg success";
+          setTimeout(() => {
+            window.location.href = "student-dashboard.html";
+          }, 800);
+        } else {
+          statusMsg.textContent = res.error;
+          statusMsg.className = "status-msg error";
+        }
+      } else {
+        const res = await loginUser(email, password);
+        if (res.success) {
+          statusMsg.textContent = t.redirecting;
+          statusMsg.className = "status-msg success";
+          setTimeout(() => {
+            window.location.href = "student-dashboard.html";
+          }, 800);
+        } else {
+          statusMsg.textContent = res.error;
+          statusMsg.className = "status-msg error";
+        }
+      }
+    });
 
-  document.getElementById("confirmLabel").textContent = tr.confirmLabel;
-  confirmInput.placeholder = tr.confirmPlaceholder;
-
-  submitBtn.textContent = mode === "login" ? tr.login : tr.create;
-  forgotBtn.textContent = tr.forgot;
-
-  modeBtn.textContent = mode === "login" ? tr.create : tr.switchLogin;
-  document.getElementById("backLink").textContent = tr.back;
-
-  languageBtn.textContent = language === "en" ? "தமிழ்" : "English";
-
-  document.documentElement.lang = language;
-}
-
-function setMode(newMode) {
-  mode = newMode;
-  confirmGroup.classList.toggle("hidden", mode === "login");
-  forgotBtn.classList.toggle("hidden", mode !== "login");
-
-  confirmInput.required = mode === "register";
-
-  passwordInput.autocomplete =
-    mode === "login" ? "current-password" : "new-password";
-
-  showMessage("");
-  applyLanguage();
-}
-
-languageBtn.addEventListener("click", () => {
-  language = language === "en" ? "ta" : "en";
-  applyLanguage();
-});
-
-modeBtn.addEventListener("click", () => {
-  setMode(mode === "login" ? "register" : "login");
-});
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-  const tr = t();
-
-  submitBtn.disabled = true;
-  showMessage("");
-
-  try {
-    if (mode === "login") {
-      submitBtn.textContent = tr.logging;
-
-      await loginUser(email, password);
-
-      showMessage(tr.loginSuccess, true);
-
-    } else {
-      submitBtn.textContent = tr.creating;
-
-      if (password !== confirmInput.value) {
-        showMessage(tr.mismatch);
+    btnForgot.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      const t = translations[currentLang];
+      if (!email) {
+        statusMsg.textContent = t.enterEmailFirst;
+        statusMsg.className = "status-msg error";
         return;
       }
-
-      await registerUser(email, password);
-
-      showMessage(tr.registerSuccess, true);
-    }
-
-  } catch (error) {
-    showMessage(
-      tr.errors[error.code] || "Something went wrong. Please try again."
-    );
-  } finally {
-    submitBtn.disabled = false;
-    applyLanguage();
-  }
-});
-
-forgotBtn.addEventListener("click", async () => {
-  const email = emailInput.value.trim();
-
-  if (!email) {
-    showMessage(t().enterEmail);
-    emailInput.focus();
-    return;
-  }
-
-  try {
-    await resetPassword(email);
-    showMessage(t().resetSent, true);
-  } catch (error) {
-    showMessage("Unable to send reset email. Please try again.");
-  }
-});
-
-applyLanguage();
-</script>
-
+      const res = await resetPassword(email);
+      if (res.success) {
+        statusMsg.textContent = t.resetSuccess;
+        statusMsg.className = "status-msg success";
+      } else {
+        statusMsg.textContent = res.error;
+        statusMsg.className = "status-msg error";
+      }
+    });
+  </script>
 </body>
 </html>
