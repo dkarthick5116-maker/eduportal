@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -495,3 +494,121 @@ footer p {
     min-height: auto;
   }
   }
+
+/* ==========================================
+   EDUPORTAL - ANIMATION & INTERACTION STYLES
+   ========================================== */
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Feature card hover effects */
+.feature-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover {
+  box-shadow: 0 14px 30px rgba(65, 46, 130, 0.10);
+}
+
+/* Navigation active state */
+.nav-links a.active {
+  color: var(--purple);
+  font-weight: 700;
+  position: relative;
+}
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 2px;
+  background: var(--purple);
+  border-radius: 10px;
+}
+
+/* Button interaction */
+.primary-btn:active,
+.secondary-btn:active,
+.lang-btn:active {
+  transform: scale(0.97);
+}
+
+/* Floating cards */
+.floating-card {
+  animation: cardFloat 4s ease-in-out infinite;
+}
+
+.card-bottom {
+  animation-delay: 1.2s;
+}
+
+@keyframes cardFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Spark animations */
+.spark-one {
+  animation: sparkle 2.5s ease-in-out infinite;
+}
+
+.spark-two {
+  animation: sparkle 3s ease-in-out infinite 0.5s;
+}
+
+.spark-three {
+  animation: sparkle 2s ease-in-out infinite 1s;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.85) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(15deg);
+  }
+}
+
+/* Touch device improvements */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Accessibility: reduce animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
