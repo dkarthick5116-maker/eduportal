@@ -14,7 +14,7 @@
       min-height: 100vh;
       margin: 0;
       padding: 16px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     .login-container {
@@ -109,11 +109,11 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 8px;
-      transition: background 0.2s ease;
     }
 
-    .btn-submit:hover {
-      background: #6d28d9;
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .links-area {
@@ -190,7 +190,12 @@
   </div>
 
   <script type="module">
-    import { registerUser, loginUser, resetPassword } from "./auth.js";
+    import { auth } from "./firebase-config.js";
+    import { 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      sendPasswordResetEmail 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     let isRegisterMode = false;
     let currentLang = "en";
@@ -298,47 +303,46 @@
       e.preventDefault();
       statusMsg.textContent = "";
       statusMsg.className = "status-msg";
+      btnSubmit.disabled = true;
 
       const email = emailInput.value.trim();
       const password = passwordInput.value;
       const t = translations[currentLang];
 
-      if (isRegisterMode) {
-        const confirmPassword = confirmPasswordInput.value;
-        if (password !== confirmPassword) {
-          statusMsg.textContent = t.passMismatch;
-          statusMsg.className = "status-msg error";
-          return;
-        }
-        if (password.length < 6) {
-          statusMsg.textContent = t.passTooShort;
-          statusMsg.className = "status-msg error";
-          return;
-        }
+      try {
+        if (isRegisterMode) {
+          const confirmPassword = confirmPasswordInput.value;
+          if (password !== confirmPassword) {
+            statusMsg.textContent = t.passMismatch;
+            statusMsg.className = "status-msg error";
+            btnSubmit.disabled = false;
+            return;
+          }
+          if (password.length < 6) {
+            statusMsg.textContent = t.passTooShort;
+            statusMsg.className = "status-msg error";
+            btnSubmit.disabled = false;
+            return;
+          }
 
-        const res = await registerUser(email, password);
-        if (res.success) {
+          await createUserWithEmailAndPassword(auth, email, password);
           statusMsg.textContent = t.redirecting;
           statusMsg.className = "status-msg success";
           setTimeout(() => {
             window.location.href = "student-dashboard.html";
           }, 800);
         } else {
-          statusMsg.textContent = res.error;
-          statusMsg.className = "status-msg error";
-        }
-      } else {
-        const res = await loginUser(email, password);
-        if (res.success) {
+          await signInWithEmailAndPassword(auth, email, password);
           statusMsg.textContent = t.redirecting;
           statusMsg.className = "status-msg success";
           setTimeout(() => {
             window.location.href = "student-dashboard.html";
           }, 800);
-        } else {
-          statusMsg.textContent = res.error;
-          statusMsg.className = "status-msg error";
         }
+      } catch (err) {
+        statusMsg.textContent = err.message || "Authentication failed";
+        statusMsg.className = "status-msg error";
+        btnSubmit.disabled = false;
       }
     });
 
@@ -350,12 +354,12 @@
         statusMsg.className = "status-msg error";
         return;
       }
-      const res = await resetPassword(email);
-      if (res.success) {
+      try {
+        await sendPasswordResetEmail(auth, email);
         statusMsg.textContent = t.resetSuccess;
         statusMsg.className = "status-msg success";
-      } else {
-        statusMsg.textContent = res.error;
+      } catch (err) {
+        statusMsg.textContent = err.message || "Failed to send reset link";
         statusMsg.className = "status-msg error";
       }
     });
