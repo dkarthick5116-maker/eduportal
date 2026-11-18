@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduPortal - Student Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .dashboard-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 16px;
+    }
+    .user-card {
+      background: #f4f0ff;
+      border: 1px solid #7c3aed;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge {
+      display: inline-block;
+      background: #7c3aed;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .logout-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .grid-sections {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 600px) {
+      .grid-sections {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .card-item {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .card-item h3 {
+      margin-top: 0;
+      color: #4c1d95;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="user-card">
+      <div>
+        <h2 id="welcome-text">Welcome, Student</h2>
+        <span class="badge" id="role-badge">Student Portal</span>
+      </div>
+      <button class="logout-btn" id="logout-btn">Logout</button>
+    </div>
+
+    <div class="grid-sections">
+      <div class="card-item">
+        <h3>📚 Study Materials</h3>
+        <p>Access Tamil Nadu State Board and CBSE textbook notes and PDF guides.</p>
+      </div>
+
+      <div class="card-item">
+        <h3>📝 Homework & Tasks</h3>
+        <p>Check assignments uploaded by your teachers and submit completed work.</p>
+      </div>
+
+      <div class="card-item">
+        <h3>🎯 Practice & Quizzes</h3>
+        <p>Interactive multiple-choice questions and revision exercises.</p>
+      </div>
+
+      <div class="card-item">
+        <h3>🏆 Achievements</h3>
+        <p>Track your completed lessons, test scores, and learning progress.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        const welcomeText = document.getElementById("welcome-text");
+        if (welcomeText && user.email) {
+          welcomeText.textContent = `Welcome, ${user.email.split("@")[0]}`;
+        }
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
