@@ -269,7 +269,7 @@
       cursor: pointer;
     }
 
-    /* Roster Table */
+    /* Tables */
     .roster-table {
       width: 100%;
       border-collapse: collapse;
@@ -286,6 +286,17 @@
     .roster-table td {
       padding: 8px;
       border-bottom: 1px solid #e2e8f0;
+    }
+    .btn-review-hw {
+      background: #4338ca;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
     }
   </style>
 </head>
@@ -335,12 +346,12 @@
       <button class="nav-tab-btn active" data-tab="tab-roster">👥 Students</button>
       <button class="nav-tab-btn" data-tab="tab-att">📅 Attendance</button>
       <button class="nav-tab-btn" data-tab="tab-hw">📝 Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-submissions">📥 Submissions</button>
       <button class="nav-tab-btn" data-tab="tab-mat">📚 Materials</button>
       <button class="nav-tab-btn" data-tab="tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices">📢 Notices</button>
     </div>
-
-    <!-- 1. Students Roster Tab -->
+        <!-- 1. Students Roster Tab -->
     <div class="panel-box" id="tab-roster">
       <h3 class="panel-title">Student Roster</h3>
       <div class="field-box">
@@ -480,7 +491,34 @@
       </div>
     </div>
 
-    <!-- 4. Study Materials Tab -->
+    <!-- 4. Homework Submissions Review Tab -->
+    <div class="panel-box hidden" id="tab-submissions">
+      <h3 class="panel-title">Review Student Submissions</h3>
+      <div class="field-box">
+        <label>Select Homework Assignment</label>
+        <select id="submission-hw-filter">
+          <option value="">Loading assignments...</option>
+        </select>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Student Name</th>
+              <th>Class/Sec</th>
+              <th>Submission</th>
+              <th>Submitted Date</th>
+            </tr>
+          </thead>
+          <tbody id="submission-tbody">
+            <tr><td colspan="5" style="text-align: center; color: #64748b;">Select a homework assignment above to see submissions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5. Study Materials Tab -->
     <div class="panel-box hidden" id="tab-mat">
       <h3 class="panel-title">Share Study Material / Drive Links</h3>
       <form id="form-mat">
@@ -531,7 +569,7 @@
       </div>
     </div>
 
-    <!-- 5. Exam Results Tab -->
+    <!-- 6. Exam Results Tab -->
     <div class="panel-box hidden" id="tab-results">
       <h3 class="panel-title">Upload Exam Results</h3>
       <form id="form-results">
@@ -591,7 +629,7 @@
       </div>
     </div>
 
-    <!-- 6. Notices Tab (School-Wide, No Section) -->
+    <!-- 7. Notices Tab (School-Wide) -->
     <div class="panel-box hidden" id="tab-notices">
       <h3 class="panel-title">Post School Notice / Announcement</h3>
       <form id="form-notice">
@@ -629,6 +667,7 @@
 
     let currentTeacher = null;
     let cachedStudents = [];
+    let cachedHomework = [];
 
     document.getElementById("att-date").value = new Date().toISOString().split("T")[0];
 
@@ -668,6 +707,10 @@
         btn.classList.add("active");
         const target = btn.getAttribute("data-tab");
         document.getElementById(target).classList.remove("hidden");
+
+        if (target === "tab-submissions") {
+          loadSubmissions();
+        }
       });
     });
 
@@ -675,7 +718,7 @@
       return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
     }
 
-    // Load All Students
+    // 1. Load All Students
     async function loadStudents() {
       try {
         const q = query(collection(db, "users"), where("role", "==", "student"));
@@ -740,7 +783,7 @@
     document.getElementById("roster-class-filter").addEventListener("change", renderRoster);
     document.getElementById("roster-sec-filter").addEventListener("change", renderRoster);
 
-    // Attendance Filter by Class & Section
+    // 2. Attendance Filter by Class & Section
     function renderAttendanceList() {
       const selectedClass = normalizeVal(document.getElementById("att-class-select").value);
       const selectedSec = document.getElementById("att-sec-select").value.trim().toUpperCase();
@@ -806,7 +849,7 @@
       }
     });
 
-    // Post Homework
+    // 3. Post Homework
     document.getElementById("form-hw").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -824,7 +867,7 @@
         });
         alert("Homework published successfully!");
         e.target.reset();
-        loadHomeworkList();
+        await loadHomeworkList();
       } catch (err) {
         alert("Error: " + err.message);
       }
@@ -835,32 +878,101 @@
         const q = query(collection(db, "homework"));
         const snap = await getDocs(q);
         const container = document.getElementById("hw-list-container");
-        document.getElementById("stat-homework").textContent = snap.size;
+        const hwFilterSelect = document.getElementById("submission-hw-filter");
 
-        if (snap.empty) {
+        cachedHomework = [];
+        snap.forEach(docSnap => {
+          cachedHomework.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        document.getElementById("stat-homework").textContent = cachedHomework.length;
+
+        // Populate submission filter dropdown
+        hwFilterSelect.innerHTML = cachedHomework.length === 0
+          ? `<option value="">No homework posted yet</option>`
+          : cachedHomework.map(h => `<option value="${h.id}">${h.title} (Class ${h.className} - Sec ${h.section || "All"})</option>`).join("");
+
+        if (cachedHomework.length === 0) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No active homework posted yet.</p>`;
           return;
         }
 
         let html = "";
-        snap.forEach(docSnap => {
-          const hw = docSnap.data();
+        cachedHomework.forEach(hw => {
           html += `
             <div class="card-entry">
               <h4>${hw.title} (${hw.subject})</h4>
               <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | Deadline: ${hw.deadline}</div>
               <p class="card-desc">${hw.instructions || ""}</p>
-              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Attached Link</a>` : ""}
+              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Attached Link</a><br/>` : ""}
+              <button class="btn-review-hw" data-id="${hw.id}">View Submissions</button>
             </div>
           `;
         });
         container.innerHTML = html;
+
+        // "View Submissions" shortcut
+        container.querySelectorAll(".btn-review-hw").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const hwId = e.target.getAttribute("data-id");
+            hwFilterSelect.value = hwId;
+            document.querySelector('[data-tab="tab-submissions"]').click();
+          });
+        });
       } catch (err) {
         console.error(err);
       }
     }
 
-    // Post Materials (with Section)
+    // 4. Submissions Review Logic
+    async function loadSubmissions() {
+      const hwId = document.getElementById("submission-hw-filter").value;
+      const tbody = document.getElementById("submission-tbody");
+
+      if (!hwId) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No homework selected.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Loading student submissions...</td></tr>`;
+
+      try {
+        const q = query(collection(db, "homework_submissions"), where("homeworkId", "==", hwId));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No submissions received for this homework yet.</td></tr>`;
+          return;
+        }
+
+        let html = "";
+        snap.forEach(docSnap => {
+          const sub = docSnap.data();
+          const isLink = sub.answer && (sub.answer.startsWith("http://") || sub.answer.startsWith("https://"));
+          const answerDisplay = isLink 
+            ? `<a href="${sub.answer}" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: underline;">🔗 View Drive / Link</a>`
+            : sub.answer;
+          const dateStr = sub.submittedAt ? new Date(sub.submittedAt).toLocaleDateString() : "-";
+
+          html += `
+            <tr>
+              <td><strong>${sub.rollNumber || "-"}</strong></td>
+              <td>${sub.studentName || "-"}</td>
+              <td>Class ${sub.className} - ${sub.section}</td>
+              <td>${answerDisplay}</td>
+              <td>${dateStr}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #dc2626;">Error: ${err.message}</td></tr>`;
+      }
+    }
+
+    document.getElementById("submission-hw-filter").addEventListener("change", loadSubmissions);
+
+    // 5. Post Materials
     document.getElementById("form-mat").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -908,7 +1020,7 @@
       }
     }
 
-    // Upload Exam Results (with Class & Section)
+    // 6. Upload Exam Results
     document.getElementById("form-results").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -958,7 +1070,7 @@
       }
     }
 
-    // Post Notices (School-Wide)
+    // 7. Post Notices (School-Wide)
     document.getElementById("form-notice").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
