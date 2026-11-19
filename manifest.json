@@ -1,20 +1,22 @@
 {
+  "id": "/",
   "name": "EduPortal - Education Management",
   "short_name": "EduPortal",
   "start_url": "/login.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#1e1b4b",
   "theme_color": "#1e1b4b",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "file_0000000018c8820bbb5ed8b1c124a4c3.png",
+      "src": "/file_0000000018c8820bbb5ed8b1c124a4c3.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "file_0000000018c8820bbb5ed8b1c124a4c3.png",
+      "src": "/file_0000000018c8820bbb5ed8b1c124a4c3.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
