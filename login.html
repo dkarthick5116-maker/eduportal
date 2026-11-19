@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduPortal - Login & Registration</title>
+
+  <!-- PWA & App Icons -->
+  <link rel="icon" type="image/png" href="file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="apple-touch-icon" href="file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1e1b4b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
@@ -19,11 +29,24 @@
     .top-navbar {
       background: #1e1b4b;
       color: #ffffff;
-      padding: 14px 20px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: cover;
     }
 
     .brand-title {
@@ -53,8 +76,7 @@
       font-weight: 700;
       border-color: #ffffff;
     }
-
-    .content-area {
+        .content-area {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -220,7 +242,10 @@
 </head>
 <body>
   <div class="top-navbar">
-    <div class="brand-title">EduPortal</div>
+    <div class="brand-container">
+      <img src="file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
+      <span class="brand-title">EduPortal</span>
+    </div>
     <div class="lang-group">
       <button class="lang-pill active" id="btn-lang-en">English</button>
       <button class="lang-pill" id="btn-lang-ta">தமிழ்</button>
@@ -257,7 +282,7 @@
           <input type="text" id="school-name" placeholder="e.g. GHSS Chennai" required />
         </div>
 
-        <!-- Curriculum / Board (Registration only) -->
+        <!-- Curriculum / Board Selection (Registration only) -->
         <div class="field-group hidden" id="grp-curriculum">
           <label id="lbl-curriculum" for="board-select">Curriculum / Board</label>
           <select id="board-select">
@@ -324,6 +349,8 @@
 
     const translations = {
       en: {
+        studentPortalTab: "Student Portal",
+        teacherPortalTab: "Teacher Portal",
         studentLogin: "Student Login",
         studentRegister: "Student Registration",
         teacherLogin: "Teacher Login",
@@ -359,6 +386,8 @@
         resetSent: "Password reset link sent to your email."
       },
       ta: {
+        studentPortalTab: "மாணவர் தளம்",
+        teacherPortalTab: "ஆசிரியர் தளம்",
         studentLogin: "மாணவர் உள்நுழைவு",
         studentRegister: "மாணவர் பதிவு",
         teacherLogin: "ஆசிரியர் உள்நுழைவு",
@@ -405,6 +434,7 @@
     const btnToggleMode = document.getElementById("btn-toggle-mode");
     const btnLangEn = document.getElementById("btn-lang-en");
     const btnLangTa = document.getElementById("btn-lang-ta");
+    const linkHome = document.getElementById("link-home");
 
     const grpStudentName = document.getElementById("grp-student-name");
     const grpTeacherName = document.getElementById("grp-teacher-name");
@@ -413,6 +443,16 @@
     const grpClassSec = document.getElementById("grp-class-sec");
     const grpRoll = document.getElementById("grp-roll");
     const grpTeacherEmail = document.getElementById("grp-teacher-email");
+
+    const lblStudentName = document.getElementById("lbl-student-name");
+    const lblTeacherName = document.getElementById("lbl-teacher-name");
+    const lblSchool = document.getElementById("lbl-school");
+    const lblCurriculum = document.getElementById("lbl-curriculum");
+    const lblClass = document.getElementById("lbl-class");
+    const lblSec = document.getElementById("lbl-sec");
+    const lblRoll = document.getElementById("lbl-roll");
+    const lblTeacherEmail = document.getElementById("lbl-teacher-email");
+    const lblPass = document.getElementById("lbl-pass");
 
     const inputStudentName = document.getElementById("student-name");
     const inputTeacherName = document.getElementById("teacher-name");
@@ -423,8 +463,7 @@
     const inputRoll = document.getElementById("student-roll");
     const inputTeacherEmail = document.getElementById("teacher-email");
     const inputPassword = document.getElementById("account-password");
-
-    function cleanString(str) {
+       function cleanString(str) {
       return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     }
 
@@ -448,6 +487,16 @@
       clearStatus();
       const t = translations[currentLang];
 
+      tabStudent.textContent = t.studentPortalTab;
+      tabTeacher.textContent = t.teacherPortalTab;
+      lblSchool.textContent = t.schoolName;
+      inputSchool.placeholder = t.schoolPlaceholder;
+      lblCurriculum.textContent = t.curriculumLabel;
+      lblPass.textContent = t.password;
+      inputPassword.placeholder = t.passPlaceholder;
+      btnForgot.textContent = t.forgotPass;
+      linkHome.textContent = t.backHome;
+
       if (activePortal === "student") {
         tabStudent.classList.add("active");
         tabTeacher.classList.remove("active");
@@ -463,12 +512,22 @@
 
         grpRoll.classList.remove("hidden");
         inputRoll.setAttribute("required", "required");
+        lblRoll.textContent = t.rollNumber;
+        inputRoll.placeholder = t.rollPlaceholder;
 
         if (isRegisterMode) {
           formHeading.textContent = t.studentRegister;
           grpStudentName.classList.remove("hidden");
+          lblStudentName.textContent = t.fullName;
+          inputStudentName.placeholder = t.studentNamePlaceholder;
+
           grpCurriculum.classList.remove("hidden");
           grpClassSec.classList.remove("hidden");
+          lblClass.textContent = t.classLabel;
+          inputClass.placeholder = t.classPlaceholder;
+          lblSec.textContent = t.secLabel;
+          inputSec.placeholder = t.secPlaceholder;
+
           btnSubmit.textContent = t.registerBtn;
           btnToggleMode.textContent = t.toStudentLog;
           btnForgot.classList.add("hidden");
@@ -477,6 +536,7 @@
           grpStudentName.classList.add("hidden");
           grpCurriculum.classList.add("hidden");
           grpClassSec.classList.add("hidden");
+
           btnSubmit.textContent = t.loginBtn;
           btnToggleMode.textContent = t.toStudentReg;
           btnForgot.classList.remove("hidden");
@@ -493,11 +553,18 @@
 
         grpTeacherEmail.classList.remove("hidden");
         inputTeacherEmail.setAttribute("required", "required");
+        lblTeacherEmail.textContent = t.teacherEmail;
+        inputTeacherEmail.placeholder = t.emailPlaceholder;
 
         if (isRegisterMode) {
           formHeading.textContent = t.teacherRegister;
           grpTeacherName.classList.remove("hidden");
+          lblTeacherName.textContent = t.fullName;
+          inputTeacherName.placeholder = t.teacherNamePlaceholder;
+
           grpSchool.classList.remove("hidden");
+          inputSchool.setAttribute("required", "required");
+
           grpCurriculum.classList.remove("hidden");
           btnSubmit.textContent = t.registerBtn;
           btnToggleMode.textContent = t.toTeacherLog;
@@ -508,6 +575,7 @@
           grpSchool.classList.add("hidden");
           grpCurriculum.classList.add("hidden");
           inputSchool.removeAttribute("required");
+
           btnSubmit.textContent = t.loginBtn;
           btnToggleMode.textContent = t.toTeacherReg;
           btnForgot.classList.remove("hidden");
@@ -549,8 +617,7 @@
       isRegisterMode = !isRegisterMode;
       updateView();
     });
-
-    portalForm.addEventListener("submit", async (e) => {
+          portalForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearStatus();
       btnSubmit.disabled = true;
@@ -661,6 +728,17 @@
     });
 
     updateView();
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .then(() => console.log("Service Worker Registered"))
+          .catch((err) => console.log("SW Registration Failed:", err));
+      });
+    }
   </script>
 </body>
 </html>
