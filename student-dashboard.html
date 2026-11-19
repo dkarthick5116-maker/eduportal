@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduPortal - Student Dashboard</title>
+
+  <!-- PWA & App Icons -->
+  <link rel="icon" type="image/png" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="apple-touch-icon" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e1b4b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
@@ -14,12 +24,24 @@
       color: #1f2937;
     }
     .top-navbar {
-      background: #1e293b;
+      background: #1e1b4b;
       color: #ffffff;
       padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      object-fit: cover;
     }
     .brand-title {
       font-size: 17px;
@@ -40,11 +62,11 @@
     }
     .lang-pill.active {
       background: #ffffff;
-      color: #1e293b;
+      color: #1e1b4b;
       font-weight: 700;
     }
     .dashboard-container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
       padding: 16px;
       box-sizing: border-box;
@@ -70,7 +92,7 @@
     .profile-name {
       font-size: 17px;
       font-weight: 700;
-      color: #1e293b;
+      color: #1e1b4b;
       margin: 0;
     }
     .profile-sub {
@@ -121,9 +143,9 @@
       gap: 6px;
     }
     .nav-tab-btn.active {
-      background: #1e293b;
+      background: #1e1b4b;
       color: #ffffff;
-      border-color: #1e293b;
+      border-color: #1e1b4b;
     }
     .panel-box {
       background: #ffffff;
@@ -135,101 +157,86 @@
     .panel-title {
       font-size: 16px;
       font-weight: 700;
-      color: #1e293b;
+      color: #1e1b4b;
       margin: 0 0 16px 0;
     }
     .card-entry {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
     }
     .card-entry h4 {
       margin: 0 0 4px 0;
-      font-size: 14px;
-      color: #1e293b;
+      font-size: 15px;
+      color: #1e1b4b;
     }
     .card-meta {
       font-size: 12px;
       color: #64748b;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .card-desc {
       font-size: 13px;
       color: #334155;
-      margin: 0 0 8px 0;
+      margin: 0 0 10px 0;
+      white-space: pre-wrap;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
     }
     .link-attach {
       color: #2563eb;
       font-size: 13px;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       display: inline-block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .submit-box {
       display: flex;
+      flex-direction: column;
       gap: 8px;
-      margin-top: 8px;
+      margin-top: 10px;
+      background: #f1f5f9;
+      padding: 10px;
+      border-radius: 8px;
     }
-    .submit-box input {
-      flex: 1;
+    .submit-box textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .submit-box input[type="text"] {
+      width: 100%;
       padding: 8px 10px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 12px;
       outline: none;
+      box-sizing: border-box;
     }
-    .btn-submit-hw {
-      background: #1e293b;
+    .btn-submit-action {
+      background: #1e1b4b;
       color: #fff;
       border: none;
-      padding: 8px 14px;
+      padding: 10px 14px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
+      align-self: flex-start;
     }
-    .quiz-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 14px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    }
-    .q-question-box {
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      border: 1px solid #e2e8f0;
-    }
-    .q-question-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 8px;
-    }
-    .q-opt-label {
-      display: block;
-      font-size: 13px;
-      color: #334155;
-      margin-bottom: 4px;
-      cursor: pointer;
-    }
-    .btn-submit-exam {
-      background: #4338ca;
-      color: #fff;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 8px;
+    .btn-submit-action:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     .table-responsive {
       overflow-x: auto;
@@ -256,7 +263,10 @@
 </head>
 <body>
   <div class="top-navbar">
-    <div class="brand-title" id="nav-title">Education Portal V2.2</div>
+    <div class="brand-container">
+      <img src="/file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
+      <span class="brand-title" id="nav-title">Education Portal V2.2</span>
+    </div>
     <div class="lang-group">
       <button class="lang-pill active" id="btn-en">English</button>
       <button class="lang-pill" id="btn-ta">தமிழ்</button>
@@ -278,26 +288,25 @@
 
     <!-- Navigation Tabs -->
     <div class="tabs-slider">
-      <button class="nav-tab-btn active" data-tab="tab-my-hw" id="tab-btn-hw">📝 My Homework</button>
-      <button class="nav-tab-btn" data-tab="tab-online-quiz" id="tab-btn-quiz">🎯 Take Quiz / Exam</button>
-      <button class="nav-tab-btn" data-tab="tab-my-mat" id="tab-btn-mat">📚 Study Notes</button>
+      <button class="nav-tab-btn active" data-tab="tab-exam-qp" id="tab-btn-qp">📝 Question Papers</button>
+      <button class="nav-tab-btn" data-tab="tab-my-hw" id="tab-btn-hw">📚 My Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-my-mat" id="tab-btn-mat">📖 Study Notes</button>
       <button class="nav-tab-btn" data-tab="tab-my-notices" id="tab-btn-notices">📢 Notices</button>
       <button class="nav-tab-btn" data-tab="tab-my-results" id="tab-btn-results">📊 Report Card</button>
     </div>
-
-    <!-- 1. My Homework -->
-    <div class="panel-box" id="tab-my-hw">
-      <h3 class="panel-title" id="title-my-hw">Assigned Homework</h3>
-      <div id="hw-container">
-        <p style="color: #64748b; font-size: 13px;">Loading homework...</p>
+        <!-- 1. Exam Question Papers & Answer Writing Tab -->
+    <div class="panel-box" id="tab-exam-qp">
+      <h3 class="panel-title" id="title-exam-qp">Exam Question Papers & Write Answers</h3>
+      <div id="qp-container">
+        <p style="color: #64748b; font-size: 13px;">Loading question papers...</p>
       </div>
     </div>
 
-    <!-- 2. Take Quiz / Exam -->
-    <div class="panel-box hidden" id="tab-online-quiz">
-      <h3 class="panel-title" id="title-online-quiz">Active Online Tests & Quizzes</h3>
-      <div id="quiz-container">
-        <p style="color: #64748b; font-size: 13px;">Loading available tests...</p>
+    <!-- 2. My Homework -->
+    <div class="panel-box hidden" id="tab-my-hw">
+      <h3 class="panel-title" id="title-my-hw">Assigned Homework</h3>
+      <div id="hw-container">
+        <p style="color: #64748b; font-size: 13px;">Loading homework...</p>
       </div>
     </div>
 
@@ -319,7 +328,7 @@
 
     <!-- 5. Report Card -->
     <div class="panel-box hidden" id="tab-my-results">
-      <h3 class="panel-title" id="title-my-results">My Exam & Quiz Scores</h3>
+      <h3 class="panel-title" id="title-my-results">My Exam Marks</h3>
       <div class="table-responsive">
         <table class="results-table">
           <thead>
@@ -357,52 +366,55 @@
       en: {
         navTitle: "Education Portal V2.2",
         logout: "Logout",
-        tabHw: "📝 My Homework",
-        tabQuiz: "🎯 Take Quiz / Exam",
-        tabMat: "📚 Study Notes",
+        tabQp: "📝 Question Papers",
+        tabHw: "📚 My Homework",
+        tabMat: "📖 Study Notes",
         tabNotices: "📢 Notices",
         tabResults: "📊 Report Card",
+        titleQp: "Exam Question Papers & Write Answers",
         titleHw: "Assigned Homework",
-        titleQuiz: "Active Online Tests & Quizzes",
         titleMat: "Class Study Notes",
         titleNotices: "School Notice Board",
-        titleResults: "My Exam & Quiz Scores",
+        titleResults: "My Exam Marks",
         thExamName: "Exam Name",
         thSubject: "Subject",
         thScore: "Score",
         thTotal: "Total",
+        loadingQp: "Loading question papers...",
         loadingHw: "Loading homework...",
-        loadingQuiz: "Loading available tests...",
         loadingMat: "Loading study notes...",
         loadingNotices: "Loading notices...",
         loadingResults: "Loading exam marks...",
+        noQp: "No question papers published for your class and section yet.",
         noHw: "No homework assigned for your class and section right now.",
-        noQuiz: "No active tests or quizzes assigned for your class and section.",
         noMat: "No study materials posted for your class and section yet.",
         noNotices: "No announcements posted on the notice board.",
-        noResults: "No exam or quiz records found yet.",
+        noResults: "No exam records found yet.",
+        examDateWord: "Exam Date:",
+        marksWord: "Total Marks:",
         deadlinePrefix: "Deadline:",
         viewResource: "🔗 View Assignment Resource",
         viewDriveMat: "🔗 Open Drive Study Material",
-        submitHwBtn: "Submit",
-        submitExamBtn: "Submit Exam Answers",
-        hwPlaceholder: "Paste your answer or Google Drive link...",
+        openQpPdf: "📄 Open Official Question Paper Link",
+        submitHwBtn: "Submit Homework",
+        submitAnswersBtn: "Submit Exam Answers",
+        writeAnswersHeader: "Write Your Exam Answers Below:",
+        answerTextPlaceholder: "Type your answers here (e.g. Q1. Answer..., Q2. Answer...)...",
+        driveOptionalPlaceholder: "Or paste handwritten answer sheet Google Drive link (Optional)...",
+        examSubmitSuccess: "Exam answers submitted successfully!",
         hwSuccessAlert: "Homework submitted successfully!",
-        hwEnterAnswerAlert: "Please enter an answer or drive link first.",
-        examScoreText: "Test Completed! Your Score:",
-        questionsWord: "Questions",
-        totalMarksWord: "Total Marks"
+        enterAnswerAlert: "Please write an answer or paste a drive link first."
       },
       ta: {
         navTitle: "கல்வி தளம் பதிப்பு 2.2",
         logout: "வெளியேறு",
-        tabHw: "📝 என் வீட்டுப்பாடம்",
-        tabQuiz: "🎯 தேர்வு / வினாடி வினா",
-        tabMat: "📚 பாடக் குறிப்புகள்",
+        tabQp: "📝 வினாத்தாள்கள்",
+        tabHw: "📚 என் வீட்டுப்பாடம்",
+        tabMat: "📖 பாடக் குறிப்புகள்",
         tabNotices: "📢 அறிவிப்புகள்",
         tabResults: "📊 மதிப்பெண் அட்டை",
+        titleQp: "வினாத்தாள்கள் & விடை எழுதுதல்",
         titleHw: "வழங்கப்பட்ட வீட்டுப்பாடங்கள்",
-        titleQuiz: "செயலில் உள்ள தேர்வுகள் / வினாடி வினாக்கள்",
         titleMat: "வகுப்பு பாடக் குறிப்புகள்",
         titleNotices: "பள்ளி அறிவிப்புப் பலகை",
         titleResults: "என் தேர்வு மதிப்பெண்கள்",
@@ -410,27 +422,30 @@
         thSubject: "பாடம்",
         thScore: "மதிப்பெண்",
         thTotal: "மொத்தம்",
+        loadingQp: "வினாத்தாள்கள் ஏற்றப்படுகின்றன...",
         loadingHw: "வீட்டுப்பாடங்கள் ஏற்றப்படுகின்றன...",
-        loadingQuiz: "தேர்வுகள் ஏற்றப்படுகின்றன...",
         loadingMat: "பாடக் குறிப்புகள் ஏற்றப்படுகின்றன...",
         loadingNotices: "அறிவிப்புகள் ஏற்றப்படுகின்றன...",
         loadingResults: "மதிப்பெண்கள் ஏற்றப்படுகின்றன...",
+        noQp: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு வினாத்தாள்கள் எதுவும் இல்லை.",
         noHw: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
-        noQuiz: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு தேர்வுகள் எதுவும் இல்லை.",
         noMat: "உங்கள் வகுப்புக்கான பாடக் குறிப்புகள் எதுவும் பதிவேற்றப்படவில்லை.",
         noNotices: "அறிவிப்புகள் எதுவும் இல்லை.",
         noResults: "தேர்வு பதிவுகள் எதுவும் இல்லை.",
+        examDateWord: "தேர்வு தேதி:",
+        marksWord: "மொத்த மதிப்பெண்கள்:",
         deadlinePrefix: "கடைசி நாள்:",
         viewResource: "🔗 வீட்டுப்பாட குறிப்பை பார்க்கவும்",
         viewDriveMat: "🔗 டிரைவ் பாட குறிப்பை திறக்கவும்",
-        submitHwBtn: "சமர்ப்பி",
-        submitExamBtn: "தேர்வு விடைகளை சமர்ப்பி",
-        hwPlaceholder: "விடை அல்லது கூகுள் டிரைவ் இணைப்பை உள்ளிடவும்...",
+        openQpPdf: "📄 அதிகாரப்பூர்வ வினாத்தாள் இணைப்பை திறக்கவும்",
+        submitHwBtn: "வீட்டுப்பாடம் சமர்ப்பி",
+        submitAnswersBtn: "தேர்வு விடைகளை சமர்ப்பி",
+        writeAnswersHeader: "உங்கள் தேர்வு விடைகளை கீழே எழுதவும்:",
+        answerTextPlaceholder: "உங்கள் விடைகளை இங்கே தட்டச்சு செய்யவும் (எ.கா: கேள்வி 1. விடை...)...",
+        driveOptionalPlaceholder: "அல்லது கையால் எழுதிய விடைத்தாள் டிரைவ் இணைப்பை உள்ளிடவும்...",
+        examSubmitSuccess: "தேர்வு விடைகள் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
         hwSuccessAlert: "வீட்டுப்பாடம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
-        hwEnterAnswerAlert: "முதலில் உங்கள் விடை அல்லது இணைப்பை உள்ளிடவும்.",
-        examScoreText: "தேர்வு முடிந்தது! உங்கள் மதிப்பெண்:",
-        questionsWord: "கேள்விகள்",
-        totalMarksWord: "மொத்த மதிப்பெண்கள்"
+        enterAnswerAlert: "முதலில் உங்கள் விடை அல்லது இணைப்பை உள்ளிடவும்."
       }
     };
 
@@ -438,14 +453,15 @@
       const t = dict[currentLang];
       document.getElementById("nav-title").textContent = t.navTitle;
       document.getElementById("btn-logout").textContent = t.logout;
+
+      document.getElementById("tab-btn-qp").textContent = t.tabQp;
       document.getElementById("tab-btn-hw").textContent = t.tabHw;
-      document.getElementById("tab-btn-quiz").textContent = t.tabQuiz;
       document.getElementById("tab-btn-mat").textContent = t.tabMat;
       document.getElementById("tab-btn-notices").textContent = t.tabNotices;
       document.getElementById("tab-btn-results").textContent = t.tabResults;
 
+      document.getElementById("title-exam-qp").textContent = t.titleQp;
       document.getElementById("title-my-hw").textContent = t.titleHw;
-      document.getElementById("title-online-quiz").textContent = t.titleQuiz;
       document.getElementById("title-my-mat").textContent = t.titleMat;
       document.getElementById("title-my-notices").textContent = t.titleNotices;
       document.getElementById("title-my-results").textContent = t.titleResults;
@@ -521,13 +537,126 @@
     });
 
     async function loadStudentData() {
+      await loadQuestionPapers();
       await loadHomework();
-      await loadQuizzes();
       await loadMaterials();
       await loadNotices();
       await loadResults();
     }
-          // 1. Load Homework
+          // 1. Load Question Papers with Answer Writing Feature
+    async function loadQuestionPapers() {
+      const container = document.getElementById("qp-container");
+      const t = dict[currentLang];
+      try {
+        const snap = await getDocs(collection(db, "question_papers"));
+        const studentClass = cleanVal(currentStudent.className);
+        const studentSec = (currentStudent.section || "").trim().toUpperCase();
+        const studentBoard = (currentStudent.board || "State Board").trim().toLowerCase();
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const targetClass = cleanVal(data.className);
+          const targetSec = (data.section || "All").trim().toUpperCase();
+          const targetBoard = (data.board || "State Board").trim().toLowerCase();
+
+          const matchesClass = targetClass === studentClass;
+          const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+          const matchesBoard = !data.board || targetBoard === studentBoard;
+
+          if (matchesClass && matchesSec && matchesBoard) {
+            items.push({ id: docSnap.id, ...data });
+          }
+        });
+
+        if (items.length === 0) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQp}</p>`;
+          return;
+        }
+
+        let html = "";
+        items.forEach(qp => {
+          html += `
+            <div class="card-entry" id="card_qp_${qp.id}">
+              <h4>${qp.examName} - ${qp.subject}</h4>
+              <div class="card-meta">Class ${qp.className} - Section ${qp.section || "All"} | ${t.examDateWord} ${qp.examDate || "-"} | ${t.marksWord} ${qp.totalMarks}</div>
+              
+              ${qp.formatMode === "type"
+                ? `<div class="card-desc"><strong>Question Paper:</strong><br/>${qp.typedContent}</div>`
+                : `<a class="link-attach" href="${qp.fileLink}" target="_blank">${t.openQpPdf}</a>`
+              }
+
+              <div class="submit-box">
+                <strong style="font-size: 12px; color: #1e1b4b;">${t.writeAnswersHeader}</strong>
+                <textarea rows="6" id="text_ans_${qp.id}" placeholder="${t.answerTextPlaceholder}"></textarea>
+                <input type="text" id="drive_ans_${qp.id}" placeholder="${t.driveOptionalPlaceholder}" />
+                <button type="button" class="btn-submit-action btn-submit-qp-ans" 
+                  data-qpid="${qp.id}" 
+                  data-exam="${qp.examName}" 
+                  data-subject="${qp.subject}"
+                  data-marks="${qp.totalMarks}">
+                  ${t.submitAnswersBtn}
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+
+        // Answer Submission Listener
+        container.querySelectorAll(".btn-submit-qp-ans").forEach(btn => {
+          btn.addEventListener("click", async (e) => {
+            const qpId = btn.getAttribute("data-qpid");
+            const examName = btn.getAttribute("data-exam");
+            const subject = btn.getAttribute("data-subject");
+            const totalMarks = btn.getAttribute("data-marks");
+
+            const writtenText = document.getElementById(`text_ans_${qpId}`).value.trim();
+            const driveLink = document.getElementById(`drive_ans_${qpId}`).value.trim();
+
+            if (!writtenText && !driveLink) {
+              alert(t.enterAnswerAlert);
+              return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Submitting...";
+
+            try {
+              await addDoc(collection(db, "exam_submissions"), {
+                questionPaperId: qpId,
+                examName: examName,
+                subject: subject,
+                totalMarks: Number(totalMarks),
+                studentId: auth.currentUser.uid,
+                studentName: currentStudent.fullName,
+                rollNumber: currentStudent.rollNumber,
+                className: currentStudent.className,
+                section: currentStudent.section,
+                board: currentStudent.board || "State Board",
+                schoolName: currentStudent.schoolName || "",
+                writtenAnswers: writtenText,
+                driveLink: driveLink,
+                submittedAt: new Date().toISOString()
+              });
+
+              alert(t.examSubmitSuccess);
+              btn.textContent = "Submitted ✓";
+              document.getElementById(`text_ans_${qpId}`).disabled = true;
+              document.getElementById(`drive_ans_${qpId}`).disabled = true;
+            } catch (err) {
+              alert("Error submitting answers: " + err.message);
+              btn.disabled = false;
+              btn.textContent = t.submitAnswersBtn;
+            }
+          });
+        });
+
+      } catch (err) {
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${err.message}</p>`;
+      }
+    }
+          // 2. Load Homework
     async function loadHomework() {
       const container = document.getElementById("hw-container");
       const t = dict[currentLang];
@@ -564,8 +693,8 @@
               <p class="card-desc">${hw.instructions || ""}</p>
               ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">${t.viewResource}</a>` : ""}
               <div class="submit-box">
-                <input type="text" id="ans_${hw.id}" placeholder="${t.hwPlaceholder}" />
-                <button type="button" class="btn-submit-hw" data-hwid="${hw.id}">${t.submitHwBtn}</button>
+                <input type="text" id="ans_${hw.id}" placeholder="Paste your answer or Google Drive link..." />
+                <button type="button" class="btn-submit-action btn-submit-hw" data-hwid="${hw.id}">${t.submitHwBtn}</button>
               </div>
             </div>
           `;
@@ -577,7 +706,7 @@
             const hwId = e.target.getAttribute("data-hwid");
             const answer = document.getElementById(`ans_${hwId}`).value.trim();
             if (!answer) {
-              alert(t.hwEnterAnswerAlert);
+              alert(t.enterAnswerAlert);
               return;
             }
             try {
@@ -603,134 +732,7 @@
       }
     }
 
-    // 2. Load and Take Online Quizzes
-    async function loadQuizzes() {
-      const container = document.getElementById("quiz-container");
-      const t = dict[currentLang];
-      try {
-        const snap = await getDocs(collection(db, "quizzes"));
-        const studentClass = cleanVal(currentStudent.className);
-        const studentSec = (currentStudent.section || "").trim().toUpperCase();
-        const availableQuizzes = [];
-
-        snap.forEach(docSnap => {
-          const q = docSnap.data();
-          const targetClass = cleanVal(q.className);
-          const targetSec = (q.section || "All").trim().toUpperCase();
-
-          const matchesClass = targetClass === studentClass;
-          const matchesSec = targetSec === "ALL" || targetSec === studentSec;
-
-          if (matchesClass && matchesSec) {
-            availableQuizzes.push({ id: docSnap.id, ...q });
-          }
-        });
-
-        if (availableQuizzes.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQuiz}</p>`;
-          return;
-        }
-
-        let html = "";
-        availableQuizzes.forEach(quiz => {
-          html += `
-            <div class="quiz-card" id="quiz_box_${quiz.id}">
-              <h4 style="margin:0 0 4px 0; color:#1e293b;">${quiz.title} (${quiz.subject})</h4>
-              <div class="card-meta">${t.totalMarksWord}: ${quiz.totalMarks} | ${t.questionsWord}: ${quiz.questions ? quiz.questions.length : 0}</div>
-              <form class="quiz-form" data-quizid="${quiz.id}">
-          `;
-
-          if (quiz.questions && Array.isArray(quiz.questions)) {
-            quiz.questions.forEach((qItem, idx) => {
-              html += `
-                <div class="q-question-box">
-                  <div class="q-question-title">Q${idx + 1}. ${qItem.question}</div>
-                  <label class="q-opt-label">
-                    <input type="radio" name="q_${quiz.id}_${idx}" value="A" required /> A: ${qItem.options.A}
-                  </label>
-                  <label class="q-opt-label">
-                    <input type="radio" name="q_${quiz.id}_${idx}" value="B" /> B: ${qItem.options.B}
-                  </label>
-                  <label class="q-opt-label">
-                    <input type="radio" name="q_${quiz.id}_${idx}" value="C" /> C: ${qItem.options.C}
-                  </label>
-                  <label class="q-opt-label">
-                    <input type="radio" name="q_${quiz.id}_${idx}" value="D" /> D: ${qItem.options.D}
-                  </label>
-                </div>
-              `;
-            });
-          }
-
-          html += `
-                <button type="submit" class="btn-submit-exam">${t.submitExamBtn}</button>
-              </form>
-              <div id="quiz_result_${quiz.id}" style="margin-top: 10px; font-weight: 700; text-align: center;"></div>
-            </div>
-          `;
-        });
-        container.innerHTML = html;
-
-        container.querySelectorAll(".quiz-form").forEach(form => {
-          form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const qId = form.getAttribute("data-quizid");
-            const targetQuiz = availableQuizzes.find(item => item.id === qId);
-            if (!targetQuiz) return;
-
-            let correctCount = 0;
-            const totalQuestions = targetQuiz.questions.length;
-
-            targetQuiz.questions.forEach((qItem, idx) => {
-              const selected = form.querySelector(`input[name="q_${qId}_${idx}"]:checked`);
-              if (selected && selected.value === qItem.correctOption) {
-                correctCount++;
-              }
-            });
-
-            const scorePerQuestion = targetQuiz.totalMarks / totalQuestions;
-            const finalScore = Math.round(correctCount * scorePerQuestion);
-
-            try {
-              await addDoc(collection(db, "quiz_submissions"), {
-                quizId: qId,
-                quizTitle: targetQuiz.title,
-                studentId: auth.currentUser.uid,
-                studentName: currentStudent.fullName,
-                rollNumber: currentStudent.rollNumber,
-                className: currentStudent.className,
-                section: currentStudent.section,
-                score: finalScore,
-                totalMarks: targetQuiz.totalMarks,
-                submittedAt: new Date().toISOString()
-              });
-
-              await addDoc(collection(db, "exam_results"), {
-                examName: `Quiz: ${targetQuiz.title}`,
-                subject: targetQuiz.subject,
-                className: currentStudent.className,
-                section: currentStudent.section,
-                rollNumber: currentStudent.rollNumber.toString(),
-                marksScored: finalScore,
-                totalMarks: targetQuiz.totalMarks,
-                schoolName: currentStudent.schoolName || "",
-                createdAt: new Date().toISOString()
-              });
-
-              const resDiv = document.getElementById(`quiz_result_${qId}`);
-              resDiv.innerHTML = `<span style="color:#16a34a;">${t.examScoreText} ${finalScore} / ${targetQuiz.totalMarks} (${correctCount}/${totalQuestions})</span>`;
-              form.querySelector(".btn-submit-exam").disabled = true;
-              await loadResults();
-            } catch (err) {
-              alert("Error: " + err.message);
-            }
-          });
-        });
-      } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${e.message}</p>`;
-      }
-      }
-          // 3. Load Materials
+    // 3. Load Materials
     async function loadMaterials() {
       const container = document.getElementById("mat-container");
       const t = dict[currentLang];
@@ -832,6 +834,17 @@
       } catch (e) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626;">Error: ${e.message}</td></tr>`;
       }
+    }
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+          .then(() => console.log("[PWA] Service Worker registered"))
+          .catch((err) => console.log("[PWA] SW error:", err));
+      });
     }
   </script>
 </body>
