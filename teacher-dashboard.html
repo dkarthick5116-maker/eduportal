@@ -144,6 +144,38 @@
     .status-msg.success { color: #16a34a; }
     .status-msg.error { color: #dc2626; }
     .hidden { display: none !important; }
+
+    /* Student Roster Table */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    .student-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    .student-table th {
+      background: #f3f4f6;
+      color: #374151;
+      padding: 10px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .student-table td {
+      padding: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #1f2937;
+    }
+    .student-table tr:hover {
+      background-color: #faf5ff;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 24px;
+      color: #6b7280;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -185,6 +217,7 @@
       <button class="tab-btn" data-tab="tab-assignment">📋 Assignment</button>
       <button class="tab-btn" data-tab="tab-attendance">📅 Attendance</button>
       <button class="tab-btn" data-tab="tab-results">📊 Exam Results</button>
+      <button class="tab-btn" data-tab="tab-students">👥 Students List</button>
     </div>
 
     <!-- Tab 1: Homework -->
@@ -282,11 +315,45 @@
         <div class="status-msg" id="res-status"></div>
       </form>
     </div>
+
+    <!-- Tab 5: Students List -->
+    <div class="panel-card hidden" id="tab-students">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="margin: 0;">Enrolled Students</h3>
+        <button type="button" id="btn-refresh-students" class="btn-submit" style="padding: 6px 12px; font-size: 12px;">🔄 Refresh</button>
+      </div>
+      <div class="table-responsive">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Name</th>
+              <th>Class</th>
+              <th>Sec</th>
+              <th>Registered Login ID</th>
+            </tr>
+          </thead>
+          <tbody id="student-table-body">
+            <tr>
+              <td colspan="5" class="empty-state">Loading students...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-   <script type="module">
+    <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { 
+      doc, 
+      getDoc, 
+      collection, 
+      addDoc, 
+      query, 
+      where, 
+      getDocs 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let currentTeacher = null;
 
@@ -307,6 +374,7 @@
             if (schoolText && currentTeacher.schoolName) {
               schoolText.textContent = `School: ${currentTeacher.schoolName}`;
             }
+            loadStudents();
           }
         } catch (e) {
           console.error("Error loading teacher profile", e);
@@ -331,13 +399,66 @@
         btn.classList.add("active");
         const targetId = btn.getAttribute("data-tab");
         document.getElementById(targetId).classList.remove("hidden");
+
+        if (targetId === "tab-students") {
+          loadStudents();
+        }
       });
     });
 
+    const selectClass = document.getElementById("selected-class");
+    const selectSection = document.getElementById("selected-section");
+
+    selectClass.addEventListener("change", () => loadStudents());
+    selectSection.addEventListener("change", () => loadStudents());
+    document.getElementById("btn-refresh-students").addEventListener("click", () => loadStudents());
+
+    async function loadStudents() {
+      const tbody = document.getElementById("student-table-body");
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Loading students...</td></tr>`;
+
+      const targetClass = selectClass.value;
+      const targetSec = selectSection.value;
+
+      try {
+        const usersRef = collection(db, "users");
+        const q = query(
+          usersRef,
+          where("role", "==", "student"),
+          where("className", "==", targetClass),
+          where("section", "==", targetSec)
+        );
+
+        const querySnap = await getDocs(q);
+
+        if (querySnap.empty) {
+          tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No students found registered in Class ${targetClass} - Section ${targetSec}.</td></tr>`;
+          return;
+        }
+
+        let rowsHtml = "";
+        querySnap.forEach((doc) => {
+          const student = doc.data();
+          rowsHtml += `
+            <tr>
+              <td><strong>${student.rollNumber || "-"}</strong></td>
+              <td>${student.fullName || "-"}</td>
+              <td>${student.className || "-"}</td>
+              <td>${student.section || "-"}</td>
+              <td style="color:#6b21a8; font-family: monospace;">${student.email || "-"}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = rowsHtml;
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#dc2626;">Error loading students: ${err.message}</td></tr>`;
+      }
+    }
+
     function getSelectedClassSection() {
       return {
-        className: document.getElementById("selected-class").value,
-        section: document.getElementById("selected-section").value,
+        className: selectClass.value,
+        section: selectSection.value,
         schoolName: currentTeacher ? currentTeacher.schoolName : "Default School",
         teacherId: auth.currentUser ? auth.currentUser.uid : ""
       };
