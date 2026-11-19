@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduPortal - Teacher Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #f7f5ff;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .dashboard-container {
+      max-width: 850px;
+      margin: 20px auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .user-card {
+      background: #ede9fe;
+      border: 1px solid #7c3aed;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge {
+      display: inline-block;
+      background: #4338ca;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .logout-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .section-selector-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .selector-grid {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .selector-grid select {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: #1e1b4b;
+      color: #ffffff;
+      border-color: #1e1b4b;
+    }
+    .panel-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .panel-card h3 {
+      margin-top: 0;
+      color: #1e1b4b;
+      font-size: 18px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #7c3aed;
+    }
+    .btn-submit {
+      background: #7c3aed;
+      color: #ffffff;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .status-msg {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .status-msg.success { color: #16a34a; }
+    .status-msg.error { color: #dc2626; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="user-card">
+      <div>
+        <h2 id="welcome-text" style="margin: 0 0 4px 0; color: #1e1b4b;">Welcome, Teacher</h2>
+        <span class="badge" id="role-badge">Teacher Portal</span>
+        <div id="school-text" style="font-size: 13px; color: #4b5563; margin-top: 4px;"></div>
+      </div>
+      <button class="logout-btn" id="logout-btn">Logout</button>
+    </div>
+
+    <!-- Class & Section Selector -->
+    <div class="section-selector-card">
+      <strong style="color: #1e1b4b;">Target Class & Section:</strong>
+      <div class="selector-grid">
+        <select id="selected-class">
+          <option value="6">Class 6</option>
+          <option value="7">Class 7</option>
+          <option value="8">Class 8</option>
+          <option value="9">Class 9</option>
+          <option value="10">Class 10</option>
+          <option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select id="selected-section">
+          <option value="A">Section A</option>
+          <option value="B">Section B</option>
+          <option value="C">Section C</option>
+          <option value="D">Section D</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="tab-homework">📝 Homework</button>
+      <button class="tab-btn" data-tab="tab-assignment">📋 Assignment</button>
+      <button class="tab-btn" data-tab="tab-attendance">📅 Attendance</button>
+      <button class="tab-btn" data-tab="tab-results">📊 Exam Results</button>
+    </div>
+
+    <!-- Tab 1: Homework -->
+    <div class="panel-card" id="tab-homework">
+      <h3>Post Daily Homework</h3>
+      <form id="form-homework">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="hw-subject" placeholder="e.g. Mathematics" required />
+        </div>
+        <div class="form-group">
+          <label>Homework Details</label>
+          <textarea id="hw-details" rows="3" placeholder="Enter instructions or questions" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Submission Due Date</label>
+          <input type="date" id="hw-due" required />
+        </div>
+        <button type="submit" class="btn-submit">Upload Homework</button>
+        <div class="status-msg" id="hw-status"></div>
+      </form>
+    </div>
+
+    <!-- Tab 2: Assignment -->
+    <div class="panel-card hidden" id="tab-assignment">
+      <h3>Post Assignment</h3>
+      <form id="form-assignment">
+        <div class="form-group">
+          <label>Assignment Title</label>
+          <input type="text" id="as-title" placeholder="e.g. Science Project - Solar System" required />
+        </div>
+        <div class="form-group">
+          <label>Description & Requirements</label>
+          <textarea id="as-desc" rows="3" placeholder="Enter assignment guidelines" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Reference PDF / Resource Link (Google Drive / Web)</label>
+          <input type="url" id="as-link" placeholder="https://drive.google.com/..." />
+        </div>
+        <div class="form-group">
+          <label>Deadline</label>
+          <input type="date" id="as-due" required />
+        </div>
+        <button type="submit" class="btn-submit">Post Assignment</button>
+        <div class="status-msg" id="as-status"></div>
+      </form>
+    </div>
+
+    <!-- Tab 3: Attendance -->
+    <div class="panel-card hidden" id="tab-attendance">
+      <h3>Submit Class Attendance</h3>
+      <form id="form-attendance">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="att-date" required />
+        </div>
+        <div class="form-group">
+          <label>Present Student Roll Numbers (Comma-separated)</label>
+          <input type="text" id="att-present" placeholder="e.g. 1001, 1002, 1005" required />
+        </div>
+        <div class="form-group">
+          <label>Absent Student Roll Numbers (Comma-separated)</label>
+          <input type="text" id="att-absent" placeholder="e.g. 1003, 1004" />
+        </div>
+        <button type="submit" class="btn-submit">Save Attendance</button>
+        <div class="status-msg" id="att-status"></div>
+      </form>
+    </div>
+
+    <!-- Tab 4: Exam Results -->
+    <div class="panel-card hidden" id="tab-results">
+      <h3>Publish Exam Results</h3>
+      <form id="form-results">
+        <div class="form-group">
+          <label>Exam Name</label>
+          <input type="text" id="res-exam-name" placeholder="e.g. Mid-Term 1 / Quarterly Exam" required />
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="res-subject" placeholder="e.g. Science" required />
+        </div>
+        <div class="form-group">
+          <label>Student Roll Number</label>
+          <input type="text" id="res-roll" placeholder="e.g. 1001" required />
+        </div>
+        <div class="form-group">
+          <label>Marks Scored</label>
+          <input type="number" id="res-marks" placeholder="e.g. 88" required />
+        </div>
+        <div class="form-group">
+          <label>Total Marks</label>
+          <input type="number" id="res-total" placeholder="e.g. 100" required />
+        </div>
+        <button type="submit" class="btn-submit">Upload Result</button>
+        <div class="status-msg" id="res-status"></div>
+      </form>
+    </div>
+  </div>
+   <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    let currentTeacher = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            currentTeacher = snap.data();
+            const welcomeText = document.getElementById("welcome-text");
+            const schoolText = document.getElementById("school-text");
+            if (welcomeText && currentTeacher.fullName) {
+              welcomeText.textContent = `Welcome, ${currentTeacher.fullName}`;
+            }
+            if (schoolText && currentTeacher.schoolName) {
+              schoolText.textContent = `School: ${currentTeacher.schoolName}`;
+            }
+          }
+        } catch (e) {
+          console.error("Error loading teacher profile", e);
+        }
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    // Tab Switching
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const panels = document.querySelectorAll(".panel-card");
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        panels.forEach(p => p.classList.add("hidden"));
+
+        btn.classList.add("active");
+        const targetId = btn.getAttribute("data-tab");
+        document.getElementById(targetId).classList.remove("hidden");
+      });
+    });
+
+    function getSelectedClassSection() {
+      return {
+        className: document.getElementById("selected-class").value,
+        section: document.getElementById("selected-section").value,
+        schoolName: currentTeacher ? currentTeacher.schoolName : "Default School",
+        teacherId: auth.currentUser ? auth.currentUser.uid : ""
+      };
+    }
+
+    function setMessage(elementId, text, type) {
+      const el = document.getElementById(elementId);
+      el.textContent = text;
+      el.className = `status-msg ${type}`;
+      setTimeout(() => {
+        el.textContent = "";
+        el.className = "status-msg";
+      }, 4000);
+    }
+
+    // 1. Upload Homework
+    document.getElementById("form-homework").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const meta = getSelectedClassSection();
+      try {
+        await addDoc(collection(db, "homework"), {
+          ...meta,
+          subject: document.getElementById("hw-subject").value.trim(),
+          details: document.getElementById("hw-details").value.trim(),
+          dueDate: document.getElementById("hw-due").value,
+          createdAt: new Date().toISOString()
+        });
+        setMessage("hw-status", "Homework uploaded successfully!", "success");
+        e.target.reset();
+      } catch (err) {
+        setMessage("hw-status", err.message, "error");
+      }
+    });
+
+    // 2. Upload Assignment
+    document.getElementById("form-assignment").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const meta = getSelectedClassSection();
+      try {
+        await addDoc(collection(db, "assignments"), {
+          ...meta,
+          title: document.getElementById("as-title").value.trim(),
+          description: document.getElementById("as-desc").value.trim(),
+          resourceLink: document.getElementById("as-link").value.trim(),
+          deadline: document.getElementById("as-due").value,
+          createdAt: new Date().toISOString()
+        });
+        setMessage("as-status", "Assignment posted successfully!", "success");
+        e.target.reset();
+      } catch (err) {
+        setMessage("as-status", err.message, "error");
+      }
+    });
+
+    // 3. Save Attendance
+    document.getElementById("form-attendance").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const meta = getSelectedClassSection();
+      try {
+        await addDoc(collection(db, "attendance"), {
+          ...meta,
+          date: document.getElementById("att-date").value,
+          presentRolls: document.getElementById("att-present").value.split(",").map(s => s.trim()),
+          absentRolls: document.getElementById("att-absent").value.split(",").map(s => s.trim()),
+          createdAt: new Date().toISOString()
+        });
+        setMessage("att-status", "Attendance record saved!", "success");
+        e.target.reset();
+      } catch (err) {
+        setMessage("att-status", err.message, "error");
+      }
+    });
+
+    // 4. Upload Exam Results
+    document.getElementById("form-results").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const meta = getSelectedClassSection();
+      try {
+        await addDoc(collection(db, "exam_results"), {
+          ...meta,
+          examName: document.getElementById("res-exam-name").value.trim(),
+          subject: document.getElementById("res-subject").value.trim(),
+          rollNumber: document.getElementById("res-roll").value.trim(),
+          marksScored: Number(document.getElementById("res-marks").value),
+          totalMarks: Number(document.getElementById("res-total").value),
+          createdAt: new Date().toISOString()
+        });
+        setMessage("res-status", "Result uploaded successfully!", "success");
+        e.target.reset();
+      } catch (err) {
+        setMessage("res-status", err.message, "error");
+      }
+    });
+  </script>
+</body>
+</html>
