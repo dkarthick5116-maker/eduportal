@@ -179,16 +179,57 @@
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 12px;
+      outline: none;
     }
     .btn-submit-hw {
       background: #1e293b;
       color: #fff;
       border: none;
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
+    }
+    .quiz-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .q-question-box {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .q-question-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .q-opt-label {
+      display: block;
+      font-size: 13px;
+      color: #334155;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    .btn-submit-exam {
+      background: #4338ca;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
     }
     .table-responsive {
       overflow-x: auto;
@@ -238,6 +279,7 @@
     <!-- Navigation Tabs -->
     <div class="tabs-slider">
       <button class="nav-tab-btn active" data-tab="tab-my-hw">📝 My Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-online-quiz">🎯 Take Quiz / Exam</button>
       <button class="nav-tab-btn" data-tab="tab-my-mat">📚 Study Notes</button>
       <button class="nav-tab-btn" data-tab="tab-my-notices">📢 Notices</button>
       <button class="nav-tab-btn" data-tab="tab-my-results">📊 Report Card</button>
@@ -251,7 +293,15 @@
       </div>
     </div>
 
-    <!-- 2. Study Notes -->
+    <!-- 2. Take Quiz / Exam -->
+    <div class="panel-box hidden" id="tab-online-quiz">
+      <h3 class="panel-title">Active Online Tests & Quizzes</h3>
+      <div id="quiz-container">
+        <p style="color: #64748b; font-size: 13px;">Loading available tests...</p>
+      </div>
+    </div>
+
+    <!-- 3. Study Notes -->
     <div class="panel-box hidden" id="tab-my-mat">
       <h3 class="panel-title">Class Study Notes</h3>
       <div id="mat-container">
@@ -259,7 +309,7 @@
       </div>
     </div>
 
-    <!-- 3. Notices -->
+    <!-- 4. Notices -->
     <div class="panel-box hidden" id="tab-my-notices">
       <h3 class="panel-title">School Notice Board</h3>
       <div id="notices-container">
@@ -267,9 +317,9 @@
       </div>
     </div>
 
-    <!-- 4. Report Card -->
+    <!-- 5. Report Card -->
     <div class="panel-box hidden" id="tab-my-results">
-      <h3 class="panel-title">My Exam Scores</h3>
+      <h3 class="panel-title">My Exam & Quiz Scores</h3>
       <div class="table-responsive">
         <table class="results-table">
           <thead>
@@ -352,12 +402,12 @@
 
     async function loadStudentData() {
       await loadHomework();
+      await loadQuizzes();
       await loadMaterials();
       await loadNotices();
       await loadResults();
     }
-
-    // 1. Load Homework (Filtered by Class and Section)
+         // 1. Load Homework (Class & Section Scoped)
     async function loadHomework() {
       const container = document.getElementById("hw-container");
       try {
@@ -401,7 +451,6 @@
         });
         container.innerHTML = html;
 
-        // Submit action
         container.querySelectorAll(".btn-submit-hw").forEach(btn => {
           btn.addEventListener("click", async (e) => {
             const hwId = e.target.getAttribute("data-hwid");
@@ -433,7 +482,137 @@
       }
     }
 
-    // 2. Load Materials (Filtered by Class and Section)
+    // 2. Load and Take Online Quizzes (0 to 100 Marks)
+    async function loadQuizzes() {
+      const container = document.getElementById("quiz-container");
+      try {
+        const snap = await getDocs(collection(db, "quizzes"));
+        const studentClass = cleanVal(currentStudent.className);
+        const studentSec = (currentStudent.section || "").trim().toUpperCase();
+        const availableQuizzes = [];
+
+        snap.forEach(docSnap => {
+          const q = docSnap.data();
+          const targetClass = cleanVal(q.className);
+          const targetSec = (q.section || "All").trim().toUpperCase();
+
+          const matchesClass = targetClass === studentClass;
+          const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+
+          if (matchesClass && matchesSec) {
+            availableQuizzes.push({ id: docSnap.id, ...q });
+          }
+        });
+
+        if (availableQuizzes.length === 0) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No active tests or quizzes assigned for your class and section.</p>`;
+          return;
+        }
+
+        let html = "";
+        availableQuizzes.forEach(quiz => {
+          html += `
+            <div class="quiz-card" id="quiz_box_${quiz.id}">
+              <h4 style="margin:0 0 4px 0; color:#1e293b;">${quiz.title} (${quiz.subject})</h4>
+              <div class="card-meta">Total Marks: ${quiz.totalMarks} | Questions: ${quiz.questions ? quiz.questions.length : 0}</div>
+              <form class="quiz-form" data-quizid="${quiz.id}">
+          `;
+
+          if (quiz.questions && Array.isArray(quiz.questions)) {
+            quiz.questions.forEach((qItem, idx) => {
+              html += `
+                <div class="q-question-box">
+                  <div class="q-question-title">Q${idx + 1}. ${qItem.question}</div>
+                  <label class="q-opt-label">
+                    <input type="radio" name="q_${quiz.id}_${idx}" value="A" required /> A: ${qItem.options.A}
+                  </label>
+                  <label class="q-opt-label">
+                    <input type="radio" name="q_${quiz.id}_${idx}" value="B" /> B: ${qItem.options.B}
+                  </label>
+                  <label class="q-opt-label">
+                    <input type="radio" name="q_${quiz.id}_${idx}" value="C" /> C: ${qItem.options.C}
+                  </label>
+                  <label class="q-opt-label">
+                    <input type="radio" name="q_${quiz.id}_${idx}" value="D" /> D: ${qItem.options.D}
+                  </label>
+                </div>
+              `;
+            });
+          }
+
+          html += `
+                <button type="submit" class="btn-submit-exam">Submit Exam Answers</button>
+              </form>
+              <div id="quiz_result_${quiz.id}" style="margin-top: 10px; font-weight: 700; text-align: center;"></div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+
+        // Process Quiz Submissions and Score Calculation
+        container.querySelectorAll(".quiz-form").forEach(form => {
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const qId = form.getAttribute("data-quizid");
+            const targetQuiz = availableQuizzes.find(item => item.id === qId);
+            if (!targetQuiz) return;
+
+            let correctCount = 0;
+            const totalQuestions = targetQuiz.questions.length;
+
+            targetQuiz.questions.forEach((qItem, idx) => {
+              const selected = form.querySelector(`input[name="q_${qId}_${idx}"]:checked`);
+              if (selected && selected.value === qItem.correctOption) {
+                correctCount++;
+              }
+            });
+
+            // Calculate scaled score up to quiz.totalMarks (0 to 100)
+            const scorePerQuestion = targetQuiz.totalMarks / totalQuestions;
+            const finalScore = Math.round(correctCount * scorePerQuestion);
+
+            try {
+              // 1. Record Quiz Submission
+              await addDoc(collection(db, "quiz_submissions"), {
+                quizId: qId,
+                quizTitle: targetQuiz.title,
+                studentId: auth.currentUser.uid,
+                studentName: currentStudent.fullName,
+                rollNumber: currentStudent.rollNumber,
+                className: currentStudent.className,
+                section: currentStudent.section,
+                score: finalScore,
+                totalMarks: targetQuiz.totalMarks,
+                submittedAt: new Date().toISOString()
+              });
+
+              // 2. Publish directly into Student Exam Results
+              await addDoc(collection(db, "exam_results"), {
+                examName: `Quiz: ${targetQuiz.title}`,
+                subject: targetQuiz.subject,
+                className: currentStudent.className,
+                section: currentStudent.section,
+                rollNumber: currentStudent.rollNumber.toString(),
+                marksScored: finalScore,
+                totalMarks: targetQuiz.totalMarks,
+                schoolName: currentStudent.schoolName || "",
+                createdAt: new Date().toISOString()
+              });
+
+              const resDiv = document.getElementById(`quiz_result_${qId}`);
+              resDiv.innerHTML = `<span style="color:#16a34a;">Test Completed! Your Score: ${finalScore} / ${targetQuiz.totalMarks} (${correctCount}/${totalQuestions} correct)</span>`;
+              form.querySelector(".btn-submit-exam").disabled = true;
+              await loadResults();
+            } catch (err) {
+              alert("Error recording test score: " + err.message);
+            }
+          });
+        });
+      } catch (e) {
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading quizzes: ${e.message}</p>`;
+      }
+    }
+          // 3. Load Materials (Class & Section Scoped)
     async function loadMaterials() {
       const container = document.getElementById("mat-container");
       try {
@@ -476,7 +655,7 @@
       }
     }
 
-    // 3. Load Notices (School-Wide)
+    // 4. Load Notices (School-Wide)
     async function loadNotices() {
       const container = document.getElementById("notices-container");
       try {
@@ -501,7 +680,7 @@
       }
     }
 
-    // 4. Load Results (Filtered by Student Roll Number)
+    // 5. Load Results (Filtered by Student Roll Number)
     async function loadResults() {
       const tbody = document.getElementById("results-tbody");
       try {
@@ -512,7 +691,7 @@
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">No exam records found.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">No exam or quiz records found yet.</td></tr>`;
           return;
         }
 
@@ -523,7 +702,7 @@
             <tr>
               <td><strong>${r.examName || "-"}</strong></td>
               <td>${r.subject || "-"}</td>
-              <td>${r.marksScored}</td>
+              <td><strong>${r.marksScored}</strong></td>
               <td>${r.totalMarks}</td>
             </tr>
           `;
