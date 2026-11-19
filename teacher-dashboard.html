@@ -298,6 +298,13 @@
       cursor: pointer;
       margin-top: 6px;
     }
+    .q-card {
+      background: #ffffff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
@@ -336,8 +343,8 @@
         <div class="stat-value" id="stat-homework">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title">NOTICES</div>
-        <div class="stat-value" id="stat-notices">0</div>
+        <div class="stat-title">ACTIVE QUIZZES</div>
+        <div class="stat-value" id="stat-quizzes">0</div>
       </div>
     </div>
 
@@ -347,6 +354,7 @@
       <button class="nav-tab-btn" data-tab="tab-att">📅 Attendance</button>
       <button class="nav-tab-btn" data-tab="tab-hw">📝 Homework</button>
       <button class="nav-tab-btn" data-tab="tab-submissions">📥 Submissions</button>
+      <button class="nav-tab-btn" data-tab="tab-quiz">🎯 Create Quiz</button>
       <button class="nav-tab-btn" data-tab="tab-mat">📚 Materials</button>
       <button class="nav-tab-btn" data-tab="tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices">📢 Notices</button>
@@ -491,7 +499,7 @@
       </div>
     </div>
 
-    <!-- 4. Homework Submissions Review Tab -->
+    <!-- 4. Submissions Review Tab -->
     <div class="panel-box hidden" id="tab-submissions">
       <h3 class="panel-title">Review Student Submissions</h3>
       <div class="field-box">
@@ -517,8 +525,104 @@
         </table>
       </div>
     </div>
+        <!-- 5. Create Test / Quiz Tab (0 to 100 Marks) -->
+    <div class="panel-box hidden" id="tab-quiz">
+      <h3 class="panel-title">Create Online Exam / Quiz (0–100 Marks)</h3>
+      <form id="form-quiz">
+        <div class="field-box">
+          <label>Exam / Quiz Title</label>
+          <input type="text" id="quiz-title" placeholder="e.g. Mid-Term Chapter 1 Test" required />
+        </div>
+        <div class="field-box">
+          <label>Subject</label>
+          <input type="text" id="quiz-subject" placeholder="e.g. Science" required />
+        </div>
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label>Target Class</label>
+            <select id="quiz-class">
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label>Section</label>
+            <select id="quiz-sec">
+              <option value="All">All Sections</option>
+              <option value="A">Section - A</option>
+              <option value="B">Section - B</option>
+              <option value="C">Section - C</option>
+              <option value="D">Section - D</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-box">
+          <label>Total Exam Marks (0 to 100)</label>
+          <input type="number" id="quiz-total-marks" min="1" max="100" value="100" required />
+        </div>
 
-    <!-- 5. Study Materials Tab -->
+        <h4 style="margin: 16px 0 8px 0; color: #1e293b;">Questions (Add up to 5 Multiple Choice Questions)</h4>
+        <div id="questions-wrapper">
+          <!-- Question 1 -->
+          <div class="q-card">
+            <label><strong>Question 1:</strong></label>
+            <input type="text" class="q-text" placeholder="Enter question 1" required style="margin-bottom: 6px;" />
+            <div class="flex-filter-row">
+              <input type="text" class="opt-a" placeholder="Option A" required />
+              <input type="text" class="opt-b" placeholder="Option B" required />
+            </div>
+            <div class="flex-filter-row" style="margin-top: 6px;">
+              <input type="text" class="opt-c" placeholder="Option C" required />
+              <input type="text" class="opt-d" placeholder="Option D" required />
+            </div>
+            <label style="margin-top: 6px; font-size: 12px; display: block;">Correct Option:</label>
+            <select class="q-ans">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <!-- Question 2 -->
+          <div class="q-card">
+            <label><strong>Question 2:</strong></label>
+            <input type="text" class="q-text" placeholder="Enter question 2" required style="margin-bottom: 6px;" />
+            <div class="flex-filter-row">
+              <input type="text" class="opt-a" placeholder="Option A" required />
+              <input type="text" class="opt-b" placeholder="Option B" required />
+            </div>
+            <div class="flex-filter-row" style="margin-top: 6px;">
+              <input type="text" class="opt-c" placeholder="Option C" required />
+              <input type="text" class="opt-d" placeholder="Option D" required />
+            </div>
+            <label style="margin-top: 6px; font-size: 12px; display: block;">Correct Option:</label>
+            <select class="q-ans">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-action-primary">Publish Test / Quiz</button>
+        <div class="status-msg" id="quiz-status"></div>
+      </form>
+
+      <div class="item-list-section">
+        <h4 class="sub-section-title">Active Tests & Quizzes</h4>
+        <div id="quiz-list-container">
+          <p style="color: #64748b; font-size: 13px;">No tests published yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Study Materials Tab -->
     <div class="panel-box hidden" id="tab-mat">
       <h3 class="panel-title">Share Study Material / Drive Links</h3>
       <form id="form-mat">
@@ -569,7 +673,7 @@
       </div>
     </div>
 
-    <!-- 6. Exam Results Tab -->
+    <!-- 7. Exam Results Tab -->
     <div class="panel-box hidden" id="tab-results">
       <h3 class="panel-title">Upload Exam Results</h3>
       <form id="form-results">
@@ -611,11 +715,11 @@
         <div class="flex-filter-row">
           <div class="field-box">
             <label>Marks Scored</label>
-            <input type="number" id="res-marks" placeholder="e.g. 88" required />
+            <input type="number" id="res-marks" min="0" max="100" placeholder="e.g. 88" required />
           </div>
           <div class="field-box">
             <label>Total Marks</label>
-            <input type="number" id="res-total" placeholder="e.g. 100" required />
+            <input type="number" id="res-total" min="1" max="100" value="100" required />
           </div>
         </div>
         <button type="submit" class="btn-action-primary">Upload Result</button>
@@ -629,7 +733,7 @@
       </div>
     </div>
 
-    <!-- 7. Notices Tab (School-Wide) -->
+    <!-- 8. Notices Tab (School-Wide) -->
     <div class="panel-box hidden" id="tab-notices">
       <h3 class="panel-title">Post School Notice / Announcement</h3>
       <form id="form-notice">
@@ -736,7 +840,6 @@
       }
     }
 
-    // Roster Filtering (Class & Section)
     function renderRoster() {
       const search = document.getElementById("roster-search").value.toLowerCase();
       const classFilter = document.getElementById("roster-class-filter").value;
@@ -783,7 +886,7 @@
     document.getElementById("roster-class-filter").addEventListener("change", renderRoster);
     document.getElementById("roster-sec-filter").addEventListener("change", renderRoster);
 
-    // 2. Attendance Filter by Class & Section
+    // 2. Attendance Filter
     function renderAttendanceList() {
       const selectedClass = normalizeVal(document.getElementById("att-class-select").value);
       const selectedSec = document.getElementById("att-sec-select").value.trim().toUpperCase();
@@ -819,7 +922,6 @@
     document.getElementById("att-class-select").addEventListener("change", renderAttendanceList);
     document.getElementById("att-sec-select").addEventListener("change", renderAttendanceList);
 
-    // Save Attendance
     document.getElementById("btn-save-attendance").addEventListener("click", async () => {
       const date = document.getElementById("att-date").value;
       const selectedClass = document.getElementById("att-class-select").value;
@@ -887,7 +989,6 @@
 
         document.getElementById("stat-homework").textContent = cachedHomework.length;
 
-        // Populate submission filter dropdown
         hwFilterSelect.innerHTML = cachedHomework.length === 0
           ? `<option value="">No homework posted yet</option>`
           : cachedHomework.map(h => `<option value="${h.id}">${h.title} (Class ${h.className} - Sec ${h.section || "All"})</option>`).join("");
@@ -911,7 +1012,6 @@
         });
         container.innerHTML = html;
 
-        // "View Submissions" shortcut
         container.querySelectorAll(".btn-review-hw").forEach(btn => {
           btn.addEventListener("click", (e) => {
             const hwId = e.target.getAttribute("data-id");
@@ -924,7 +1024,7 @@
       }
     }
 
-    // 4. Submissions Review Logic
+    // 4. Submissions Review
     async function loadSubmissions() {
       const hwId = document.getElementById("submission-hw-filter").value;
       const tbody = document.getElementById("submission-tbody");
@@ -972,7 +1072,76 @@
 
     document.getElementById("submission-hw-filter").addEventListener("change", loadSubmissions);
 
-    // 5. Post Materials
+    // 5. Create Test / Quiz (0 to 100 Marks)
+    document.getElementById("form-quiz").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const qCards = document.querySelectorAll(".q-card");
+      const questions = [];
+
+      qCards.forEach(c => {
+        questions.push({
+          question: c.querySelector(".q-text").value.trim(),
+          options: {
+            A: c.querySelector(".opt-a").value.trim(),
+            B: c.querySelector(".opt-b").value.trim(),
+            C: c.querySelector(".opt-c").value.trim(),
+            D: c.querySelector(".opt-d").value.trim()
+          },
+          correctOption: c.querySelector(".q-ans").value
+        });
+      });
+
+      const totalMarks = Math.min(100, Math.max(0, Number(document.getElementById("quiz-total-marks").value)));
+
+      try {
+        await addDoc(collection(db, "quizzes"), {
+          title: document.getElementById("quiz-title").value.trim(),
+          subject: document.getElementById("quiz-subject").value.trim(),
+          className: document.getElementById("quiz-class").value,
+          section: document.getElementById("quiz-sec").value,
+          totalMarks: totalMarks,
+          questions: questions,
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
+          createdAt: new Date().toISOString()
+        });
+        alert("Online Quiz/Exam published successfully!");
+        e.target.reset();
+        await loadQuizList();
+      } catch (err) {
+        alert("Error creating quiz: " + err.message);
+      }
+    });
+
+    async function loadQuizList() {
+      try {
+        const snap = await getDocs(collection(db, "quizzes"));
+        const container = document.getElementById("quiz-list-container");
+        document.getElementById("stat-quizzes").textContent = snap.size;
+
+        if (snap.empty) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No tests published yet.</p>`;
+          return;
+        }
+
+        let html = "";
+        snap.forEach(docSnap => {
+          const q = docSnap.data();
+          html += `
+            <div class="card-entry">
+              <h4>${q.title} (${q.subject})</h4>
+              <div class="card-meta">Class ${q.className} - Section ${q.section || "All"} | Total Marks: ${q.totalMarks}</div>
+              <p class="card-desc">${q.questions ? q.questions.length : 0} Questions</p>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // 6. Post Materials
     document.getElementById("form-mat").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1020,9 +1189,12 @@
       }
     }
 
-    // 6. Upload Exam Results
+    // 7. Upload Exam Results (Marks 0 to 100)
     document.getElementById("form-results").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const scored = Math.min(100, Math.max(0, Number(document.getElementById("res-marks").value)));
+      const total = Math.min(100, Math.max(1, Number(document.getElementById("res-total").value)));
+
       try {
         await addDoc(collection(db, "exam_results"), {
           examName: document.getElementById("res-exam-name").value.trim(),
@@ -1030,8 +1202,8 @@
           className: document.getElementById("res-class").value,
           section: document.getElementById("res-sec").value,
           rollNumber: document.getElementById("res-roll").value.trim(),
-          marksScored: Number(document.getElementById("res-marks").value),
-          totalMarks: Number(document.getElementById("res-total").value),
+          marksScored: scored,
+          totalMarks: total,
           schoolName: currentTeacher ? currentTeacher.schoolName : "",
           createdAt: new Date().toISOString()
         });
@@ -1070,7 +1242,7 @@
       }
     }
 
-    // 7. Post Notices (School-Wide)
+    // 8. Post Notices
     document.getElementById("form-notice").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1098,8 +1270,7 @@
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No notices posted yet.</p>`;
           return;
         }
-
-        let html = "";
+          let html = "";
         snap.forEach(docSnap => {
           const n = docSnap.data();
           html += `
@@ -1118,6 +1289,7 @@
     async function refreshAllData() {
       await loadStudents();
       await loadHomeworkList();
+      await loadQuizList();
       await loadMaterialsList();
       await loadResultsList();
       await loadNoticesList();
@@ -1125,3 +1297,4 @@
   </script>
 </body>
 </html>
+        
