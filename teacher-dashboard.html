@@ -100,7 +100,7 @@
       color: #64748b;
       margin: 2px 0 0 0;
     }
-    .btn-logout {
+        .btn-logout {
       background: #dc2626;
       color: #fff;
       border: none;
@@ -178,7 +178,7 @@
       color: #1e1b4b;
       margin: 0 0 16px 0;
     }
-        .field-box {
+    .field-box {
       margin-bottom: 14px;
     }
     .field-box label {
@@ -360,7 +360,7 @@
         <div class="avatar-icon">👨‍🏫</div>
         <div>
           <h2 class="profile-name" id="teacher-name">Teacher</h2>
-          <p class="profile-sub" id="school-name">GHSS Chennai</p>
+          <p class="profile-sub" id="school-name">EduPortal School</p>
         </div>
       </div>
       <button class="btn-logout" id="btn-logout">Logout</button>
@@ -397,7 +397,7 @@
       <button class="nav-tab-btn" data-tab="tab-results" id="t-tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices" id="t-tab-notices">📢 Notices</button>
     </div>
-        <!-- 1. Students Roster Tab -->
+       <!-- 1. Students Roster Tab -->
     <div class="panel-box" id="tab-roster">
       <h3 class="panel-title" id="p-title-roster">Student Roster</h3>
       <div class="field-box">
@@ -836,13 +836,13 @@
     let currentLang = "en";
     let qpFormatMode = "type";
 
-    // Bind DOM controls
+    // Bind DOM controls immediately
     const btnLangEn = document.getElementById("btn-en");
     const btnLangTa = document.getElementById("btn-ta");
     const tabBtns = document.querySelectorAll(".nav-tab-btn");
     const panels = document.querySelectorAll(".panel-box");
 
-    // Tab Switcher
+    // Tab Switcher bound immediately so tabs work even while data loads
     tabBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         tabBtns.forEach(b => b.classList.remove("active"));
@@ -1006,8 +1006,7 @@
       safeSet("p-sub-active-res", t.subActiveRes);
       safeSet("p-sub-active-notices", t.subActiveNotices);
     }
-
-    // Question Paper Mode Toggle
+          // Question Paper Mode Toggle
     const btnModeType = document.getElementById("btn-mode-type");
     const btnModeUpload = document.getElementById("btn-mode-upload");
     const modeTypeContainer = document.getElementById("mode-type-container");
@@ -1031,7 +1030,7 @@
       });
     }
 
-    // Custom Exam Selector
+    // Custom Exam Selectors
     const qpExamSelect = document.getElementById("qp-exam-type");
     const customExamBox = document.getElementById("box-custom-exam");
     if (qpExamSelect && customExamBox) {
@@ -1094,6 +1093,14 @@
     const qpExamDateEl = document.getElementById("qp-exam-date");
     if (qpExamDateEl) qpExamDateEl.value = new Date().toISOString().split("T")[0];
 
+    function cleanString(str) {
+      return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    }
+
+    function normalizeVal(val) {
+      return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+    }
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
@@ -1110,6 +1117,7 @@
           await refreshAllData();
         } catch (e) {
           console.error("Profile fetch error", e);
+          await refreshAllData();
         }
       }
     });
@@ -1122,11 +1130,162 @@
       });
     }
 
-    function normalizeVal(val) {
-      return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+    // 1. Load All Students (Resilient to school variations)
+    async function loadStudents() {
+      try {
+        const q = query(collection(db, "users"), where("role", "==", "student"));
+        const snap = await getDocs(q);
+        const teacherSchoolClean = currentTeacher ? cleanString(currentTeacher.schoolName) : "";
+
+        cachedStudents = [];
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const studentSchoolClean = cleanString(data.schoolName);
+          if (!teacherSchoolClean || !studentSchoolClean || studentSchoolClean === teacherSchoolClean) {
+            cachedStudents.push({ id: docSnap.id, ...data });
+          }
+        });
+
+        safeSet("stat-students", cachedStudents.length);
+        renderRoster();
+        renderAttendanceList();
+      } catch (err) {
+        console.error("Error loading students", err);
+        const tbody = document.getElementById("roster-tbody");
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${err.message}</td></tr>`;
+      }
     }
 
-    // 1. Question Paper Creation & Upload
+    function renderRoster() {
+      const t = tDict[currentLang];
+      const searchEl = document.getElementById("roster-search");
+      const classFilterEl = document.getElementById("roster-class-filter");
+      const secFilterEl = document.getElementById("roster-sec-filter");
+      const tbody = document.getElementById("roster-tbody");
+      if (!tbody) return;
+
+      const search = searchEl ? searchEl.value.toLowerCase() : "";
+      const classFilter = classFilterEl ? classFilterEl.value : "All";
+      const secFilter = secFilterEl ? secFilterEl.value : "All";
+
+      const filtered = cachedStudents.filter(s => {
+        const studentClass = normalizeVal(s.className);
+        const targetClass = normalizeVal(classFilter);
+        const matchesClass = (classFilter === "All") || (studentClass === targetClass);
+
+        const studentSec = (s.section || "").trim().toUpperCase();
+        const targetSec = secFilter.trim().toUpperCase();
+        const matchesSec = (secFilter === "All") || (studentSec === targetSec);
+
+        const matchesSearch = !search || 
+          (s.fullName && s.fullName.toLowerCase().includes(search)) || 
+          (s.rollNumber && s.rollNumber.toString().includes(search));
+
+        return matchesClass && matchesSec && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">${t.noStudentsFound}</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      filtered.forEach(s => {
+        html += `
+          <tr>
+            <td><strong>${s.rollNumber || "-"}</strong></td>
+            <td>${s.fullName || "-"}</td>
+            <td>Class ${s.className || "-"}</td>
+            <td>Section - ${s.section || "-"}</td>
+            <td>${s.board || "State Board"}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    const rSearch = document.getElementById("roster-search");
+    if (rSearch) rSearch.addEventListener("input", renderRoster);
+    const rClass = document.getElementById("roster-class-filter");
+    if (rClass) rClass.addEventListener("change", renderRoster);
+    const rSec = document.getElementById("roster-sec-filter");
+    if (rSec) rSec.addEventListener("change", renderRoster);
+
+    // 2. Attendance Filter
+    function renderAttendanceList() {
+      const t = tDict[currentLang];
+      const classEl = document.getElementById("att-class-select");
+      const secEl = document.getElementById("att-sec-select");
+      const container = document.getElementById("att-student-list");
+      if (!container || !classEl || !secEl) return;
+
+      const selectedClass = normalizeVal(classEl.value);
+      const selectedSec = secEl.value.trim().toUpperCase();
+
+      const filtered = cachedStudents.filter(s => {
+        const studentClass = normalizeVal(s.className);
+        const studentSec = (s.section || "").trim().toUpperCase();
+        return studentClass === selectedClass && studentSec === selectedSec;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noAttStudents}</p>`;
+        return;
+      }
+
+      let html = "";
+      filtered.forEach(s => {
+        html += `
+          <div class="att-row" data-id="${s.id}" data-roll="${s.rollNumber}">
+            <div class="att-name">${s.rollNumber} - ${s.fullName}</div>
+            <div class="att-options">
+              <label><input type="radio" name="att_${s.id}" value="P" checked /> P</label>
+              <label><input type="radio" name="att_${s.id}" value="A" /> A</label>
+              <label><input type="radio" name="att_${s.id}" value="L" /> L</label>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    const attClassSel = document.getElementById("att-class-select");
+    if (attClassSel) attClassSel.addEventListener("change", renderAttendanceList);
+    const attSecSel = document.getElementById("att-sec-select");
+    if (attSecSel) attSecSel.addEventListener("change", renderAttendanceList);
+
+    const btnSaveAtt = document.getElementById("btn-save-attendance");
+    if (btnSaveAtt) {
+      btnSaveAtt.addEventListener("click", async () => {
+        const date = document.getElementById("att-date").value;
+        const selectedClass = document.getElementById("att-class-select").value;
+        const selectedSec = document.getElementById("att-sec-select").value;
+        const rows = document.querySelectorAll(".att-row");
+        const records = [];
+
+        rows.forEach(r => {
+          const id = r.getAttribute("data-id");
+          const roll = r.getAttribute("data-roll");
+          const val = r.querySelector(`input[name="att_${id}"]:checked`).value;
+          records.push({ studentId: id, rollNumber: roll, status: val });
+        });
+
+        try {
+          await addDoc(collection(db, "attendance"), {
+            date: date,
+            className: selectedClass,
+            section: selectedSec,
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            records: records,
+            createdAt: new Date().toISOString()
+          });
+          alert(currentLang === "ta" ? "வருகைப் பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது!" : "Attendance recorded successfully!");
+        } catch (e) {
+          alert("Error: " + e.message);
+        }
+      });
+      }
+          // 3. Question Paper Creation & Upload
     const formQp = document.getElementById("form-qp");
     if (formQp) {
       formQp.addEventListener("submit", async (e) => {
@@ -1222,154 +1381,7 @@
       }
     }
 
-    // 2. Load All Students
-    async function loadStudents() {
-      try {
-        const q = query(collection(db, "users"), where("role", "==", "student"));
-        const snap = await getDocs(q);
-        cachedStudents = [];
-        snap.forEach(docSnap => {
-          cachedStudents.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        safeSet("stat-students", cachedStudents.length);
-        renderRoster();
-        renderAttendanceList();
-      } catch (err) {
-        console.error("Error loading students", err);
-      }
-    }
-
-    function renderRoster() {
-      const t = tDict[currentLang];
-      const searchEl = document.getElementById("roster-search");
-      const classFilterEl = document.getElementById("roster-class-filter");
-      const secFilterEl = document.getElementById("roster-sec-filter");
-      const tbody = document.getElementById("roster-tbody");
-      if (!tbody) return;
-
-      const search = searchEl ? searchEl.value.toLowerCase() : "";
-      const classFilter = classFilterEl ? classFilterEl.value : "All";
-      const secFilter = secFilterEl ? secFilterEl.value : "All";
-
-      const filtered = cachedStudents.filter(s => {
-        const studentClass = normalizeVal(s.className);
-        const targetClass = normalizeVal(classFilter);
-        const matchesClass = (classFilter === "All") || (studentClass === targetClass);
-
-        const studentSec = (s.section || "").trim().toUpperCase();
-        const targetSec = secFilter.trim().toUpperCase();
-        const matchesSec = (secFilter === "All") || (studentSec === targetSec);
-
-        const matchesSearch = !search || 
-          (s.fullName && s.fullName.toLowerCase().includes(search)) || 
-          (s.rollNumber && s.rollNumber.toString().includes(search));
-
-        return matchesClass && matchesSec && matchesSearch;
-      });
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">${t.noStudentsFound}</td></tr>`;
-        return;
-      }
-
-      let html = "";
-      filtered.forEach(s => {
-        html += `
-          <tr>
-            <td><strong>${s.rollNumber || "-"}</strong></td>
-            <td>${s.fullName || "-"}</td>
-            <td>Class ${s.className || "-"}</td>
-            <td>Section - ${s.section || "-"}</td>
-            <td>${s.board || "State Board"}</td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-    }
-
-    const rSearch = document.getElementById("roster-search");
-    if (rSearch) rSearch.addEventListener("input", renderRoster);
-    const rClass = document.getElementById("roster-class-filter");
-    if (rClass) rClass.addEventListener("change", renderRoster);
-    const rSec = document.getElementById("roster-sec-filter");
-    if (rSec) rSec.addEventListener("change", renderRoster);
-
-    // 3. Attendance Filter
-    function renderAttendanceList() {
-      const t = tDict[currentLang];
-      const classEl = document.getElementById("att-class-select");
-      const secEl = document.getElementById("att-sec-select");
-      const container = document.getElementById("att-student-list");
-      if (!container || !classEl || !secEl) return;
-
-      const selectedClass = normalizeVal(classEl.value);
-      const selectedSec = secEl.value.trim().toUpperCase();
-
-      const filtered = cachedStudents.filter(s => {
-        const studentClass = normalizeVal(s.className);
-        const studentSec = (s.section || "").trim().toUpperCase();
-        return studentClass === selectedClass && studentSec === selectedSec;
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noAttStudents}</p>`;
-        return;
-      }
-
-      let html = "";
-      filtered.forEach(s => {
-        html += `
-          <div class="att-row" data-id="${s.id}" data-roll="${s.rollNumber}">
-            <div class="att-name">${s.rollNumber} - ${s.fullName}</div>
-            <div class="att-options">
-              <label><input type="radio" name="att_${s.id}" value="P" checked /> P</label>
-              <label><input type="radio" name="att_${s.id}" value="A" /> A</label>
-              <label><input type="radio" name="att_${s.id}" value="L" /> L</label>
-            </div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    }
-
-    const attClassSel = document.getElementById("att-class-select");
-    if (attClassSel) attClassSel.addEventListener("change", renderAttendanceList);
-    const attSecSel = document.getElementById("att-sec-select");
-    if (attSecSel) attSecSel.addEventListener("change", renderAttendanceList);
-
-     const btnSaveAtt = document.getElementById("btn-save-attendance");
-    if (btnSaveAtt) {
-      btnSaveAtt.addEventListener("click", async () => {
-        const date = document.getElementById("att-date").value;
-        const selectedClass = document.getElementById("att-class-select").value;
-        const selectedSec = document.getElementById("att-sec-select").value;
-        const rows = document.querySelectorAll(".att-row");
-        const records = [];
-
-        rows.forEach(r => {
-          const id = r.getAttribute("data-id");
-          const roll = r.getAttribute("data-roll");
-          const val = r.querySelector(`input[name="att_${id}"]:checked`).value;
-          records.push({ studentId: id, rollNumber: roll, status: val });
-        });
-
-        try {
-          await addDoc(collection(db, "attendance"), {
-            date: date,
-            className: selectedClass,
-            section: selectedSec,
-            schoolName: currentTeacher ? currentTeacher.schoolName : "",
-            records: records,
-            createdAt: new Date().toISOString()
-          });
-          alert(currentLang === "ta" ? "வருகைப் பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது!" : "Attendance recorded successfully!");
-        } catch (e) {
-          alert("Error: " + e.message);
-        }
-      });
-      }
-          // 4. Post Homework
+    // 4. Post Homework
     const formHw = document.getElementById("form-hw");
     if (formHw) {
       formHw.addEventListener("submit", async (e) => {
@@ -1399,8 +1411,7 @@
     async function loadHomeworkList() {
       const t = tDict[currentLang];
       try {
-        const q = query(collection(db, "homework"));
-        const snap = await getDocs(q);
+        const snap = await getDocs(collection(db, "homework"));
         const container = document.getElementById("hw-list-container");
         const hwFilterSelect = document.getElementById("submission-hw-filter");
 
@@ -1667,12 +1678,14 @@
     }
 
     async function refreshAllData() {
-      await loadStudents();
-      await loadQuestionPapers();
-      await loadHomeworkList();
-      await loadMaterialsList();
-      await loadResultsList();
-      await loadNoticesList();
+      await Promise.allSettled([
+        loadStudents(),
+        loadQuestionPapers(),
+        loadHomeworkList(),
+        loadMaterialsList(),
+        loadResultsList(),
+        loadNoticesList()
+      ]);
     }
   </script>
 
