@@ -6,114 +6,512 @@
   <title>EduPortal - Student Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .dashboard-container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 16px;
+    body {
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1f2937;
     }
-    .user-card {
-      background: #f4f0ff;
-      border: 1px solid #7c3aed;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 24px;
+    .top-navbar {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .badge {
-      display: inline-block;
-      background: #7c3aed;
-      color: #fff;
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      margin-top: 4px;
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
     }
-    .logout-btn {
-      background: #dc2626;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
+    .lang-group {
+      display: flex;
+      gap: 6px;
+    }
+    .lang-pill {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
       cursor: pointer;
+    }
+    .lang-pill.active {
+      background: #ffffff;
+      color: #1e293b;
+      font-weight: 700;
+    }
+    .dashboard-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .profile-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar-icon {
+      font-size: 32px;
+    }
+    .profile-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+    .profile-sub {
+      font-size: 13px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    .badge-info {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #4338ca;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
       font-weight: 600;
     }
-    .grid-sections {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
+    .btn-logout {
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
     }
-    @media (min-width: 600px) {
-      .grid-sections {
-        grid-template-columns: 1fr 1fr;
-      }
+    .tabs-slider {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
     }
-    .card-item {
+    .nav-tab-btn {
       background: #ffffff;
-      border: 1px solid #e5e7eb;
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab-btn.active {
+      background: #1e293b;
+      color: #ffffff;
+      border-color: #1e293b;
+    }
+    .panel-box {
+      background: #ffffff;
       border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 18px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
     }
-    .card-item h3 {
-      margin-top: 0;
-      color: #4c1d95;
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 16px 0;
     }
+    .card-entry {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .card-entry h4 {
+      margin: 0 0 4px 0;
+      font-size: 14px;
+      color: #1e293b;
+    }
+    .card-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #334155;
+      margin: 0 0 8px 0;
+    }
+    .link-attach {
+      color: #2563eb;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .submit-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .submit-box input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .btn-submit-hw {
+      background: #1e293b;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .results-table th {
+      background: #f8fafc;
+      color: #475569;
+      padding: 8px;
+      text-align: left;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .results-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="user-card">
-      <div>
-        <h2 id="welcome-text">Welcome, Student</h2>
-        <span class="badge" id="role-badge">Student Portal</span>
-      </div>
-      <button class="logout-btn" id="logout-btn">Logout</button>
-    </div>
-
-    <div class="grid-sections">
-      <div class="card-item">
-        <h3>📚 Study Materials</h3>
-        <p>Access Tamil Nadu State Board and CBSE textbook notes and PDF guides.</p>
-      </div>
-
-      <div class="card-item">
-        <h3>📝 Homework & Tasks</h3>
-        <p>Check assignments uploaded by your teachers and submit completed work.</p>
-      </div>
-
-      <div class="card-item">
-        <h3>🎯 Practice & Quizzes</h3>
-        <p>Interactive multiple-choice questions and revision exercises.</p>
-      </div>
-
-      <div class="card-item">
-        <h3>🏆 Achievements</h3>
-        <p>Track your completed lessons, test scores, and learning progress.</p>
-      </div>
+  <div class="top-navbar">
+    <div class="brand-title">Education Portal V2.2</div>
+    <div class="lang-group">
+      <button class="lang-pill active" id="btn-en">English</button>
+      <button class="lang-pill" id="btn-ta">தமிழ்</button>
     </div>
   </div>
 
-  <script type="module">
-    import { auth } from "./firebase-config.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  <div class="dashboard-container">
+    <div class="profile-card">
+      <div class="profile-info">
+        <div class="avatar-icon">🎓</div>
+        <div>
+          <h2 class="profile-name" id="student-name">Student</h2>
+          <p class="profile-sub" id="student-school">GHSS Salem</p>
+          <span class="badge-info" id="student-class-info">Class 6 - A</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Logout</button>
+    </div>
 
-    onAuthStateChanged(auth, (user) => {
+    <!-- Navigation Tabs -->
+    <div class="tabs-slider">
+      <button class="nav-tab-btn active" data-tab="tab-my-hw">📝 My Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-my-mat">📚 Study Notes</button>
+      <button class="nav-tab-btn" data-tab="tab-my-notices">📢 Notices</button>
+      <button class="nav-tab-btn" data-tab="tab-my-results">📊 Report Card</button>
+    </div>
+
+    <!-- 1. My Homework -->
+    <div class="panel-box" id="tab-my-hw">
+      <h3 class="panel-title">Assigned Homework</h3>
+      <div id="hw-container">
+        <p style="color: #64748b; font-size: 13px;">Loading homework...</p>
+      </div>
+    </div>
+
+    <!-- 2. Study Notes -->
+    <div class="panel-box hidden" id="tab-my-mat">
+      <h3 class="panel-title">Class Study Notes</h3>
+      <div id="mat-container">
+        <p style="color: #64748b; font-size: 13px;">Loading study notes...</p>
+      </div>
+    </div>
+
+    <!-- 3. Notices -->
+    <div class="panel-box hidden" id="tab-my-notices">
+      <h3 class="panel-title">School Notice Board</h3>
+      <div id="notices-container">
+        <p style="color: #64748b; font-size: 13px;">Loading notices...</p>
+      </div>
+    </div>
+
+    <!-- 4. Report Card -->
+    <div class="panel-box hidden" id="tab-my-results">
+      <h3 class="panel-title">My Exam Scores</h3>
+      <div class="table-responsive">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Exam Name</th>
+              <th>Subject</th>
+              <th>Score</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="results-tbody">
+            <tr><td colspan="4" style="text-align: center; color: #64748b;">Loading exam marks...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+   <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      doc, 
+      getDoc, 
+      collection, 
+      query, 
+      where, 
+      getDocs,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    let currentStudent = null;
+
+    onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
       } else {
-        const welcomeText = document.getElementById("welcome-text");
-        if (welcomeText && user.email) {
-          welcomeText.textContent = `Welcome, ${user.email.split("@")[0]}`;
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            currentStudent = snap.data();
+            document.getElementById("student-name").textContent = currentStudent.fullName || "Student";
+            document.getElementById("student-school").textContent = currentStudent.schoolName || "EduPortal School";
+            document.getElementById("student-class-info").textContent = 
+              `Class ${currentStudent.className || "6"} - ${currentStudent.section || "A"} (${currentStudent.board || "State Board"})`;
+            
+            await loadStudentData();
+          }
+        } catch (e) {
+          console.error("Error loading student profile", e);
         }
       }
     });
 
-    document.getElementById("logout-btn").addEventListener("click", async () => {
+    document.getElementById("btn-logout").addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "login.html";
     });
+
+    // Tab Navigation
+    const tabBtns = document.querySelectorAll(".nav-tab-btn");
+    const panels = document.querySelectorAll(".panel-box");
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach(b => b.classList.remove("active"));
+        panels.forEach(p => p.classList.add("hidden"));
+
+        btn.classList.add("active");
+        const target = btn.getAttribute("data-tab");
+        document.getElementById(target).classList.remove("hidden");
+      });
+    });
+
+    async function loadStudentData() {
+      await loadHomework();
+      await loadMaterials();
+      await loadNotices();
+      await loadResults();
+    }
+
+    // 1. Load Homework
+    async function loadHomework() {
+      const container = document.getElementById("hw-container");
+      try {
+        const snap = await getDocs(collection(db, "homework"));
+        const targetClass = `Class ${currentStudent.className}`;
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.className === targetClass || data.className === currentStudent.className) {
+            items.push({ id: docSnap.id, ...data });
+          }
+        });
+
+        if (items.length === 0) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No homework assigned for your class right now.</p>`;
+          return;
+        }
+
+        let html = "";
+        items.forEach(hw => {
+          html += `
+            <div class="card-entry">
+              <h4>${hw.title} (${hw.subject})</h4>
+              <div class="card-meta">Deadline: ${hw.deadline} | Posted by: ${hw.teacherName || "Teacher"}</div>
+              <p class="card-desc">${hw.instructions || ""}</p>
+              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Assignment Resource</a>` : ""}
+              <div class="submit-box">
+                <input type="text" id="ans_${hw.id}" placeholder="Paste your Google Drive link or answer..." />
+                <button type="button" class="btn-submit-hw" data-hwid="${hw.id}">Submit</button>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+
+        // Homework submit action
+        container.querySelectorAll(".btn-submit-hw").forEach(btn => {
+          btn.addEventListener("click", async (e) => {
+            const hwId = e.target.getAttribute("data-hwid");
+            const answer = document.getElementById(`ans_${hwId}`).value.trim();
+            if (!answer) {
+              alert("Please enter an answer or drive link first.");
+              return;
+            }
+            try {
+              await addDoc(collection(db, "homework_submissions"), {
+                homeworkId: hwId,
+                studentId: auth.currentUser.uid,
+                studentName: currentStudent.fullName,
+                rollNumber: currentStudent.rollNumber,
+                className: currentStudent.className,
+                section: currentStudent.section,
+                answer: answer,
+                submittedAt: new Date().toISOString()
+              });
+              alert("Homework submitted successfully!");
+              document.getElementById(`ans_${hwId}`).value = "";
+            } catch (err) {
+              alert("Error submitting: " + err.message);
+            }
+          });
+        });
+      } catch (e) {
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading homework.</p>`;
+      }
+    }
+
+    // 2. Load Materials
+    async function loadMaterials() {
+      const container = document.getElementById("mat-container");
+      try {
+        const snap = await getDocs(collection(db, "materials"));
+        const targetClass = `Class ${currentStudent.className}`;
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.className === targetClass || data.className === currentStudent.className) {
+            items.push(data);
+          }
+        });
+
+        if (items.length === 0) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No study materials posted for your class yet.</p>`;
+          return;
+        }
+
+        let html = "";
+        items.forEach(mat => {
+          html += `
+            <div class="card-entry">
+              <h4>${mat.title} - ${mat.subject}</h4>
+              <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Study Material</a>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading materials.</p>`;
+      }
+    }
+
+    // 3. Load Notices
+    async function loadNotices() {
+      const container = document.getElementById("notices-container");
+      try {
+        const snap = await getDocs(collection(db, "notices"));
+        if (snap.empty) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No announcements posted on the notice board.</p>`;
+          return;
+        }
+        let html = "";
+        snap.forEach(docSnap => {
+          const n = docSnap.data();
+          html += `
+            <div class="card-entry">
+              <h4>${n.title}</h4>
+              <p class="card-desc">${n.details}</p>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading notices.</p>`;
+      }
+    }
+
+    // 4. Load Results
+    async function loadResults() {
+      const tbody = document.getElementById("results-tbody");
+      try {
+        const q = query(
+          collection(db, "exam_results"),
+          where("rollNumber", "==", currentStudent.rollNumber.toString())
+        );
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">No exam records found.</td></tr>`;
+          return;
+        }
+
+        let html = "";
+        snap.forEach(docSnap => {
+          const r = docSnap.data();
+          html += `
+            <tr>
+              <td><strong>${r.examName || "-"}</strong></td>
+              <td>${r.subject || "-"}</td>
+              <td>${r.marksScored}</td>
+              <td>${r.totalMarks}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626;">Error loading marks.</td></tr>`;
+      }
+    }
   </script>
 </body>
 </html>
