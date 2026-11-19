@@ -342,7 +342,7 @@
     }
   </style>
 </head>
-<body>
+  <body>
   <div class="top-navbar">
     <div class="brand-container">
       <img src="/file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
@@ -360,7 +360,7 @@
         <div class="avatar-icon">👨‍🏫</div>
         <div>
           <h2 class="profile-name" id="teacher-name">Teacher</h2>
-          <p class="profile-sub" id="school-name">EduPortal School</p>
+          <p class="profile-sub" id="school-name">GHSS Chennai</p>
         </div>
       </div>
       <button class="btn-logout" id="btn-logout">Logout</button>
@@ -397,7 +397,7 @@
       <button class="nav-tab-btn" data-tab="tab-results" id="t-tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices" id="t-tab-notices">📢 Notices</button>
     </div>
-       <!-- 1. Students Roster Tab -->
+        <!-- 1. Students Roster Tab -->
     <div class="panel-box" id="tab-roster">
       <h3 class="panel-title" id="p-title-roster">Student Roster</h3>
       <div class="field-box">
@@ -816,7 +816,7 @@
       </div>
     </div>
   </div>
-    <script type="module">
+      <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
@@ -836,13 +836,13 @@
     let currentLang = "en";
     let qpFormatMode = "type";
 
-    // Bind DOM controls immediately
+    // Bind DOM controls
     const btnLangEn = document.getElementById("btn-en");
     const btnLangTa = document.getElementById("btn-ta");
     const tabBtns = document.querySelectorAll(".nav-tab-btn");
     const panels = document.querySelectorAll(".panel-box");
 
-    // Tab Switcher bound immediately so tabs work even while data loads
+    // Tab Switcher bound directly (functions immediately on tap)
     tabBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         tabBtns.forEach(b => b.classList.remove("active"));
@@ -1006,7 +1006,7 @@
       safeSet("p-sub-active-res", t.subActiveRes);
       safeSet("p-sub-active-notices", t.subActiveNotices);
     }
-          // Question Paper Mode Toggle
+            // Question Paper Mode Toggle
     const btnModeType = document.getElementById("btn-mode-type");
     const btnModeUpload = document.getElementById("btn-mode-upload");
     const modeTypeContainer = document.getElementById("mode-type-container");
@@ -1114,9 +1114,9 @@
             safeSet("school-name", currentTeacher.schoolName || "EduPortal School");
           }
           applyTeacherTranslations();
-          await refreshAllData();
         } catch (e) {
           console.error("Profile fetch error", e);
+        } finally {
           await refreshAllData();
         }
       }
@@ -1130,20 +1130,15 @@
       });
     }
 
-    // 1. Load All Students (Resilient to school variations)
+    // 1. Load All Students (Shows all registered students)
     async function loadStudents() {
       try {
         const q = query(collection(db, "users"), where("role", "==", "student"));
         const snap = await getDocs(q);
-        const teacherSchoolClean = currentTeacher ? cleanString(currentTeacher.schoolName) : "";
 
         cachedStudents = [];
         snap.forEach(docSnap => {
-          const data = docSnap.data();
-          const studentSchoolClean = cleanString(data.schoolName);
-          if (!teacherSchoolClean || !studentSchoolClean || studentSchoolClean === teacherSchoolClean) {
-            cachedStudents.push({ id: docSnap.id, ...data });
-          }
+          cachedStudents.push({ id: docSnap.id, ...docSnap.data() });
         });
 
         safeSet("stat-students", cachedStudents.length);
@@ -1284,7 +1279,7 @@
           alert("Error: " + e.message);
         }
       });
-      }
+    }
           // 3. Question Paper Creation & Upload
     const formQp = document.getElementById("form-qp");
     if (formQp) {
@@ -1701,3 +1696,4 @@
   </script>
 </body>
 </html>
+
