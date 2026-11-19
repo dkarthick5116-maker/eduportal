@@ -83,9 +83,9 @@
       background: #e0e7ff;
       color: #4338ca;
       font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-top: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 6px;
       font-weight: 600;
     }
     .btn-logout {
@@ -229,7 +229,7 @@
         <div>
           <h2 class="profile-name" id="student-name">Student</h2>
           <p class="profile-sub" id="student-school">GHSS Salem</p>
-          <span class="badge-info" id="student-class-info">Class 6 - A</span>
+          <span class="badge-info" id="student-class-info">Loading details...</span>
         </div>
       </div>
       <button class="btn-logout" id="btn-logout">Logout</button>
@@ -287,7 +287,7 @@
       </div>
     </div>
   </div>
-   <script type="module">
+    <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
@@ -302,6 +302,10 @@
 
     let currentStudent = null;
 
+    function cleanVal(v) {
+      return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+    }
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
@@ -313,8 +317,10 @@
             currentStudent = snap.data();
             document.getElementById("student-name").textContent = currentStudent.fullName || "Student";
             document.getElementById("student-school").textContent = currentStudent.schoolName || "EduPortal School";
+            
+            const boardName = currentStudent.board || "State Board";
             document.getElementById("student-class-info").textContent = 
-              `Class ${currentStudent.className || "6"} - ${currentStudent.section || "A"} (${currentStudent.board || "State Board"})`;
+              `Class ${currentStudent.className || "6"} - Section ${currentStudent.section || "A"} | ${boardName}`;
             
             await loadStudentData();
           }
@@ -351,23 +357,30 @@
       await loadResults();
     }
 
-    // 1. Load Homework
+    // 1. Load Homework (Filtered by Class and Section)
     async function loadHomework() {
       const container = document.getElementById("hw-container");
       try {
         const snap = await getDocs(collection(db, "homework"));
-        const targetClass = `Class ${currentStudent.className}`;
+        const studentClass = cleanVal(currentStudent.className);
+        const studentSec = (currentStudent.section || "").trim().toUpperCase();
         const items = [];
 
         snap.forEach(docSnap => {
           const data = docSnap.data();
-          if (data.className === targetClass || data.className === currentStudent.className) {
+          const targetClass = cleanVal(data.className);
+          const targetSec = (data.section || "All").trim().toUpperCase();
+
+          const matchesClass = targetClass === studentClass;
+          const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+
+          if (matchesClass && matchesSec) {
             items.push({ id: docSnap.id, ...data });
           }
         });
 
         if (items.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No homework assigned for your class right now.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No homework assigned for your class and section right now.</p>`;
           return;
         }
 
@@ -376,11 +389,11 @@
           html += `
             <div class="card-entry">
               <h4>${hw.title} (${hw.subject})</h4>
-              <div class="card-meta">Deadline: ${hw.deadline} | Posted by: ${hw.teacherName || "Teacher"}</div>
+              <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | Deadline: ${hw.deadline}</div>
               <p class="card-desc">${hw.instructions || ""}</p>
               ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Assignment Resource</a>` : ""}
               <div class="submit-box">
-                <input type="text" id="ans_${hw.id}" placeholder="Paste your Google Drive link or answer..." />
+                <input type="text" id="ans_${hw.id}" placeholder="Paste your answer or Google Drive link..." />
                 <button type="button" class="btn-submit-hw" data-hwid="${hw.id}">Submit</button>
               </div>
             </div>
@@ -388,7 +401,7 @@
         });
         container.innerHTML = html;
 
-        // Homework submit action
+        // Submit action
         container.querySelectorAll(".btn-submit-hw").forEach(btn => {
           btn.addEventListener("click", async (e) => {
             const hwId = e.target.getAttribute("data-hwid");
@@ -416,27 +429,34 @@
           });
         });
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading homework.</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading homework: ${e.message}</p>`;
       }
     }
 
-    // 2. Load Materials
+    // 2. Load Materials (Filtered by Class and Section)
     async function loadMaterials() {
       const container = document.getElementById("mat-container");
       try {
         const snap = await getDocs(collection(db, "materials"));
-        const targetClass = `Class ${currentStudent.className}`;
+        const studentClass = cleanVal(currentStudent.className);
+        const studentSec = (currentStudent.section || "").trim().toUpperCase();
         const items = [];
 
         snap.forEach(docSnap => {
           const data = docSnap.data();
-          if (data.className === targetClass || data.className === currentStudent.className) {
+          const targetClass = cleanVal(data.className);
+          const targetSec = (data.section || "All").trim().toUpperCase();
+
+          const matchesClass = targetClass === studentClass;
+          const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+
+          if (matchesClass && matchesSec) {
             items.push(data);
           }
         });
 
         if (items.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No study materials posted for your class yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No study materials posted for your class and section yet.</p>`;
           return;
         }
 
@@ -445,17 +465,18 @@
           html += `
             <div class="card-entry">
               <h4>${mat.title} - ${mat.subject}</h4>
+              <div class="card-meta">Class ${mat.className} - Section ${mat.section || "All"}</div>
               <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Study Material</a>
             </div>
           `;
         });
         container.innerHTML = html;
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading materials.</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading materials: ${e.message}</p>`;
       }
     }
 
-    // 3. Load Notices
+    // 3. Load Notices (School-Wide)
     async function loadNotices() {
       const container = document.getElementById("notices-container");
       try {
@@ -476,11 +497,11 @@
         });
         container.innerHTML = html;
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading notices.</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading notices: ${e.message}</p>`;
       }
     }
 
-    // 4. Load Results
+    // 4. Load Results (Filtered by Student Roll Number)
     async function loadResults() {
       const tbody = document.getElementById("results-tbody");
       try {
@@ -509,7 +530,7 @@
         });
         tbody.innerHTML = html;
       } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626;">Error loading marks.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626;">Error loading marks: ${e.message}</td></tr>`;
       }
     }
   </script>
