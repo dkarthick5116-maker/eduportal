@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduPortal - Teacher Dashboard</title>
+
+  <!-- PWA & App Icons -->
+  <link rel="icon" type="image/png" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="apple-touch-icon" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e1b4b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
@@ -14,12 +24,24 @@
       color: #1f2937;
     }
     .top-navbar {
-      background: #1e293b;
+      background: #1e1b4b;
       color: #ffffff;
       padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      object-fit: cover;
     }
     .brand-title {
       font-size: 17px;
@@ -40,11 +62,11 @@
     }
     .lang-pill.active {
       background: #ffffff;
-      color: #1e293b;
+      color: #1e1b4b;
       font-weight: 700;
     }
     .dashboard-container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
       padding: 16px;
       box-sizing: border-box;
@@ -70,7 +92,7 @@
     .profile-name {
       font-size: 17px;
       font-weight: 700;
-      color: #1e293b;
+      color: #1e1b4b;
       margin: 0;
     }
     .profile-sub {
@@ -113,7 +135,7 @@
     .stat-value {
       font-size: 24px;
       font-weight: 700;
-      color: #1e293b;
+      color: #1e1b4b;
     }
     .tabs-slider {
       display: flex;
@@ -138,9 +160,9 @@
       gap: 6px;
     }
     .nav-tab-btn.active {
-      background: #1e293b;
+      background: #1e1b4b;
       color: #ffffff;
-      border-color: #1e293b;
+      border-color: #1e1b4b;
     }
     .panel-box {
       background: #ffffff;
@@ -152,7 +174,7 @@
     .panel-title {
       font-size: 16px;
       font-weight: 700;
-      color: #1e293b;
+      color: #1e1b4b;
       margin: 0 0 16px 0;
     }
     .field-box {
@@ -185,7 +207,7 @@
     }
     .btn-action-primary {
       width: 100%;
-      background: #1e293b;
+      background: #1e1b4b;
       color: #ffffff;
       padding: 12px;
       border: none;
@@ -195,6 +217,17 @@
       cursor: pointer;
       margin-top: 6px;
     }
+    .btn-action-secondary {
+      background: #ede9fe;
+      color: #4338ca;
+      border: 1px solid #c7d2fe;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
     .item-list-section {
       margin-top: 24px;
       border-top: 1px solid #e2e8f0;
@@ -203,7 +236,7 @@
     .sub-section-title {
       font-size: 15px;
       font-weight: 700;
-      color: #1e293b;
+      color: #1e1b4b;
       margin-bottom: 12px;
     }
     .card-entry {
@@ -216,7 +249,7 @@
     .card-entry h4 {
       margin: 0 0 4px 0;
       font-size: 14px;
-      color: #1e293b;
+      color: #1e1b4b;
     }
     .card-meta {
       font-size: 12px;
@@ -227,6 +260,7 @@
       font-size: 13px;
       color: #334155;
       margin: 0 0 8px 0;
+      white-space: pre-wrap;
     }
     .link-attach {
       color: #2563eb;
@@ -254,7 +288,7 @@
     .att-name {
       font-size: 14px;
       font-weight: 600;
-      color: #1e293b;
+      color: #1e1b4b;
     }
     .att-options {
       display: flex;
@@ -298,18 +332,41 @@
       cursor: pointer;
       margin-top: 6px;
     }
-    .q-card {
-      background: #ffffff;
+    .qp-box {
+      background: #f8fafc;
       border: 1px dashed #cbd5e1;
       border-radius: 8px;
       padding: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+    .tab-mode-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .tab-mode-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      background: #fff;
+      cursor: pointer;
+    }
+    .tab-mode-btn.active {
+      background: #1e1b4b;
+      color: #fff;
+      border-color: #1e1b4b;
     }
   </style>
 </head>
 <body>
   <div class="top-navbar">
-    <div class="brand-title" id="t-nav-title">Education Portal V2.2</div>
+    <div class="brand-container">
+      <img src="/file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
+      <span class="brand-title" id="t-nav-title">Education Portal V2.2</span>
+    </div>
     <div class="lang-group">
       <button class="lang-pill active" id="btn-en">English</button>
       <button class="lang-pill" id="btn-ta">தமிழ்</button>
@@ -343,8 +400,8 @@
         <div class="stat-value" id="stat-homework">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title" id="stat-lbl-quizzes">ACTIVE QUIZZES</div>
-        <div class="stat-value" id="stat-quizzes">0</div>
+        <div class="stat-title" id="stat-lbl-exams">EXAMS & PAPERS</div>
+        <div class="stat-value" id="stat-exams">0</div>
       </div>
     </div>
 
@@ -352,15 +409,122 @@
     <div class="tabs-slider">
       <button class="nav-tab-btn active" data-tab="tab-roster" id="t-tab-roster">👥 Students</button>
       <button class="nav-tab-btn" data-tab="tab-att" id="t-tab-att">📅 Attendance</button>
-      <button class="nav-tab-btn" data-tab="tab-hw" id="t-tab-hw">📝 Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-qp" id="t-tab-qp">📝 Question Papers</button>
+      <button class="nav-tab-btn" data-tab="tab-hw" id="t-tab-hw">📚 Homework</button>
       <button class="nav-tab-btn" data-tab="tab-submissions" id="t-tab-submissions">📥 Submissions</button>
-      <button class="nav-tab-btn" data-tab="tab-quiz" id="t-tab-quiz">🎯 Create Quiz</button>
-      <button class="nav-tab-btn" data-tab="tab-mat" id="t-tab-mat">📚 Materials</button>
+      <button class="nav-tab-btn" data-tab="tab-mat" id="t-tab-mat">📖 Materials</button>
       <button class="nav-tab-btn" data-tab="tab-results" id="t-tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices" id="t-tab-notices">📢 Notices</button>
     </div>
+        <!-- 1. Question Paper / Exam Generator Tab -->
+    <div class="panel-box hidden" id="tab-qp">
+      <h3 class="panel-title" id="p-title-qp">Exam Question Paper Creator & Upload</h3>
 
-    <!-- 1. Students Roster Tab -->
+      <form id="form-qp">
+        <!-- Exam Name with Predefined List + Custom Typing Option -->
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label id="lbl-qp-type">Exam Category</label>
+            <select id="qp-exam-type">
+              <option value="Mid-Term 1">Mid-Term 1 Exam</option>
+              <option value="Quarterly Exam">Quarterly Exam</option>
+              <option value="Mid-Term 2">Mid-Term 2 Exam</option>
+              <option value="Half-Yearly Exam">Half-Yearly Exam</option>
+              <option value="Annual Exam">Annual Exam / Final Exam</option>
+              <option value="Unit Test">Unit Test</option>
+              <option value="Custom">Custom Exam Name (Type Below)...</option>
+            </select>
+          </div>
+          <div class="field-box" id="box-custom-exam">
+            <label id="lbl-qp-custom">Type Custom Exam Name</label>
+            <input type="text" id="qp-custom-name" placeholder="e.g. Revision Exam 1" />
+          </div>
+        </div>
+
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label id="lbl-qp-subject">Subject</label>
+            <input type="text" id="qp-subject" placeholder="e.g. Science / கணிதம்" required />
+          </div>
+          <div class="field-box">
+            <label id="lbl-qp-board">Curriculum Board</label>
+            <select id="qp-board">
+              <option value="State Board">Tamil Nadu State Board</option>
+              <option value="CBSE">CBSE Board</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label id="lbl-qp-class">Class</label>
+            <select id="qp-class">
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label id="lbl-qp-sec">Section</label>
+            <select id="qp-sec">
+              <option value="All">All Sections</option>
+              <option value="A">Section - A</option>
+              <option value="B">Section - B</option>
+              <option value="C">Section - C</option>
+              <option value="D">Section - D</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label id="lbl-qp-marks">Total Marks</label>
+            <input type="number" id="qp-total-marks" min="1" max="100" value="100" required />
+          </div>
+        </div>
+
+        <div class="field-box">
+          <label id="lbl-qp-date">Exam Date</label>
+          <input type="date" id="qp-exam-date" required />
+        </div>
+
+        <!-- Mode Selection: Type Directly OR Upload Link -->
+        <label style="font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block;">Select Question Paper Format:</label>
+        <div class="tab-mode-selector">
+          <button type="button" class="tab-mode-btn active" id="btn-mode-type">✍️ Type Questions Directly</button>
+          <button type="button" class="tab-mode-btn" id="btn-mode-upload">📄 Upload Drive / PDF URL</button>
+        </div>
+
+        <!-- Section A: Type Questions Directly -->
+        <div id="mode-type-container">
+          <div class="field-box">
+            <label id="lbl-qp-typed">Type Question Paper (Sections, Questions & Marks)</label>
+            <textarea id="qp-typed-text" rows="8" placeholder="Section A: 1-Mark Questions&#10;1. What is the unit of force? [1 Mark]&#10;2. Define photosynthesis. [1 Mark]&#10;&#10;Section B: 5-Mark Questions&#10;3. Explain Newton's Three Laws of Motion with examples. [5 Marks]"></textarea>
+          </div>
+        </div>
+
+        <!-- Section B: Upload Drive URL -->
+        <div id="mode-upload-container" class="hidden">
+          <div class="field-box">
+            <label id="lbl-qp-link">Google Drive / Question Paper Link (PDF / Doc URL)</label>
+            <input type="url" id="qp-file-link" placeholder="https://drive.google.com/file/d/..." />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-action-primary" id="btn-pub-qp">Publish Question Paper</button>
+        <div class="status-msg" id="qp-status"></div>
+      </form>
+
+      <div class="item-list-section">
+        <h4 class="sub-section-title" id="p-sub-active-qp">Published Question Papers</h4>
+        <div id="qp-list-container">
+          <p style="color: #64748b; font-size: 13px;">No question papers published yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Students Roster Tab -->
     <div class="panel-box" id="tab-roster">
       <h3 class="panel-title" id="p-title-roster">Student Roster</h3>
       <div class="field-box">
@@ -407,7 +571,7 @@
       </div>
     </div>
 
-    <!-- 2. Attendance Tab -->
+    <!-- 3. Attendance Tab -->
     <div class="panel-box hidden" id="tab-att">
       <h3 class="panel-title" id="p-title-att">Mark Daily Attendance</h3>
       <div class="field-box">
@@ -441,7 +605,7 @@
       <div class="status-msg" id="att-msg"></div>
     </div>
 
-    <!-- 3. Homework Tab -->
+    <!-- 4. Homework Tab -->
     <div class="panel-box hidden" id="tab-hw">
       <h3 class="panel-title" id="p-title-hw">Create Homework</h3>
       <form id="form-hw">
@@ -499,7 +663,7 @@
         </div>
       </div>
     </div>
-      <!-- 4. Submissions Review Tab -->
+        <!-- 5. Submissions Review Tab -->
     <div class="panel-box hidden" id="tab-submissions">
       <h3 class="panel-title" id="p-title-sub">Review Student Submissions</h3>
       <div class="field-box">
@@ -523,103 +687,6 @@
             <tr><td colspan="5" style="text-align: center; color: #64748b;">Select a homework assignment above to see submissions.</td></tr>
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <!-- 5. Create Test / Quiz Tab (0 to 100 Marks) -->
-    <div class="panel-box hidden" id="tab-quiz">
-      <h3 class="panel-title" id="p-title-quiz">Create Online Exam / Quiz (0–100 Marks)</h3>
-      <form id="form-quiz">
-        <div class="field-box">
-          <label id="lbl-q-title">Exam / Quiz Title</label>
-          <input type="text" id="quiz-title" placeholder="e.g. Mid-Term Chapter 1 Test" required />
-        </div>
-        <div class="field-box">
-          <label id="lbl-q-subject">Subject</label>
-          <input type="text" id="quiz-subject" placeholder="e.g. Science" required />
-        </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
-            <label id="lbl-q-class">Target Class</label>
-            <select id="quiz-class">
-              <option value="6">Class 6</option>
-              <option value="7">Class 7</option>
-              <option value="8">Class 8</option>
-              <option value="9">Class 9</option>
-              <option value="10">Class 10</option>
-              <option value="11">Class 11</option>
-              <option value="12">Class 12</option>
-            </select>
-          </div>
-          <div class="field-box">
-            <label id="lbl-q-sec">Section</label>
-            <select id="quiz-sec">
-              <option value="All">All Sections</option>
-              <option value="A">Section - A</option>
-              <option value="B">Section - B</option>
-              <option value="C">Section - C</option>
-              <option value="D">Section - D</option>
-            </select>
-          </div>
-        </div>
-        <div class="field-box">
-          <label id="lbl-q-marks">Total Exam Marks (0 to 100)</label>
-          <input type="number" id="quiz-total-marks" min="1" max="100" value="100" required />
-        </div>
-
-        <h4 style="margin: 16px 0 8px 0; color: #1e293b;" id="lbl-q-header">Questions (Multiple Choice Questions)</h4>
-        <div id="questions-wrapper">
-          <!-- Question 1 -->
-          <div class="q-card">
-            <label><strong>Question 1:</strong></label>
-            <input type="text" class="q-text" placeholder="Enter question 1" required style="margin-bottom: 6px;" />
-            <div class="flex-filter-row">
-              <input type="text" class="opt-a" placeholder="Option A" required />
-              <input type="text" class="opt-b" placeholder="Option B" required />
-            </div>
-            <div class="flex-filter-row" style="margin-top: 6px;">
-              <input type="text" class="opt-c" placeholder="Option C" required />
-              <input type="text" class="opt-d" placeholder="Option D" required />
-            </div>
-            <label style="margin-top: 6px; font-size: 12px; display: block;" class="lbl-corr-opt">Correct Option:</label>
-            <select class="q-ans">
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </div>
-          <!-- Question 2 -->
-          <div class="q-card">
-            <label><strong>Question 2:</strong></label>
-            <input type="text" class="q-text" placeholder="Enter question 2" required style="margin-bottom: 6px;" />
-            <div class="flex-filter-row">
-              <input type="text" class="opt-a" placeholder="Option A" required />
-              <input type="text" class="opt-b" placeholder="Option B" required />
-            </div>
-            <div class="flex-filter-row" style="margin-top: 6px;">
-              <input type="text" class="opt-c" placeholder="Option C" required />
-              <input type="text" class="opt-d" placeholder="Option D" required />
-            </div>
-            <label style="margin-top: 6px; font-size: 12px; display: block;" class="lbl-corr-opt">Correct Option:</label>
-            <select class="q-ans">
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-action-primary" id="btn-pub-quiz">Publish Test / Quiz</button>
-        <div class="status-msg" id="quiz-status"></div>
-      </form>
-
-      <div class="item-list-section">
-        <h4 class="sub-section-title" id="p-sub-active-quiz">Active Tests & Quizzes</h4>
-        <div id="quiz-list-container">
-          <p style="color: #64748b; font-size: 13px;">No tests published yet.</p>
-        </div>
       </div>
     </div>
 
@@ -678,10 +745,25 @@
     <div class="panel-box hidden" id="tab-results">
       <h3 class="panel-title" id="p-title-results">Upload Exam Results</h3>
       <form id="form-results">
-        <div class="field-box">
-          <label id="lbl-r-exam">Exam Name</label>
-          <input type="text" id="res-exam-name" placeholder="e.g. Mid-Term 1 / Quarterly Exam" required />
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label id="lbl-r-exam-sel">Select Exam Name</label>
+            <select id="res-exam-select">
+              <option value="Mid-Term 1">Mid-Term 1 Exam</option>
+              <option value="Quarterly Exam">Quarterly Exam</option>
+              <option value="Mid-Term 2">Mid-Term 2 Exam</option>
+              <option value="Half-Yearly Exam">Half-Yearly Exam</option>
+              <option value="Annual Exam">Annual Exam</option>
+              <option value="Unit Test">Unit Test</option>
+              <option value="Custom">Custom Name (Type below)...</option>
+            </select>
+          </div>
+          <div class="field-box" id="res-custom-box">
+            <label id="lbl-r-custom">Custom Exam Name</label>
+            <input type="text" id="res-custom-name" placeholder="e.g. Model Exam" />
+          </div>
         </div>
+
         <div class="field-box">
           <label id="lbl-r-subj">Subject</label>
           <input type="text" id="res-subject" placeholder="e.g. Science" required />
@@ -740,7 +822,7 @@
       <form id="form-notice">
         <div class="field-box">
           <label id="lbl-n-title">Notice Title</label>
-          <input type="text" id="notice-title" placeholder="e.g. Science Fair Submission Date" required />
+          <input type="text" id="notice-title" placeholder="e.g. Exam Schedule Released" required />
         </div>
         <div class="field-box">
           <label id="lbl-n-desc">Announcement Details</label>
@@ -773,7 +855,9 @@
     let currentTeacher = null;
     let cachedStudents = [];
     let cachedHomework = [];
+    let cachedQPs = [];
     let currentLang = "en";
+    let qpFormatMode = "type"; // "type" or "upload"
 
     const tDict = {
       en: {
@@ -782,44 +866,45 @@
         statStudents: "TOTAL STUDENTS",
         statClasses: "CLASSES",
         statHw: "HOMEWORK ACTIVE",
-        statQuiz: "ACTIVE QUIZZES",
+        statExams: "EXAMS & PAPERS",
         tabRoster: "👥 Students",
         tabAtt: "📅 Attendance",
-        tabHw: "📝 Homework",
+        tabQp: "📝 Question Papers",
+        tabHw: "📚 Homework",
         tabSub: "📥 Submissions",
-        tabQuiz: "🎯 Create Quiz",
-        tabMat: "📚 Materials",
+        tabMat: "📖 Materials",
         tabResults: "📊 Exam Results",
         tabNotices: "📢 Notices",
+        pTitleQp: "Exam Question Paper Creator & Upload",
         pTitleRoster: "Student Roster",
         pTitleAtt: "Mark Daily Attendance",
         pTitleHw: "Create Homework",
         pTitleSub: "Review Student Submissions",
-        pTitleQuiz: "Create Online Exam / Quiz (0–100 Marks)",
         pTitleMat: "Share Study Material / Drive Links",
         pTitleResults: "Upload Exam Results",
         pTitleNotices: "Post School Notice / Announcement",
         saveAttBtn: "Save Attendance",
+        pubQpBtn: "Publish Question Paper",
         pubHwBtn: "Publish Homework",
-        pubQuizBtn: "Publish Test / Quiz",
         pubMatBtn: "Upload Material",
         pubResBtn: "Upload Result",
         pubNoticeBtn: "Publish Notice",
         viewSubBtn: "View Submissions",
         viewLink: "🔗 View Attached Link",
         openDriveLink: "🔗 Open Drive Link",
+        openQpLink: "📄 Open Question Paper PDF / Drive Link",
         deadlineWord: "Deadline:",
         scoreWord: "Score:",
         subActiveHw: "Active Homework List",
-        subActiveQuiz: "Active Tests & Quizzes",
+        subActiveQp: "Published Question Papers",
         subActiveMat: "Published Materials",
         subActiveRes: "Recently Uploaded Exam Results",
         subActiveNotices: "Notice Board History",
         noStudentsFound: "No students found for this class and section.",
         noAttStudents: "No students registered in this class and section.",
         noHwPosted: "No active homework posted yet.",
+        noQpPosted: "No question papers published yet.",
         noSubReceived: "No submissions received for this homework yet.",
-        noQuizPosted: "No tests published yet.",
         noMatPosted: "No materials uploaded yet.",
         noResPosted: "No results uploaded yet.",
         noNoticesPosted: "No notices posted yet."
@@ -830,44 +915,45 @@
         statStudents: "மொத்த மாணவர்கள்",
         statClasses: "வகுப்புகள்",
         statHw: "செயலில் உள்ள வீட்டுப்பாடம்",
-        statQuiz: "செயலில் உள்ள தேர்வுகள்",
+        statExams: "தேர்வுகள் & வினாத்தாள்கள்",
         tabRoster: "👥 மாணவர்கள்",
         tabAtt: "📅 வருகைப் பதிவு",
-        tabHw: "📝 வீட்டுப்பாடம்",
+        tabQp: "📝 வினாத்தாள்கள்",
+        tabHw: "📚 வீட்டுப்பாடம்",
         tabSub: "📥 சமர்ப்பிப்புகள்",
-        tabQuiz: "🎯 தேர்வு உருவாக்கு",
-        tabMat: "📚 பாடக் குறிப்புகள்",
+        tabMat: "📖 பாடக் குறிப்புகள்",
         tabResults: "📊 தேர்வு முடிவுகள்",
         tabNotices: "📢 அறிவிப்புகள்",
+        pTitleQp: "வினாத்தாள் உருவாக்குதல் & பதிவேற்றுதல்",
         pTitleRoster: "மாணவர் பட்டியல்",
         pTitleAtt: "தினசரி வருகைப் பதிவு குறிக்க",
         pTitleHw: "வீட்டுப்பாடம் உருவாக்கு",
         pTitleSub: "மாணவர் சமர்ப்பிப்புகளை மதிப்பாய்வு செய்",
-        pTitleQuiz: "ஆன்லைன் தேர்வு / வினாடி வினா உருவாக்கு (0–100 மதிப்பெண்கள்)",
         pTitleMat: "பாடக் குறிப்பு / கூகுள் டிரைவ் பகிர்",
         pTitleResults: "தேர்வு மதிப்பெண்களை பதிவேற்று",
         pTitleNotices: "பள்ளி அறிவிப்பை வெளியிடு",
         saveAttBtn: "வருகைப் பதிவைச் சேமி",
+        pubQpBtn: "வினாத்தாளை வெளியிடு",
         pubHwBtn: "வீட்டுப்பாடத்தை வெளியிடு",
-        pubQuizBtn: "தேர்வை வெளியிடு",
         pubMatBtn: "பாடக் குறிப்பை பதிவேற்று",
         pubResBtn: "முடிவை பதிவேற்று",
         pubNoticeBtn: "அறிவிப்பை வெளியிடு",
         viewSubBtn: "சமர்ப்பிப்புகளை பார்க்க",
         viewLink: "🔗 இணைப்பை பார்க்கவும்",
         openDriveLink: "🔗 டிரைவ் இணைப்பை திறக்கவும்",
+        openQpLink: "📄 வினாத்தாள் டிரைவ் இணைப்பை திறக்கவும்",
         deadlineWord: "கடைசி நாள்:",
         scoreWord: "மதிப்பெண்:",
         subActiveHw: "செயலில் உள்ள வீட்டுப்பாடங்கள்",
-        subActiveQuiz: "செயலில் உள்ள தேர்வுகள்",
+        subActiveQp: "வெளியிடப்பட்ட வினாத்தாள்கள்",
         subActiveMat: "வெளியிடப்பட்ட பாடக் குறிப்புகள்",
         subActiveRes: "சமீபத்திய தேர்வு முடிவுகள்",
         subActiveNotices: "அறிவிப்புப் பலகை வரலாறு",
         noStudentsFound: "இந்த வகுப்பு மற்றும் பிரிவிற்கு மாணவர்கள் யாரும் இல்லை.",
         noAttStudents: "இந்த வகுப்பு மற்றும் பிரிவில் மாணவர்கள் பதிவு செய்யப்படவில்லை.",
         noHwPosted: "வீட்டுப்பாடங்கள் எதுவும் வெளியிடப்படவில்லை.",
+        noQpPosted: "வினாத்தாள்கள் எதுவும் வெளியிடப்படவில்லை.",
         noSubReceived: "இந்த வீட்டுப்பாடத்திற்கு இன்னும் எந்த சமர்ப்பிப்பும் வரவில்லை.",
-        noQuizPosted: "தேர்வுகள் எதுவும் வெளியிடப்படவில்லை.",
         noMatPosted: "பாடக் குறிப்புகள் எதுவும் பதிவேற்றப்படவில்லை.",
         noResPosted: "தேர்வு முடிவுகள் எதுவும் இல்லை.",
         noNoticesPosted: "அறிவிப்புகள் எதுவும் இல்லை."
@@ -882,69 +968,103 @@
       document.getElementById("stat-lbl-students").textContent = t.statStudents;
       document.getElementById("stat-lbl-classes").textContent = t.statClasses;
       document.getElementById("stat-lbl-homework").textContent = t.statHw;
-      document.getElementById("stat-lbl-quizzes").textContent = t.statQuiz;
+      document.getElementById("stat-lbl-exams").textContent = t.statExams;
 
       document.getElementById("t-tab-roster").textContent = t.tabRoster;
       document.getElementById("t-tab-att").textContent = t.tabAtt;
+      document.getElementById("t-tab-qp").textContent = t.tabQp;
       document.getElementById("t-tab-hw").textContent = t.tabHw;
       document.getElementById("t-tab-submissions").textContent = t.tabSub;
-      document.getElementById("t-tab-quiz").textContent = t.tabQuiz;
       document.getElementById("t-tab-mat").textContent = t.tabMat;
       document.getElementById("t-tab-results").textContent = t.tabResults;
       document.getElementById("t-tab-notices").textContent = t.tabNotices;
 
+      document.getElementById("p-title-qp").textContent = t.pTitleQp;
       document.getElementById("p-title-roster").textContent = t.pTitleRoster;
       document.getElementById("p-title-att").textContent = t.pTitleAtt;
       document.getElementById("p-title-hw").textContent = t.pTitleHw;
       document.getElementById("p-title-sub").textContent = t.pTitleSub;
-      document.getElementById("p-title-quiz").textContent = t.pTitleQuiz;
       document.getElementById("p-title-mat").textContent = t.pTitleMat;
       document.getElementById("p-title-results").textContent = t.pTitleResults;
       document.getElementById("p-title-notices").textContent = t.pTitleNotices;
 
       document.getElementById("btn-save-attendance").textContent = t.saveAttBtn;
+      document.getElementById("btn-pub-qp").textContent = t.pubQpBtn;
       document.getElementById("btn-pub-hw").textContent = t.pubHwBtn;
-      document.getElementById("btn-pub-quiz").textContent = t.pubQuizBtn;
       document.getElementById("btn-pub-mat").textContent = t.pubMatBtn;
       document.getElementById("btn-pub-res").textContent = t.pubResBtn;
       document.getElementById("btn-pub-notice").textContent = t.pubNoticeBtn;
 
+      document.getElementById("p-sub-active-qp").textContent = t.subActiveQp;
       document.getElementById("p-sub-active-hw").textContent = t.subActiveHw;
-      document.getElementById("p-sub-active-quiz").textContent = t.subActiveQuiz;
       document.getElementById("p-sub-active-mat").textContent = t.subActiveMat;
       document.getElementById("p-sub-active-res").textContent = t.subActiveRes;
       document.getElementById("p-sub-active-notices").textContent = t.subActiveNotices;
     }
 
-    document.getElementById("btn-en").addEventListener("click", () => {
+    // Question Paper Mode Toggle (Type vs Upload)
+    const btnModeType = document.getElementById("btn-mode-type");
+    const btnModeUpload = document.getElementById("btn-mode-upload");
+    const modeTypeContainer = document.getElementById("mode-type-container");
+    const modeUploadContainer = document.getElementById("mode-upload-container");
+
+    btnModeType.addEventListener("click", () => {
+      qpFormatMode = "type";
+      btnModeType.classList.add("active");
+      btnModeUpload.classList.remove("active");
+      modeTypeContainer.classList.remove("hidden");
+      modeUploadContainer.classList.add("hidden");
+    });
+
+    btnModeUpload.addEventListener("click", () => {
+      qpFormatMode = "upload";
+      btnModeUpload.classList.add("active");
+      btnModeType.classList.remove("active");
+      modeUploadContainer.classList.remove("hidden");
+      modeTypeContainer.classList.add("hidden");
+    });
+
+    // Custom Exam Selector
+    const qpExamSelect = document.getElementById("qp-exam-type");
+    const customExamBox = document.getElementById("box-custom-exam");
+    qpExamSelect.addEventListener("change", () => {
+      if (qpExamSelect.value === "Custom") {
+        customExamBox.style.display = "block";
+      } else {
+        customExamBox.style.display = "none";
+      }
+    });
+
+    btnLangEn.addEventListener("click", () => {
       currentLang = "en";
-      document.getElementById("btn-en").classList.add("active");
-      document.getElementById("btn-ta").classList.remove("active");
+      btnLangEn.classList.add("active");
+      btnLangTa.classList.remove("active");
       applyTeacherTranslations();
       renderRoster();
       renderAttendanceList();
+      loadQuestionPapers();
       loadHomeworkList();
-      loadQuizList();
       loadMaterialsList();
       loadResultsList();
       loadNoticesList();
     });
 
-    document.getElementById("btn-ta").addEventListener("click", () => {
+    btnLangTa.addEventListener("click", () => {
       currentLang = "ta";
-      document.getElementById("btn-ta").classList.add("active");
-      document.getElementById("btn-en").classList.remove("active");
+      btnLangTa.classList.add("active");
+      btnLangEn.classList.remove("active");
       applyTeacherTranslations();
       renderRoster();
       renderAttendanceList();
+      loadQuestionPapers();
       loadHomeworkList();
-      loadQuizList();
       loadMaterialsList();
       loadResultsList();
       loadNoticesList();
     });
 
     document.getElementById("att-date").value = new Date().toISOString().split("T")[0];
+    document.getElementById("qp-exam-date").value = new Date().toISOString().split("T")[0];
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -992,7 +1112,101 @@
     function normalizeVal(val) {
       return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
     }
-          // 1. Load All Students
+
+    // 1. Question Paper Creation & Upload
+    document.getElementById("form-qp").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const examType = qpExamSelect.value;
+      const finalExamName = (examType === "Custom") 
+        ? document.getElementById("qp-custom-name").value.trim() 
+        : examType;
+
+      if (!finalExamName) {
+        alert("Please enter the exam name.");
+        return;
+      }
+
+      const subject = document.getElementById("qp-subject").value.trim();
+      const board = document.getElementById("qp-board").value;
+      const className = document.getElementById("qp-class").value;
+      const section = document.getElementById("qp-sec").value;
+      const totalMarks = Number(document.getElementById("qp-total-marks").value);
+      const examDate = document.getElementById("qp-exam-date").value;
+
+      const typedQuestions = document.getElementById("qp-typed-text").value.trim();
+      const driveLink = document.getElementById("qp-file-link").value.trim();
+
+      if (qpFormatMode === "type" && !typedQuestions) {
+        alert("Please type the questions or switch to Upload Link mode.");
+        return;
+      }
+      if (qpFormatMode === "upload" && !driveLink) {
+        alert("Please paste the Google Drive or PDF link.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "question_papers"), {
+          examName: finalExamName,
+          subject: subject,
+          board: board,
+          className: className,
+          section: section,
+          totalMarks: totalMarks,
+          examDate: examDate,
+          formatMode: qpFormatMode,
+          typedContent: typedQuestions,
+          fileLink: driveLink,
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
+          createdAt: new Date().toISOString()
+        });
+
+        alert(currentLang === "ta" ? "வினாத்தாள் வெற்றிகரமாக வெளியிடப்பட்டது!" : "Question Paper Published Successfully!");
+        e.target.reset();
+        await loadQuestionPapers();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+
+    async function loadQuestionPapers() {
+      const t = tDict[currentLang];
+      try {
+        const snap = await getDocs(collection(db, "question_papers"));
+        const container = document.getElementById("qp-list-container");
+        cachedQPs = [];
+        snap.forEach(docSnap => {
+          cachedQPs.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        document.getElementById("stat-exams").textContent = cachedQPs.length;
+
+        if (cachedQPs.length === 0) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQpPosted}</p>`;
+          return;
+        }
+
+        let html = "";
+        cachedQPs.forEach(qp => {
+          html += `
+            <div class="card-entry">
+              <h4>${qp.examName} - ${qp.subject} (${qp.board || "State Board"})</h4>
+              <div class="card-meta">Class ${qp.className} - Section ${qp.section || "All"} | Date: ${qp.examDate || "-"} | Total Marks: ${qp.totalMarks}</div>
+              ${qp.formatMode === "type" 
+                ? `<div class="card-desc"><strong>Question Paper:</strong><br/>${qp.typedContent}</div>`
+                : `<a class="link-attach" href="${qp.fileLink}" target="_blank">${t.openQpLink}</a>`
+              }
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        console.error("Error loading question papers", err);
+      }
+    }
+
+    // 2. Load All Students
     async function loadStudents() {
       try {
         const q = query(collection(db, "users"), where("role", "==", "student"));
@@ -1057,7 +1271,7 @@
     document.getElementById("roster-class-filter").addEventListener("change", renderRoster);
     document.getElementById("roster-sec-filter").addEventListener("change", renderRoster);
 
-    // 2. Attendance Filter
+    // 3. Attendance Filter
     function renderAttendanceList() {
       const t = tDict[currentLang];
       const selectedClass = normalizeVal(document.getElementById("att-class-select").value);
@@ -1113,7 +1327,7 @@
           date: date,
           className: selectedClass,
           section: selectedSec,
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+         schoolName: currentTeacher ? currentTeacher.schoolName : "",
           records: records,
           createdAt: new Date().toISOString()
         });
@@ -1123,7 +1337,7 @@
       }
     });
 
-    // 3. Post Homework
+    // 4. Post Homework
     document.getElementById("form-hw").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1197,7 +1411,7 @@
       }
     }
 
-    // 4. Submissions Review
+    // 5. Submissions Review
     async function loadSubmissions() {
       const t = tDict[currentLang];
       const hwId = document.getElementById("submission-hw-filter").value;
@@ -1243,76 +1457,6 @@
     }
 
     document.getElementById("submission-hw-filter").addEventListener("change", loadSubmissions);
-
-    // 5. Create Test / Quiz
-    document.getElementById("form-quiz").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const qCards = document.querySelectorAll(".q-card");
-      const questions = [];
-
-      qCards.forEach(c => {
-        questions.push({
-          question: c.querySelector(".q-text").value.trim(),
-          options: {
-            A: c.querySelector(".opt-a").value.trim(),
-            B: c.querySelector(".opt-b").value.trim(),
-            C: c.querySelector(".opt-c").value.trim(),
-            D: c.querySelector(".opt-d").value.trim()
-          },
-          correctOption: c.querySelector(".q-ans").value
-        });
-      });
-
-      const totalMarks = Math.min(100, Math.max(0, Number(document.getElementById("quiz-total-marks").value)));
-
-      try {
-        await addDoc(collection(db, "quizzes"), {
-          title: document.getElementById("quiz-title").value.trim(),
-          subject: document.getElementById("quiz-subject").value.trim(),
-          className: document.getElementById("quiz-class").value,
-          section: document.getElementById("quiz-sec").value,
-          totalMarks: totalMarks,
-          questions: questions,
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
-          createdAt: new Date().toISOString()
-        });
-        alert(currentLang === "ta" ? "ஆன்லைன் தேர்வு வெற்றிகரமாக வெளியிடப்பட்டது!" : "Online Quiz/Exam published successfully!");
-        e.target.reset();
-        await loadQuizList();
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    });
-
-    async function loadQuizList() {
-      const t = tDict[currentLang];
-      try {
-        const snap = await getDocs(collection(db, "quizzes"));
-        const container = document.getElementById("quiz-list-container");
-        document.getElementById("stat-quizzes").textContent = snap.size;
-
-        if (snap.empty) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQuizPosted}</p>`;
-          return;
-        }
-
-        let html = "";
-        snap.forEach(docSnap => {
-          const q = docSnap.data();
-          html += `
-            <div class="card-entry">
-              <h4>${q.title} (${q.subject})</h4>
-              <div class="card-meta">Class ${q.className} - Section ${q.section || "All"} | Total Marks: ${q.totalMarks}</div>
-              <p class="card-desc">${q.questions ? q.questions.length : 0} Questions</p>
-            </div>
-          `;
-        });
-        container.innerHTML = html;
-      } catch (err) {
-        console.error(err);
-      }
-    }
 
     // 6. Post Materials
     document.getElementById("form-mat").addEventListener("submit", async (e) => {
@@ -1366,12 +1510,17 @@
     // 7. Upload Exam Results
     document.getElementById("form-results").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const examChoice = document.getElementById("res-exam-select").value;
+      const finalExamName = (examChoice === "Custom") 
+        ? document.getElementById("res-custom-name").value.trim() 
+        : examChoice;
+
       const scored = Math.min(100, Math.max(0, Number(document.getElementById("res-marks").value)));
       const total = Math.min(100, Math.max(1, Number(document.getElementById("res-total").value)));
 
       try {
         await addDoc(collection(db, "exam_results"), {
-          examName: document.getElementById("res-exam-name").value.trim(),
+          examName: finalExamName,
           subject: document.getElementById("res-subject").value.trim(),
           className: document.getElementById("res-class").value,
           section: document.getElementById("res-sec").value,
@@ -1440,7 +1589,6 @@
       try {
         const snap = await getDocs(collection(db, "notices"));
         const container = document.getElementById("notice-list-container");
-        document.getElementById("stat-notices").textContent = snap.size;
 
         if (snap.empty) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noNoticesPosted}</p>`;
@@ -1465,11 +1613,22 @@
 
     async function refreshAllData() {
       await loadStudents();
+      await loadQuestionPapers();
       await loadHomeworkList();
-      await loadQuizList();
       await loadMaterialsList();
       await loadResultsList();
       await loadNoticesList();
+    }
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+          .then(() => console.log("[PWA] Service Worker registered"))
+          .catch((err) => console.log("[PWA] SW error:", err));
+      });
     }
   </script>
 </body>
