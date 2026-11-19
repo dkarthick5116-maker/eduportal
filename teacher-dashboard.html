@@ -7,338 +7,500 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      background-color: #f7f5ff;
+      background-color: #f0f2f5;
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1f2937;
     }
-    .dashboard-container {
-      max-width: 850px;
-      margin: 20px auto;
-      padding: 16px;
-      box-sizing: border-box;
-    }
-    .user-card {
-      background: #ede9fe;
-      border: 1px solid #7c3aed;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
+    .top-navbar {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .badge {
-      display: inline-block;
-      background: #4338ca;
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .lang-group {
+      display: flex;
+      gap: 6px;
+    }
+    .lang-pill {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
       color: #fff;
-      font-size: 12px;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 6px;
-      margin-top: 4px;
-      font-weight: 600;
-    }
-    .logout-btn {
-      background: #dc2626;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
+      font-size: 13px;
       cursor: pointer;
-      font-weight: 600;
     }
-    .section-selector-card {
+    .lang-pill.active {
       background: #ffffff;
-      border: 1px solid #e5e7eb;
+      color: #1e293b;
+      font-weight: 700;
+    }
+    .dashboard-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .profile-card {
+      background: #ffffff;
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    }
-    .selector-grid {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .profile-info {
+      display: flex;
+      align-items: center;
       gap: 12px;
-      margin-top: 10px;
     }
-    .selector-grid select {
-      flex: 1;
-      padding: 10px;
+    .avatar-icon {
+      font-size: 32px;
+    }
+    .profile-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+    .profile-sub {
+      font-size: 13px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    .btn-logout {
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
       border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-size: 14px;
-      outline: none;
-      background: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
     }
-    .tab-nav {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .stat-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .tabs-slider {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
     }
-    .tab-btn {
+    .nav-tab-btn {
       background: #ffffff;
-      border: 1px solid #d1d5db;
-      padding: 10px 16px;
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      color: #4b5563;
+      color: #475569;
       cursor: pointer;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .tab-btn.active {
-      background: #1e1b4b;
+    .nav-tab-btn.active {
+      background: #1e293b;
       color: #ffffff;
-      border-color: #1e1b4b;
+      border-color: #1e293b;
     }
-    .panel-card {
+    .panel-box {
       background: #ffffff;
       border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      padding: 18px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
     }
-    .panel-card h3 {
-      margin-top: 0;
-      color: #1e1b4b;
-      font-size: 18px;
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 16px 0;
     }
-    .form-group {
+    .field-box {
       margin-bottom: 14px;
     }
-    .form-group label {
+    .field-box label {
       display: block;
       font-size: 13px;
       font-weight: 600;
-      color: #374151;
-      margin-bottom: 4px;
+      color: #334155;
+      margin-bottom: 6px;
     }
-    .form-group input, .form-group textarea, .form-group select {
+    .field-box input, .field-box select, .field-box textarea {
       width: 100%;
       padding: 10px 12px;
-      border: 1px solid #d1d5db;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-size: 14px;
       box-sizing: border-box;
       outline: none;
+      background: #ffffff;
     }
-    .form-group input:focus, .form-group textarea:focus {
-      border-color: #7c3aed;
+    .field-box input:focus, .field-box select:focus, .field-box textarea:focus {
+      border-color: #1e293b;
     }
-    .btn-submit {
-      background: #7c3aed;
+    .btn-action-primary {
+      width: 100%;
+      background: #1e293b;
       color: #ffffff;
-      padding: 10px 18px;
+      padding: 12px;
       border: none;
       border-radius: 8px;
-      font-weight: 600;
       font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
+      margin-top: 6px;
+    }
+    .item-list-section {
+      margin-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+    }
+    .sub-section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+    .card-entry {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .card-entry h4 {
+      margin: 0 0 4px 0;
+      font-size: 14px;
+      color: #1e293b;
+    }
+    .card-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #334155;
+      margin: 0 0 8px 0;
+    }
+    .link-attach {
+      color: #2563eb;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
     }
     .status-msg {
       margin-top: 10px;
       font-size: 13px;
       font-weight: 600;
+      text-align: center;
     }
     .status-msg.success { color: #16a34a; }
     .status-msg.error { color: #dc2626; }
     .hidden { display: none !important; }
 
-    /* Student Roster Table */
-    .table-responsive {
-      overflow-x: auto;
-      margin-top: 12px;
+    /* Attendance List */
+    .att-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
     }
-    .student-table {
+    .att-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .att-options {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .att-options label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    /* Roster Table */
+    .roster-table {
       width: 100%;
       border-collapse: collapse;
-      text-align: left;
+      margin-top: 10px;
       font-size: 13px;
     }
-    .student-table th {
-      background: #f3f4f6;
-      color: #374151;
-      padding: 10px;
-      border-bottom: 2px solid #e5e7eb;
+    .roster-table th {
+      background: #f8fafc;
+      padding: 8px;
+      text-align: left;
+      border-bottom: 2px solid #e2e8f0;
+      color: #475569;
     }
-    .student-table td {
-      padding: 10px;
-      border-bottom: 1px solid #e5e7eb;
-      color: #1f2937;
-    }
-    .student-table tr:hover {
-      background-color: #faf5ff;
-    }
-    .empty-state {
-      text-align: center;
-      padding: 24px;
-      color: #6b7280;
-      font-size: 14px;
+    .roster-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e2e8f0;
     }
   </style>
 </head>
 <body>
+  <div class="top-navbar">
+    <div class="brand-title">Education Portal V2.2</div>
+    <div class="lang-group">
+      <button class="lang-pill active" id="btn-en">English</button>
+      <button class="lang-pill" id="btn-ta">தமிழ்</button>
+    </div>
+  </div>
+
   <div class="dashboard-container">
-    <div class="user-card">
-      <div>
-        <h2 id="welcome-text" style="margin: 0 0 4px 0; color: #1e1b4b;">Welcome, Teacher</h2>
-        <span class="badge" id="role-badge">Teacher Portal</span>
-        <div id="school-text" style="font-size: 13px; color: #4b5563; margin-top: 4px;"></div>
+    <div class="profile-card">
+      <div class="profile-info">
+        <div class="avatar-icon">👨‍🏫</div>
+        <div>
+          <h2 class="profile-name" id="teacher-name">Teacher</h2>
+          <p class="profile-sub" id="school-name">GHSS Chennai</p>
+        </div>
       </div>
-      <button class="logout-btn" id="logout-btn">Logout</button>
+      <button class="btn-logout" id="btn-logout">Logout</button>
     </div>
 
-    <!-- Class & Section Selector -->
-    <div class="section-selector-card">
-      <strong style="color: #1e1b4b;">Target Class & Section:</strong>
-      <div class="selector-grid">
-        <select id="selected-class">
-          <option value="6">Class 6</option>
-          <option value="7">Class 7</option>
-          <option value="8">Class 8</option>
-          <option value="9">Class 9</option>
-          <option value="10">Class 10</option>
-          <option value="11">Class 11</option>
-          <option value="12">Class 12</option>
+    <!-- 4 Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">TOTAL STUDENTS</div>
+        <div class="stat-value" id="stat-students">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">CLASSES</div>
+        <div class="stat-value" id="stat-classes">7</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">HOMEWORK ACTIVE</div>
+        <div class="stat-value" id="stat-homework">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">NOTICES</div>
+        <div class="stat-value" id="stat-notices">0</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-slider">
+      <button class="nav-tab-btn active" data-tab="tab-roster">👥 Students</button>
+      <button class="nav-tab-btn" data-tab="tab-att">📅 Attendance</button>
+      <button class="nav-tab-btn" data-tab="tab-hw">📝 Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-mat">📚 Materials</button>
+      <button class="nav-tab-btn" data-tab="tab-notices">📢 Notices</button>
+    </div>
+
+    <!-- 1. Students Roster Tab -->
+    <div class="panel-box" id="tab-roster">
+      <h3 class="panel-title">Student Roster</h3>
+      <div class="field-box">
+        <input type="text" id="roster-search" placeholder="Search by name / roll..." />
+      </div>
+      <div class="field-box">
+        <select id="roster-class-filter">
+          <option value="All">All Classes</option>
+          <option value="Class 6">Class 6</option>
+          <option value="Class 7">Class 7</option>
+          <option value="Class 8">Class 8</option>
+          <option value="Class 9">Class 9</option>
+          <option value="Class 10">Class 10</option>
+          <option value="Class 11">Class 11</option>
+          <option value="Class 12">Class 12</option>
         </select>
-        <select id="selected-section">
-          <option value="A">Section A</option>
-          <option value="B">Section B</option>
-          <option value="C">Section C</option>
-          <option value="D">Section D</option>
-        </select>
       </div>
-    </div>
-
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
-      <button class="tab-btn active" data-tab="tab-homework">📝 Homework</button>
-      <button class="tab-btn" data-tab="tab-assignment">📋 Assignment</button>
-      <button class="tab-btn" data-tab="tab-attendance">📅 Attendance</button>
-      <button class="tab-btn" data-tab="tab-results">📊 Exam Results</button>
-      <button class="tab-btn" data-tab="tab-students">👥 Students List</button>
-    </div>
-
-    <!-- Tab 1: Homework -->
-    <div class="panel-card" id="tab-homework">
-      <h3>Post Daily Homework</h3>
-      <form id="form-homework">
-        <div class="form-group">
-          <label>Subject</label>
-          <input type="text" id="hw-subject" placeholder="e.g. Mathematics" required />
-        </div>
-        <div class="form-group">
-          <label>Homework Details</label>
-          <textarea id="hw-details" rows="3" placeholder="Enter instructions or questions" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Submission Due Date</label>
-          <input type="date" id="hw-due" required />
-        </div>
-        <button type="submit" class="btn-submit">Upload Homework</button>
-        <div class="status-msg" id="hw-status"></div>
-      </form>
-    </div>
-
-    <!-- Tab 2: Assignment -->
-    <div class="panel-card hidden" id="tab-assignment">
-      <h3>Post Assignment</h3>
-      <form id="form-assignment">
-        <div class="form-group">
-          <label>Assignment Title</label>
-          <input type="text" id="as-title" placeholder="e.g. Science Project - Solar System" required />
-        </div>
-        <div class="form-group">
-          <label>Description & Requirements</label>
-          <textarea id="as-desc" rows="3" placeholder="Enter assignment guidelines" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Reference PDF / Resource Link (Google Drive / Web)</label>
-          <input type="url" id="as-link" placeholder="https://drive.google.com/..." />
-        </div>
-        <div class="form-group">
-          <label>Deadline</label>
-          <input type="date" id="as-due" required />
-        </div>
-        <button type="submit" class="btn-submit">Post Assignment</button>
-        <div class="status-msg" id="as-status"></div>
-      </form>
-    </div>
-
-    <!-- Tab 3: Attendance -->
-    <div class="panel-card hidden" id="tab-attendance">
-      <h3>Submit Class Attendance</h3>
-      <form id="form-attendance">
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="att-date" required />
-        </div>
-        <div class="form-group">
-          <label>Present Student Roll Numbers (Comma-separated)</label>
-          <input type="text" id="att-present" placeholder="e.g. 1001, 1002, 1005" required />
-        </div>
-        <div class="form-group">
-          <label>Absent Student Roll Numbers (Comma-separated)</label>
-          <input type="text" id="att-absent" placeholder="e.g. 1003, 1004" />
-        </div>
-        <button type="submit" class="btn-submit">Save Attendance</button>
-        <div class="status-msg" id="att-status"></div>
-      </form>
-    </div>
-
-    <!-- Tab 4: Exam Results -->
-    <div class="panel-card hidden" id="tab-results">
-      <h3>Publish Exam Results</h3>
-      <form id="form-results">
-        <div class="form-group">
-          <label>Exam Name</label>
-          <input type="text" id="res-exam-name" placeholder="e.g. Mid-Term 1 / Quarterly Exam" required />
-        </div>
-        <div class="form-group">
-          <label>Subject</label>
-          <input type="text" id="res-subject" placeholder="e.g. Science" required />
-        </div>
-        <div class="form-group">
-          <label>Student Roll Number</label>
-          <input type="text" id="res-roll" placeholder="e.g. 1001" required />
-        </div>
-        <div class="form-group">
-          <label>Marks Scored</label>
-          <input type="number" id="res-marks" placeholder="e.g. 88" required />
-        </div>
-        <div class="form-group">
-          <label>Total Marks</label>
-          <input type="number" id="res-total" placeholder="e.g. 100" required />
-        </div>
-        <button type="submit" class="btn-submit">Upload Result</button>
-        <div class="status-msg" id="res-status"></div>
-      </form>
-    </div>
-
-    <!-- Tab 5: Students List -->
-    <div class="panel-card hidden" id="tab-students">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="margin: 0;">Enrolled Students</h3>
-        <button type="button" id="btn-refresh-students" class="btn-submit" style="padding: 6px 12px; font-size: 12px;">🔄 Refresh</button>
-      </div>
-      <div class="table-responsive">
-        <table class="student-table">
+      <div style="overflow-x: auto;">
+        <table class="roster-table">
           <thead>
             <tr>
               <th>Roll No</th>
               <th>Name</th>
               <th>Class</th>
-              <th>Sec</th>
-              <th>Registered Login ID</th>
+              <th>Board</th>
             </tr>
           </thead>
-          <tbody id="student-table-body">
-            <tr>
-              <td colspan="5" class="empty-state">Loading students...</td>
-            </tr>
+          <tbody id="roster-tbody">
+            <tr><td colspan="4" style="text-align: center; color: #64748b;">Loading students...</td></tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- 2. Attendance Tab -->
+    <div class="panel-box hidden" id="tab-att">
+      <h3 class="panel-title">Mark Daily Attendance</h3>
+      <div class="field-box">
+        <input type="date" id="att-date" />
+      </div>
+      <div class="field-box">
+        <select id="att-class-select">
+          <option value="Class 6">Class 6</option>
+          <option value="Class 7">Class 7</option>
+          <option value="Class 8">Class 8</option>
+          <option value="Class 9">Class 9</option>
+          <option value="Class 10">Class 10</option>
+          <option value="Class 11" selected>Class 11</option>
+          <option value="Class 12">Class 12</option>
+        </select>
+      </div>
+      <div id="att-student-list" style="margin-bottom: 16px;">
+        <p style="color: #64748b; font-size: 13px;">Select class to load students...</p>
+      </div>
+      <button class="btn-action-primary" id="btn-save-attendance">Save Attendance</button>
+      <div class="status-msg" id="att-msg"></div>
+    </div>
+
+    <!-- 3. Homework Tab -->
+    <div class="panel-box hidden" id="tab-hw">
+      <h3 class="panel-title">Create Homework</h3>
+      <form id="form-hw">
+        <div class="field-box">
+          <label>Homework Title</label>
+          <input type="text" id="hw-title" placeholder="e.g. Unit 2 Exercise 2.1" required />
+        </div>
+        <div class="field-box">
+          <label>Subject</label>
+          <input type="text" id="hw-subject" placeholder="e.g. Mathematics" required />
+        </div>
+        <div class="field-box">
+          <label>Target Class</label>
+          <select id="hw-class">
+            <option value="Class 6">Class 6</option>
+            <option value="Class 7">Class 7</option>
+            <option value="Class 8">Class 8</option>
+            <option value="Class 9">Class 9</option>
+            <option value="Class 10">Class 10</option>
+            <option value="Class 11">Class 11</option>
+            <option value="Class 12">Class 12</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <label>Submission Deadline</label>
+          <input type="date" id="hw-deadline" required />
+        </div>
+        <div class="field-box">
+          <label>Detailed Instructions</label>
+          <textarea id="hw-instructions" rows="3" placeholder="Write homework details or problem numbers here..."></textarea>
+        </div>
+        <div class="field-box">
+          <label>Resource / Assignment Link (Google Drive / Doc URL)</label>
+          <input type="url" id="hw-link" placeholder="https://drive.google.com/..." />
+        </div>
+        <button type="submit" class="btn-action-primary">Publish Homework</button>
+        <div class="status-msg" id="hw-status"></div>
+      </form>
+      <div class="item-list-section">
+        <h4 class="sub-section-title">Active Homework List</h4>
+        <div id="hw-list-container">
+          <p style="color: #64748b; font-size: 13px;">No active homework posted yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Study Materials Tab -->
+    <div class="panel-box hidden" id="tab-mat">
+      <h3 class="panel-title">Share Study Material / Drive Links</h3>
+      <form id="form-mat">
+        <div class="field-box">
+          <label>Material Title</label>
+          <input type="text" id="mat-title" placeholder="e.g. Chapter 1 Formula Sheet" required />
+        </div>
+        <div class="field-box">
+          <label>Subject</label>
+          <input type="text" id="mat-subject" placeholder="e.g. Science" required />
+        </div>
+        <div class="field-box">
+          <label>Class</label>
+          <select id="mat-class">
+            <option value="Class 6">Class 6</option>
+            <option value="Class 7">Class 7</option>
+            <option value="Class 8">Class 8</option>
+            <option value="Class 9">Class 9</option>
+            <option value="Class 10">Class 10</option>
+            <option value="Class 11">Class 11</option>
+            <option value="Class 12">Class 12</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <label>Google Drive / Resource Link (URL)</label>
+          <input type="url" id="mat-link" placeholder="https://drive.google.com/..." required />
+        </div>
+        <button type="submit" class="btn-action-primary">Upload Material</button>
+        <div class="status-msg" id="mat-status"></div>
+      </form>
+      <div class="item-list-section">
+        <h4 class="sub-section-title">Published Materials</h4>
+        <div id="mat-list-container">
+          <p style="color: #64748b; font-size: 13px;">No materials uploaded yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Notices Tab -->
+    <div class="panel-box hidden" id="tab-notices">
+      <h3 class="panel-title">Post Notice / Announcement</h3>
+      <form id="form-notice">
+        <div class="field-box">
+          <label>Notice Title</label>
+          <input type="text" id="notice-title" placeholder="e.g. Science Fair Submission Date" required />
+        </div>
+        <div class="field-box">
+          <label>Announcement Details</label>
+          <textarea id="notice-desc" rows="3" placeholder="Write notice details..." required></textarea>
+        </div>
+        <button type="submit" class="btn-action-primary">Publish Notice</button>
+        <div class="status-msg" id="notice-status"></div>
+      </form>
+      <div class="item-list-section">
+        <h4 class="sub-section-title">Notice Board History</h4>
+        <div id="notice-list-container">
+          <p style="color: #64748b; font-size: 13px;">No notices posted yet.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -352,10 +514,15 @@
       addDoc, 
       query, 
       where, 
-      getDocs 
+      getDocs,
+      setDoc
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let currentTeacher = null;
+    let cachedStudents = [];
+
+    // Set Default Today's Date
+    document.getElementById("att-date").value = new Date().toISOString().split("T")[0];
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -366,192 +533,300 @@
           const snap = await getDoc(docRef);
           if (snap.exists()) {
             currentTeacher = snap.data();
-            const welcomeText = document.getElementById("welcome-text");
-            const schoolText = document.getElementById("school-text");
-            if (welcomeText && currentTeacher.fullName) {
-              welcomeText.textContent = `Welcome, ${currentTeacher.fullName}`;
-            }
-            if (schoolText && currentTeacher.schoolName) {
-              schoolText.textContent = `School: ${currentTeacher.schoolName}`;
-            }
-            loadStudents();
+            document.getElementById("teacher-name").textContent = currentTeacher.fullName || "Teacher";
+            document.getElementById("school-name").textContent = currentTeacher.schoolName || "EduPortal School";
           }
+          await refreshAllData();
         } catch (e) {
-          console.error("Error loading teacher profile", e);
+          console.error("Profile fetch error", e);
         }
       }
     });
 
-    document.getElementById("logout-btn").addEventListener("click", async () => {
+    document.getElementById("btn-logout").addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "login.html";
     });
 
-    // Tab Switching
-    const tabButtons = document.querySelectorAll(".tab-btn");
-    const panels = document.querySelectorAll(".panel-card");
+    // Tab Navigation Switching
+    const tabBtns = document.querySelectorAll(".nav-tab-btn");
+    const panels = document.querySelectorAll(".panel-box");
 
-    tabButtons.forEach(btn => {
+    tabBtns.forEach(btn => {
       btn.addEventListener("click", () => {
-        tabButtons.forEach(b => b.classList.remove("active"));
+        tabBtns.forEach(b => b.classList.remove("active"));
         panels.forEach(p => p.classList.add("hidden"));
 
         btn.classList.add("active");
-        const targetId = btn.getAttribute("data-tab");
-        document.getElementById(targetId).classList.remove("hidden");
-
-        if (targetId === "tab-students") {
-          loadStudents();
-        }
+        const target = btn.getAttribute("data-tab");
+        document.getElementById(target).classList.remove("hidden");
       });
     });
 
-    const selectClass = document.getElementById("selected-class");
-    const selectSection = document.getElementById("selected-section");
-
-    selectClass.addEventListener("change", () => loadStudents());
-    selectSection.addEventListener("change", () => loadStudents());
-    document.getElementById("btn-refresh-students").addEventListener("click", () => loadStudents());
-
+    // Load & Filter Students for Roster & Attendance
     async function loadStudents() {
-      const tbody = document.getElementById("student-table-body");
-      tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Loading students...</td></tr>`;
+      try {
+        const q = query(collection(db, "users"), where("role", "==", "student"));
+        const snap = await getDocs(q);
+        cachedStudents = [];
+        snap.forEach(docSnap => {
+          cachedStudents.push({ id: docSnap.id, ...docSnap.data() });
+        });
 
-      const targetClass = selectClass.value;
-      const targetSec = selectSection.value;
+        document.getElementById("stat-students").textContent = cachedStudents.length;
+        renderRoster();
+        renderAttendanceList();
+      } catch (err) {
+        console.error("Error loading students", err);
+      }
+    }
+
+    function renderRoster() {
+      const search = document.getElementById("roster-search").value.toLowerCase();
+      const classFilter = document.getElementById("roster-class-filter").value;
+      const tbody = document.getElementById("roster-tbody");
+
+      const filtered = cachedStudents.filter(s => {
+        const matchesClass = (classFilter === "All") || 
+          (`Class ${s.className}` === classFilter || s.className === classFilter);
+        const matchesSearch = !search || 
+          (s.fullName && s.fullName.toLowerCase().includes(search)) || 
+          (s.rollNumber && s.rollNumber.toString().includes(search));
+        return matchesClass && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">No students found.</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      filtered.forEach(s => {
+        html += `
+          <tr>
+            <td><strong>${s.rollNumber || "-"}</strong></td>
+            <td>${s.fullName || "-"}</td>
+            <td>Class ${s.className || "-"}</td>
+            <td>${s.board || "State Board"}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    document.getElementById("roster-search").addEventListener("input", renderRoster);
+    document.getElementById("roster-class-filter").addEventListener("change", renderRoster);
+
+    // Attendance List Render
+    function renderAttendanceList() {
+      const selectedClass = document.getElementById("att-class-select").value;
+      const container = document.getElementById("att-student-list");
+
+      const filtered = cachedStudents.filter(s => 
+        `Class ${s.className}` === selectedClass || s.className === selectedClass
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No students registered in ${selectedClass}.</p>`;
+        return;
+      }
+
+      let html = "";
+      filtered.forEach(s => {
+        html += `
+          <div class="att-row" data-id="${s.id}" data-roll="${s.rollNumber}">
+            <div class="att-name">${s.rollNumber} - ${s.fullName}</div>
+            <div class="att-options">
+              <label><input type="radio" name="att_${s.id}" value="P" checked /> P</label>
+              <label><input type="radio" name="att_${s.id}" value="A" /> A</label>
+              <label><input type="radio" name="att_${s.id}" value="L" /> L</label>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    document.getElementById("att-class-select").addEventListener("change", renderAttendanceList);
+
+    // Save Attendance
+    document.getElementById("btn-save-attendance").addEventListener("click", async () => {
+      const date = document.getElementById("att-date").value;
+      const selectedClass = document.getElementById("att-class-select").value;
+      const rows = document.querySelectorAll(".att-row");
+      const records = [];
+
+      rows.forEach(r => {
+        const id = r.getAttribute("data-id");
+        const roll = r.getAttribute("data-roll");
+        const val = r.querySelector(`input[name="att_${id}"]:checked`).value;
+        records.push({ studentId: id, rollNumber: roll, status: val });
+      });
 
       try {
-        const usersRef = collection(db, "users");
-        const q = query(
-          usersRef,
-          where("role", "==", "student"),
-          where("className", "==", targetClass),
-          where("section", "==", targetSec)
-        );
+        await addDoc(collection(db, "attendance"), {
+          date: date,
+          className: selectedClass,
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          records: records,
+          createdAt: new Date().toISOString()
+        });
+        alert("Attendance recorded successfully!");
+      } catch (e) {
+        alert("Error: " + e.message);
+      }
+    });
 
-        const querySnap = await getDocs(q);
+    // Post Homework
+    document.getElementById("form-hw").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "homework"), {
+          title: document.getElementById("hw-title").value.trim(),
+          subject: document.getElementById("hw-subject").value.trim(),
+          className: document.getElementById("hw-class").value,
+          deadline: document.getElementById("hw-deadline").value,
+          instructions: document.getElementById("hw-instructions").value.trim(),
+          link: document.getElementById("hw-link").value.trim(),
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
+          createdAt: new Date().toISOString()
+        });
+        alert("Homework published successfully!");
+        e.target.reset();
+        loadHomeworkList();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
 
-        if (querySnap.empty) {
-          tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No students found registered in Class ${targetClass} - Section ${targetSec}.</td></tr>`;
+    async function loadHomeworkList() {
+      try {
+        const q = query(collection(db, "homework"));
+        const snap = await getDocs(q);
+        const container = document.getElementById("hw-list-container");
+        document.getElementById("stat-homework").textContent = snap.size;
+
+        if (snap.empty) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No active homework posted yet.</p>`;
           return;
         }
 
-        let rowsHtml = "";
-        querySnap.forEach((doc) => {
-          const student = doc.data();
-          rowsHtml += `
-            <tr>
-              <td><strong>${student.rollNumber || "-"}</strong></td>
-              <td>${student.fullName || "-"}</td>
-              <td>${student.className || "-"}</td>
-              <td>${student.section || "-"}</td>
-              <td style="color:#6b21a8; font-family: monospace;">${student.email || "-"}</td>
-            </tr>
+        let html = "";
+        snap.forEach(docSnap => {
+          const hw = docSnap.data();
+          html += `
+            <div class="card-entry">
+              <h4>${hw.title} (${hw.subject})</h4>
+              <div class="card-meta">${hw.className} | Deadline: ${hw.deadline}</div>
+              <p class="card-desc">${hw.instructions || ""}</p>
+              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Attached Link</a>` : ""}
+            </div>
           `;
         });
-        tbody.innerHTML = rowsHtml;
+        container.innerHTML = html;
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#dc2626;">Error loading students: ${err.message}</td></tr>`;
+        console.error(err);
       }
     }
 
-    function getSelectedClassSection() {
-      return {
-        className: selectClass.value,
-        section: selectSection.value,
-        schoolName: currentTeacher ? currentTeacher.schoolName : "Default School",
-        teacherId: auth.currentUser ? auth.currentUser.uid : ""
-      };
+    // Post Materials
+    document.getElementById("form-mat").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "materials"), {
+          title: document.getElementById("mat-title").value.trim(),
+          subject: document.getElementById("mat-subject").value.trim(),
+          className: document.getElementById("mat-class").value,
+          link: document.getElementById("mat-link").value.trim(),
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          createdAt: new Date().toISOString()
+        });
+        alert("Study material published!");
+        e.target.reset();
+        loadMaterialsList();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+
+    async function loadMaterialsList() {
+      try {
+        const snap = await getDocs(collection(db, "materials"));
+        const container = document.getElementById("mat-list-container");
+
+        if (snap.empty) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No materials uploaded yet.</p>`;
+          return;
+        }
+
+        let html = "";
+        snap.forEach(docSnap => {
+          const mat = docSnap.data();
+          html += `
+            <div class="card-entry">
+              <h4>${mat.title} - ${mat.subject} (${mat.className})</h4>
+              <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Link</a>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    function setMessage(elementId, text, type) {
-      const el = document.getElementById(elementId);
-      el.textContent = text;
-      el.className = `status-msg ${type}`;
-      setTimeout(() => {
-        el.textContent = "";
-        el.className = "status-msg";
-      }, 4000);
+    // Post Notices
+    document.getElementById("form-notice").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "notices"), {
+          title: document.getElementById("notice-title").value.trim(),
+          details: document.getElementById("notice-desc").value.trim(),
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          createdAt: new Date().toISOString()
+        });
+        alert("Notice published!");
+        e.target.reset();
+        loadNoticesList();
+      } catch (e) {
+        alert("Error: " + e.message);
+      }
+    });
+
+    async function loadNoticesList() {
+      try {
+        const snap = await getDocs(collection(db, "notices"));
+        const container = document.getElementById("notice-list-container");
+        document.getElementById("stat-notices").textContent = snap.size;
+
+        if (snap.empty) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No notices posted yet.</p>`;
+          return;
+        }
+
+        let html = "";
+        snap.forEach(docSnap => {
+          const n = docSnap.data();
+          html += `
+            <div class="card-entry">
+              <h4>${n.title}</h4>
+              <p class="card-desc">${n.details}</p>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    // 1. Upload Homework
-    document.getElementById("form-homework").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const meta = getSelectedClassSection();
-      try {
-        await addDoc(collection(db, "homework"), {
-          ...meta,
-          subject: document.getElementById("hw-subject").value.trim(),
-          details: document.getElementById("hw-details").value.trim(),
-          dueDate: document.getElementById("hw-due").value,
-          createdAt: new Date().toISOString()
-        });
-        setMessage("hw-status", "Homework uploaded successfully!", "success");
-        e.target.reset();
-      } catch (err) {
-        setMessage("hw-status", err.message, "error");
-      }
-    });
-
-    // 2. Upload Assignment
-    document.getElementById("form-assignment").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const meta = getSelectedClassSection();
-      try {
-        await addDoc(collection(db, "assignments"), {
-          ...meta,
-          title: document.getElementById("as-title").value.trim(),
-          description: document.getElementById("as-desc").value.trim(),
-          resourceLink: document.getElementById("as-link").value.trim(),
-          deadline: document.getElementById("as-due").value,
-          createdAt: new Date().toISOString()
-        });
-        setMessage("as-status", "Assignment posted successfully!", "success");
-        e.target.reset();
-      } catch (err) {
-        setMessage("as-status", err.message, "error");
-      }
-    });
-
-    // 3. Save Attendance
-    document.getElementById("form-attendance").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const meta = getSelectedClassSection();
-      try {
-        await addDoc(collection(db, "attendance"), {
-          ...meta,
-          date: document.getElementById("att-date").value,
-          presentRolls: document.getElementById("att-present").value.split(",").map(s => s.trim()),
-          absentRolls: document.getElementById("att-absent").value.split(",").map(s => s.trim()),
-          createdAt: new Date().toISOString()
-        });
-        setMessage("att-status", "Attendance record saved!", "success");
-        e.target.reset();
-      } catch (err) {
-        setMessage("att-status", err.message, "error");
-      }
-    });
-
-    // 4. Upload Exam Results
-    document.getElementById("form-results").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const meta = getSelectedClassSection();
-      try {
-        await addDoc(collection(db, "exam_results"), {
-          ...meta,
-          examName: document.getElementById("res-exam-name").value.trim(),
-          subject: document.getElementById("res-subject").value.trim(),
-          rollNumber: document.getElementById("res-roll").value.trim(),
-          marksScored: Number(document.getElementById("res-marks").value),
-          totalMarks: Number(document.getElementById("res-total").value),
-          createdAt: new Date().toISOString()
-        });
-        setMessage("res-status", "Result uploaded successfully!", "success");
-        e.target.reset();
-      } catch (err) {
-        setMessage("res-status", err.message, "error");
-      }
-    });
+    async function refreshAllData() {
+      await loadStudents();
+      await loadHomeworkList();
+      await loadMaterialsList();
+      await loadNoticesList();
+    }
   </script>
 </body>
 </html>
