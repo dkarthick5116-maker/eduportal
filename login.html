@@ -149,7 +149,7 @@
       margin-bottom: 6px;
     }
 
-    .field-group input {
+    .field-group input, .field-group select {
       width: 100%;
       padding: 11px 12px;
       border: 1px solid #d1d5db;
@@ -160,7 +160,7 @@
       outline: none;
     }
 
-    .field-group input:focus {
+    .field-group input:focus, .field-group select:focus {
       border-color: #4338ca;
       background: #fff;
     }
@@ -257,6 +257,15 @@
           <input type="text" id="school-name" placeholder="e.g. GHSS Chennai" required />
         </div>
 
+        <!-- Curriculum / Board (Registration only) -->
+        <div class="field-group hidden" id="grp-curriculum">
+          <label id="lbl-curriculum" for="board-select">Curriculum / Board</label>
+          <select id="board-select">
+            <option value="State Board">Tamil Nadu State Board (Samacheer Kalvi)</option>
+            <option value="CBSE">CBSE (Central Board)</option>
+          </select>
+        </div>
+
         <!-- Class & Section (Student Register only) -->
         <div class="flex-row-fields hidden" id="grp-class-sec">
           <div class="field-group">
@@ -321,6 +330,7 @@
         teacherRegister: "Teacher Registration",
         schoolName: "School Name",
         schoolPlaceholder: "e.g. GHSS Chennai",
+        curriculumLabel: "Curriculum / Board",
         rollNumber: "Roll Number",
         rollPlaceholder: "Enter roll number",
         teacherEmail: "Email Address",
@@ -355,6 +365,7 @@
         teacherRegister: "ஆசிரியர் பதிவு",
         schoolName: "பள்ளியின் பெயர்",
         schoolPlaceholder: "எ.கா. அரசு மேல்நிலைப் பள்ளி",
+        curriculumLabel: "பாடத்திட்டம் / வாரியம்",
         rollNumber: "பதிவு எண் (Roll No)",
         rollPlaceholder: "பதிவு எண்ணை உள்ளிடவும்",
         teacherEmail: "மின்னஞ்சல் முகவரி",
@@ -398,6 +409,7 @@
     const grpStudentName = document.getElementById("grp-student-name");
     const grpTeacherName = document.getElementById("grp-teacher-name");
     const grpSchool = document.getElementById("grp-school");
+    const grpCurriculum = document.getElementById("grp-curriculum");
     const grpClassSec = document.getElementById("grp-class-sec");
     const grpRoll = document.getElementById("grp-roll");
     const grpTeacherEmail = document.getElementById("grp-teacher-email");
@@ -405,6 +417,7 @@
     const inputStudentName = document.getElementById("student-name");
     const inputTeacherName = document.getElementById("teacher-name");
     const inputSchool = document.getElementById("school-name");
+    const selectBoard = document.getElementById("board-select");
     const inputClass = document.getElementById("student-class");
     const inputSec = document.getElementById("student-sec");
     const inputRoll = document.getElementById("student-roll");
@@ -454,6 +467,7 @@
         if (isRegisterMode) {
           formHeading.textContent = t.studentRegister;
           grpStudentName.classList.remove("hidden");
+          grpCurriculum.classList.remove("hidden");
           grpClassSec.classList.remove("hidden");
           btnSubmit.textContent = t.registerBtn;
           btnToggleMode.textContent = t.toStudentLog;
@@ -461,6 +475,7 @@
         } else {
           formHeading.textContent = t.studentLogin;
           grpStudentName.classList.add("hidden");
+          grpCurriculum.classList.add("hidden");
           grpClassSec.classList.add("hidden");
           btnSubmit.textContent = t.loginBtn;
           btnToggleMode.textContent = t.toStudentReg;
@@ -483,7 +498,7 @@
           formHeading.textContent = t.teacherRegister;
           grpTeacherName.classList.remove("hidden");
           grpSchool.classList.remove("hidden");
-          inputSchool.setAttribute("required", "required");
+          grpCurriculum.classList.remove("hidden");
           btnSubmit.textContent = t.registerBtn;
           btnToggleMode.textContent = t.toTeacherLog;
           btnForgot.classList.add("hidden");
@@ -491,6 +506,7 @@
           formHeading.textContent = t.teacherLogin;
           grpTeacherName.classList.add("hidden");
           grpSchool.classList.add("hidden");
+          grpCurriculum.classList.add("hidden");
           inputSchool.removeAttribute("required");
           btnSubmit.textContent = t.loginBtn;
           btnToggleMode.textContent = t.toTeacherReg;
@@ -558,6 +574,7 @@
             const name = inputStudentName.value.trim();
             const studentClass = inputClass.value.trim();
             const sec = inputSec.value.trim();
+            const board = selectBoard.value;
 
             if (!name || !school || !studentClass || !sec || !roll) {
               showStatus(t.fillAllFields, "error");
@@ -570,6 +587,7 @@
               role: "student",
               fullName: name,
               schoolName: school,
+              board: board,
               className: studentClass,
               section: sec,
               rollNumber: roll,
@@ -585,11 +603,13 @@
             setTimeout(() => { window.location.href = "student-dashboard.html"; }, 800);
           }
         } else {
+          // Teacher Portal
           const email = inputTeacherEmail.value.trim();
 
           if (isRegisterMode) {
             const name = inputTeacherName.value.trim();
             const school = inputSchool.value.trim();
+            const board = selectBoard.value;
 
             if (!name || !email || !school) {
               showStatus(t.fillAllFields, "error");
@@ -602,6 +622,7 @@
               role: "teacher",
               fullName: name,
               schoolName: school,
+              board: board,
               email: email,
               createdAt: new Date().toISOString()
             });
@@ -643,5 +664,3 @@
   </script>
 </body>
 </html>
-
-  
