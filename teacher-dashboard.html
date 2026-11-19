@@ -309,7 +309,7 @@
 </head>
 <body>
   <div class="top-navbar">
-    <div class="brand-title">Education Portal V2.2</div>
+    <div class="brand-title" id="t-nav-title">Education Portal V2.2</div>
     <div class="lang-group">
       <button class="lang-pill active" id="btn-en">English</button>
       <button class="lang-pill" id="btn-ta">தமிழ்</button>
@@ -331,37 +331,38 @@
     <!-- 4 Stats Cards -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-title">TOTAL STUDENTS</div>
+        <div class="stat-title" id="stat-lbl-students">TOTAL STUDENTS</div>
         <div class="stat-value" id="stat-students">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title">CLASSES</div>
+        <div class="stat-title" id="stat-lbl-classes">CLASSES</div>
         <div class="stat-value" id="stat-classes">7</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title">HOMEWORK ACTIVE</div>
+        <div class="stat-title" id="stat-lbl-homework">HOMEWORK ACTIVE</div>
         <div class="stat-value" id="stat-homework">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title">ACTIVE QUIZZES</div>
+        <div class="stat-title" id="stat-lbl-quizzes">ACTIVE QUIZZES</div>
         <div class="stat-value" id="stat-quizzes">0</div>
       </div>
     </div>
 
     <!-- Navigation Tabs -->
     <div class="tabs-slider">
-      <button class="nav-tab-btn active" data-tab="tab-roster">👥 Students</button>
-      <button class="nav-tab-btn" data-tab="tab-att">📅 Attendance</button>
-      <button class="nav-tab-btn" data-tab="tab-hw">📝 Homework</button>
-      <button class="nav-tab-btn" data-tab="tab-submissions">📥 Submissions</button>
-      <button class="nav-tab-btn" data-tab="tab-quiz">🎯 Create Quiz</button>
-      <button class="nav-tab-btn" data-tab="tab-mat">📚 Materials</button>
-      <button class="nav-tab-btn" data-tab="tab-results">📊 Exam Results</button>
-      <button class="nav-tab-btn" data-tab="tab-notices">📢 Notices</button>
+      <button class="nav-tab-btn active" data-tab="tab-roster" id="t-tab-roster">👥 Students</button>
+      <button class="nav-tab-btn" data-tab="tab-att" id="t-tab-att">📅 Attendance</button>
+      <button class="nav-tab-btn" data-tab="tab-hw" id="t-tab-hw">📝 Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-submissions" id="t-tab-submissions">📥 Submissions</button>
+      <button class="nav-tab-btn" data-tab="tab-quiz" id="t-tab-quiz">🎯 Create Quiz</button>
+      <button class="nav-tab-btn" data-tab="tab-mat" id="t-tab-mat">📚 Materials</button>
+      <button class="nav-tab-btn" data-tab="tab-results" id="t-tab-results">📊 Exam Results</button>
+      <button class="nav-tab-btn" data-tab="tab-notices" id="t-tab-notices">📢 Notices</button>
     </div>
-        <!-- 1. Students Roster Tab -->
+
+    <!-- 1. Students Roster Tab -->
     <div class="panel-box" id="tab-roster">
-      <h3 class="panel-title">Student Roster</h3>
+      <h3 class="panel-title" id="p-title-roster">Student Roster</h3>
       <div class="field-box">
         <input type="text" id="roster-search" placeholder="Search by name / roll..." />
       </div>
@@ -392,11 +393,11 @@
         <table class="roster-table">
           <thead>
             <tr>
-              <th>Roll No</th>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Section</th>
-              <th>Board</th>
+              <th id="th-r-roll">Roll No</th>
+              <th id="th-r-name">Name</th>
+              <th id="th-r-class">Class</th>
+              <th id="th-r-sec">Section</th>
+              <th id="th-r-board">Board</th>
             </tr>
           </thead>
           <tbody id="roster-tbody">
@@ -408,7 +409,7 @@
 
     <!-- 2. Attendance Tab -->
     <div class="panel-box hidden" id="tab-att">
-      <h3 class="panel-title">Mark Daily Attendance</h3>
+      <h3 class="panel-title" id="p-title-att">Mark Daily Attendance</h3>
       <div class="field-box">
         <input type="date" id="att-date" />
       </div>
@@ -442,19 +443,19 @@
 
     <!-- 3. Homework Tab -->
     <div class="panel-box hidden" id="tab-hw">
-      <h3 class="panel-title">Create Homework</h3>
+      <h3 class="panel-title" id="p-title-hw">Create Homework</h3>
       <form id="form-hw">
         <div class="field-box">
-          <label>Homework Title</label>
+          <label id="lbl-hw-title">Homework Title</label>
           <input type="text" id="hw-title" placeholder="e.g. Unit 2 Exercise 2.1" required />
         </div>
         <div class="field-box">
-          <label>Subject</label>
+          <label id="lbl-hw-subject">Subject</label>
           <input type="text" id="hw-subject" placeholder="e.g. Mathematics" required />
         </div>
         <div class="flex-filter-row">
           <div class="field-box">
-            <label>Target Class</label>
+            <label id="lbl-hw-class">Target Class</label>
             <select id="hw-class">
               <option value="6">Class 6</option>
               <option value="7">Class 7</option>
@@ -466,7 +467,7 @@
             </select>
           </div>
           <div class="field-box">
-            <label>Section</label>
+            <label id="lbl-hw-sec">Section</label>
             <select id="hw-sec">
               <option value="All">All Sections</option>
               <option value="A">Section - A</option>
@@ -477,33 +478,32 @@
           </div>
         </div>
         <div class="field-box">
-          <label>Submission Deadline</label>
+          <label id="lbl-hw-deadline">Submission Deadline</label>
           <input type="date" id="hw-deadline" required />
         </div>
         <div class="field-box">
-          <label>Detailed Instructions</label>
+          <label id="lbl-hw-instructions">Detailed Instructions</label>
           <textarea id="hw-instructions" rows="3" placeholder="Write homework details or problem numbers here..."></textarea>
         </div>
         <div class="field-box">
-          <label>Resource / Assignment Link (Google Drive / Doc URL)</label>
+          <label id="lbl-hw-link">Resource / Assignment Link (Google Drive / Doc URL)</label>
           <input type="url" id="hw-link" placeholder="https://drive.google.com/..." />
         </div>
-        <button type="submit" class="btn-action-primary">Publish Homework</button>
+        <button type="submit" class="btn-action-primary" id="btn-pub-hw">Publish Homework</button>
         <div class="status-msg" id="hw-status"></div>
       </form>
       <div class="item-list-section">
-        <h4 class="sub-section-title">Active Homework List</h4>
+        <h4 class="sub-section-title" id="p-sub-active-hw">Active Homework List</h4>
         <div id="hw-list-container">
           <p style="color: #64748b; font-size: 13px;">No active homework posted yet.</p>
         </div>
       </div>
     </div>
-
-    <!-- 4. Submissions Review Tab -->
+      <!-- 4. Submissions Review Tab -->
     <div class="panel-box hidden" id="tab-submissions">
-      <h3 class="panel-title">Review Student Submissions</h3>
+      <h3 class="panel-title" id="p-title-sub">Review Student Submissions</h3>
       <div class="field-box">
-        <label>Select Homework Assignment</label>
+        <label id="lbl-sel-hw">Select Homework Assignment</label>
         <select id="submission-hw-filter">
           <option value="">Loading assignments...</option>
         </select>
@@ -512,11 +512,11 @@
         <table class="roster-table">
           <thead>
             <tr>
-              <th>Roll No</th>
-              <th>Student Name</th>
-              <th>Class/Sec</th>
-              <th>Submission</th>
-              <th>Submitted Date</th>
+              <th id="th-s-roll">Roll No</th>
+              <th id="th-s-name">Student Name</th>
+              <th id="th-s-class">Class/Sec</th>
+              <th id="th-s-sub">Submission</th>
+              <th id="th-s-date">Submitted Date</th>
             </tr>
           </thead>
           <tbody id="submission-tbody">
@@ -525,21 +525,22 @@
         </table>
       </div>
     </div>
-        <!-- 5. Create Test / Quiz Tab (0 to 100 Marks) -->
+
+    <!-- 5. Create Test / Quiz Tab (0 to 100 Marks) -->
     <div class="panel-box hidden" id="tab-quiz">
-      <h3 class="panel-title">Create Online Exam / Quiz (0–100 Marks)</h3>
+      <h3 class="panel-title" id="p-title-quiz">Create Online Exam / Quiz (0–100 Marks)</h3>
       <form id="form-quiz">
         <div class="field-box">
-          <label>Exam / Quiz Title</label>
+          <label id="lbl-q-title">Exam / Quiz Title</label>
           <input type="text" id="quiz-title" placeholder="e.g. Mid-Term Chapter 1 Test" required />
         </div>
         <div class="field-box">
-          <label>Subject</label>
+          <label id="lbl-q-subject">Subject</label>
           <input type="text" id="quiz-subject" placeholder="e.g. Science" required />
         </div>
         <div class="flex-filter-row">
           <div class="field-box">
-            <label>Target Class</label>
+            <label id="lbl-q-class">Target Class</label>
             <select id="quiz-class">
               <option value="6">Class 6</option>
               <option value="7">Class 7</option>
@@ -551,7 +552,7 @@
             </select>
           </div>
           <div class="field-box">
-            <label>Section</label>
+            <label id="lbl-q-sec">Section</label>
             <select id="quiz-sec">
               <option value="All">All Sections</option>
               <option value="A">Section - A</option>
@@ -562,11 +563,11 @@
           </div>
         </div>
         <div class="field-box">
-          <label>Total Exam Marks (0 to 100)</label>
+          <label id="lbl-q-marks">Total Exam Marks (0 to 100)</label>
           <input type="number" id="quiz-total-marks" min="1" max="100" value="100" required />
         </div>
 
-        <h4 style="margin: 16px 0 8px 0; color: #1e293b;">Questions (Add up to 5 Multiple Choice Questions)</h4>
+        <h4 style="margin: 16px 0 8px 0; color: #1e293b;" id="lbl-q-header">Questions (Multiple Choice Questions)</h4>
         <div id="questions-wrapper">
           <!-- Question 1 -->
           <div class="q-card">
@@ -580,7 +581,7 @@
               <input type="text" class="opt-c" placeholder="Option C" required />
               <input type="text" class="opt-d" placeholder="Option D" required />
             </div>
-            <label style="margin-top: 6px; font-size: 12px; display: block;">Correct Option:</label>
+            <label style="margin-top: 6px; font-size: 12px; display: block;" class="lbl-corr-opt">Correct Option:</label>
             <select class="q-ans">
               <option value="A">A</option>
               <option value="B">B</option>
@@ -600,7 +601,7 @@
               <input type="text" class="opt-c" placeholder="Option C" required />
               <input type="text" class="opt-d" placeholder="Option D" required />
             </div>
-            <label style="margin-top: 6px; font-size: 12px; display: block;">Correct Option:</label>
+            <label style="margin-top: 6px; font-size: 12px; display: block;" class="lbl-corr-opt">Correct Option:</label>
             <select class="q-ans">
               <option value="A">A</option>
               <option value="B">B</option>
@@ -610,12 +611,12 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-action-primary">Publish Test / Quiz</button>
+        <button type="submit" class="btn-action-primary" id="btn-pub-quiz">Publish Test / Quiz</button>
         <div class="status-msg" id="quiz-status"></div>
       </form>
 
       <div class="item-list-section">
-        <h4 class="sub-section-title">Active Tests & Quizzes</h4>
+        <h4 class="sub-section-title" id="p-sub-active-quiz">Active Tests & Quizzes</h4>
         <div id="quiz-list-container">
           <p style="color: #64748b; font-size: 13px;">No tests published yet.</p>
         </div>
@@ -624,19 +625,19 @@
 
     <!-- 6. Study Materials Tab -->
     <div class="panel-box hidden" id="tab-mat">
-      <h3 class="panel-title">Share Study Material / Drive Links</h3>
+      <h3 class="panel-title" id="p-title-mat">Share Study Material / Drive Links</h3>
       <form id="form-mat">
         <div class="field-box">
-          <label>Material Title</label>
+          <label id="lbl-m-title">Material Title</label>
           <input type="text" id="mat-title" placeholder="e.g. Chapter 1 Formula Sheet" required />
         </div>
         <div class="field-box">
-          <label>Subject</label>
+          <label id="lbl-m-subject">Subject</label>
           <input type="text" id="mat-subject" placeholder="e.g. Science" required />
         </div>
         <div class="flex-filter-row">
           <div class="field-box">
-            <label>Class</label>
+            <label id="lbl-m-class">Class</label>
             <select id="mat-class">
               <option value="6">Class 6</option>
               <option value="7">Class 7</option>
@@ -648,7 +649,7 @@
             </select>
           </div>
           <div class="field-box">
-            <label>Section</label>
+            <label id="lbl-m-sec">Section</label>
             <select id="mat-sec">
               <option value="All">All Sections</option>
               <option value="A">Section - A</option>
@@ -659,14 +660,14 @@
           </div>
         </div>
         <div class="field-box">
-          <label>Google Drive / Resource Link (URL)</label>
+          <label id="lbl-m-link">Google Drive / Resource Link (URL)</label>
           <input type="url" id="mat-link" placeholder="https://drive.google.com/..." required />
         </div>
-        <button type="submit" class="btn-action-primary">Upload Material</button>
+        <button type="submit" class="btn-action-primary" id="btn-pub-mat">Upload Material</button>
         <div class="status-msg" id="mat-status"></div>
       </form>
       <div class="item-list-section">
-        <h4 class="sub-section-title">Published Materials</h4>
+        <h4 class="sub-section-title" id="p-sub-active-mat">Published Materials</h4>
         <div id="mat-list-container">
           <p style="color: #64748b; font-size: 13px;">No materials uploaded yet.</p>
         </div>
@@ -675,19 +676,19 @@
 
     <!-- 7. Exam Results Tab -->
     <div class="panel-box hidden" id="tab-results">
-      <h3 class="panel-title">Upload Exam Results</h3>
+      <h3 class="panel-title" id="p-title-results">Upload Exam Results</h3>
       <form id="form-results">
         <div class="field-box">
-          <label>Exam Name</label>
+          <label id="lbl-r-exam">Exam Name</label>
           <input type="text" id="res-exam-name" placeholder="e.g. Mid-Term 1 / Quarterly Exam" required />
         </div>
         <div class="field-box">
-          <label>Subject</label>
+          <label id="lbl-r-subj">Subject</label>
           <input type="text" id="res-subject" placeholder="e.g. Science" required />
         </div>
         <div class="flex-filter-row">
           <div class="field-box">
-            <label>Class</label>
+            <label id="lbl-r-class">Class</label>
             <select id="res-class">
               <option value="6">Class 6</option>
               <option value="7">Class 7</option>
@@ -699,7 +700,7 @@
             </select>
           </div>
           <div class="field-box">
-            <label>Section</label>
+            <label id="lbl-r-sec">Section</label>
             <select id="res-sec">
               <option value="A">Section - A</option>
               <option value="B">Section - B</option>
@@ -709,47 +710,47 @@
           </div>
         </div>
         <div class="field-box">
-          <label>Student Roll Number</label>
+          <label id="lbl-r-roll">Student Roll Number</label>
           <input type="text" id="res-roll" placeholder="e.g. 1002" required />
         </div>
         <div class="flex-filter-row">
           <div class="field-box">
-            <label>Marks Scored</label>
+            <label id="lbl-r-scored">Marks Scored</label>
             <input type="number" id="res-marks" min="0" max="100" placeholder="e.g. 88" required />
           </div>
           <div class="field-box">
-            <label>Total Marks</label>
+            <label id="lbl-r-total">Total Marks</label>
             <input type="number" id="res-total" min="1" max="100" value="100" required />
           </div>
         </div>
-        <button type="submit" class="btn-action-primary">Upload Result</button>
+        <button type="submit" class="btn-action-primary" id="btn-pub-res">Upload Result</button>
         <div class="status-msg" id="res-status"></div>
       </form>
       <div class="item-list-section">
-        <h4 class="sub-section-title">Recently Uploaded Exam Results</h4>
+        <h4 class="sub-section-title" id="p-sub-active-res">Recently Uploaded Exam Results</h4>
         <div id="res-list-container">
           <p style="color: #64748b; font-size: 13px;">No results uploaded yet.</p>
         </div>
       </div>
     </div>
 
-    <!-- 8. Notices Tab (School-Wide) -->
+    <!-- 8. Notices Tab -->
     <div class="panel-box hidden" id="tab-notices">
-      <h3 class="panel-title">Post School Notice / Announcement</h3>
+      <h3 class="panel-title" id="p-title-notices">Post School Notice / Announcement</h3>
       <form id="form-notice">
         <div class="field-box">
-          <label>Notice Title</label>
+          <label id="lbl-n-title">Notice Title</label>
           <input type="text" id="notice-title" placeholder="e.g. Science Fair Submission Date" required />
         </div>
         <div class="field-box">
-          <label>Announcement Details</label>
+          <label id="lbl-n-desc">Announcement Details</label>
           <textarea id="notice-desc" rows="3" placeholder="Write notice details..." required></textarea>
         </div>
-        <button type="submit" class="btn-action-primary">Publish Notice</button>
+        <button type="submit" class="btn-action-primary" id="btn-pub-notice">Publish Notice</button>
         <div class="status-msg" id="notice-status"></div>
       </form>
       <div class="item-list-section">
-        <h4 class="sub-section-title">Notice Board History</h4>
+        <h4 class="sub-section-title" id="p-sub-active-notices">Notice Board History</h4>
         <div id="notice-list-container">
           <p style="color: #64748b; font-size: 13px;">No notices posted yet.</p>
         </div>
@@ -772,6 +773,176 @@
     let currentTeacher = null;
     let cachedStudents = [];
     let cachedHomework = [];
+    let currentLang = "en";
+
+    const tDict = {
+      en: {
+        navTitle: "Education Portal V2.2",
+        logout: "Logout",
+        statStudents: "TOTAL STUDENTS",
+        statClasses: "CLASSES",
+        statHw: "HOMEWORK ACTIVE",
+        statQuiz: "ACTIVE QUIZZES",
+        tabRoster: "👥 Students",
+        tabAtt: "📅 Attendance",
+        tabHw: "📝 Homework",
+        tabSub: "📥 Submissions",
+        tabQuiz: "🎯 Create Quiz",
+        tabMat: "📚 Materials",
+        tabResults: "📊 Exam Results",
+        tabNotices: "📢 Notices",
+        pTitleRoster: "Student Roster",
+        pTitleAtt: "Mark Daily Attendance",
+        pTitleHw: "Create Homework",
+        pTitleSub: "Review Student Submissions",
+        pTitleQuiz: "Create Online Exam / Quiz (0–100 Marks)",
+        pTitleMat: "Share Study Material / Drive Links",
+        pTitleResults: "Upload Exam Results",
+        pTitleNotices: "Post School Notice / Announcement",
+        saveAttBtn: "Save Attendance",
+        pubHwBtn: "Publish Homework",
+        pubQuizBtn: "Publish Test / Quiz",
+        pubMatBtn: "Upload Material",
+        pubResBtn: "Upload Result",
+        pubNoticeBtn: "Publish Notice",
+        viewSubBtn: "View Submissions",
+        viewLink: "🔗 View Attached Link",
+        openDriveLink: "🔗 Open Drive Link",
+        deadlineWord: "Deadline:",
+        scoreWord: "Score:",
+        subActiveHw: "Active Homework List",
+        subActiveQuiz: "Active Tests & Quizzes",
+        subActiveMat: "Published Materials",
+        subActiveRes: "Recently Uploaded Exam Results",
+        subActiveNotices: "Notice Board History",
+        noStudentsFound: "No students found for this class and section.",
+        noAttStudents: "No students registered in this class and section.",
+        noHwPosted: "No active homework posted yet.",
+        noSubReceived: "No submissions received for this homework yet.",
+        noQuizPosted: "No tests published yet.",
+        noMatPosted: "No materials uploaded yet.",
+        noResPosted: "No results uploaded yet.",
+        noNoticesPosted: "No notices posted yet."
+      },
+      ta: {
+        navTitle: "கல்வி தளம் பதிப்பு 2.2",
+        logout: "வெளியேறு",
+        statStudents: "மொத்த மாணவர்கள்",
+        statClasses: "வகுப்புகள்",
+        statHw: "செயலில் உள்ள வீட்டுப்பாடம்",
+        statQuiz: "செயலில் உள்ள தேர்வுகள்",
+        tabRoster: "👥 மாணவர்கள்",
+        tabAtt: "📅 வருகைப் பதிவு",
+        tabHw: "📝 வீட்டுப்பாடம்",
+        tabSub: "📥 சமர்ப்பிப்புகள்",
+        tabQuiz: "🎯 தேர்வு உருவாக்கு",
+        tabMat: "📚 பாடக் குறிப்புகள்",
+        tabResults: "📊 தேர்வு முடிவுகள்",
+        tabNotices: "📢 அறிவிப்புகள்",
+        pTitleRoster: "மாணவர் பட்டியல்",
+        pTitleAtt: "தினசரி வருகைப் பதிவு குறிக்க",
+        pTitleHw: "வீட்டுப்பாடம் உருவாக்கு",
+        pTitleSub: "மாணவர் சமர்ப்பிப்புகளை மதிப்பாய்வு செய்",
+        pTitleQuiz: "ஆன்லைன் தேர்வு / வினாடி வினா உருவாக்கு (0–100 மதிப்பெண்கள்)",
+        pTitleMat: "பாடக் குறிப்பு / கூகுள் டிரைவ் பகிர்",
+        pTitleResults: "தேர்வு மதிப்பெண்களை பதிவேற்று",
+        pTitleNotices: "பள்ளி அறிவிப்பை வெளியிடு",
+        saveAttBtn: "வருகைப் பதிவைச் சேமி",
+        pubHwBtn: "வீட்டுப்பாடத்தை வெளியிடு",
+        pubQuizBtn: "தேர்வை வெளியிடு",
+        pubMatBtn: "பாடக் குறிப்பை பதிவேற்று",
+        pubResBtn: "முடிவை பதிவேற்று",
+        pubNoticeBtn: "அறிவிப்பை வெளியிடு",
+        viewSubBtn: "சமர்ப்பிப்புகளை பார்க்க",
+        viewLink: "🔗 இணைப்பை பார்க்கவும்",
+        openDriveLink: "🔗 டிரைவ் இணைப்பை திறக்கவும்",
+        deadlineWord: "கடைசி நாள்:",
+        scoreWord: "மதிப்பெண்:",
+        subActiveHw: "செயலில் உள்ள வீட்டுப்பாடங்கள்",
+        subActiveQuiz: "செயலில் உள்ள தேர்வுகள்",
+        subActiveMat: "வெளியிடப்பட்ட பாடக் குறிப்புகள்",
+        subActiveRes: "சமீபத்திய தேர்வு முடிவுகள்",
+        subActiveNotices: "அறிவிப்புப் பலகை வரலாறு",
+        noStudentsFound: "இந்த வகுப்பு மற்றும் பிரிவிற்கு மாணவர்கள் யாரும் இல்லை.",
+        noAttStudents: "இந்த வகுப்பு மற்றும் பிரிவில் மாணவர்கள் பதிவு செய்யப்படவில்லை.",
+        noHwPosted: "வீட்டுப்பாடங்கள் எதுவும் வெளியிடப்படவில்லை.",
+        noSubReceived: "இந்த வீட்டுப்பாடத்திற்கு இன்னும் எந்த சமர்ப்பிப்பும் வரவில்லை.",
+        noQuizPosted: "தேர்வுகள் எதுவும் வெளியிடப்படவில்லை.",
+        noMatPosted: "பாடக் குறிப்புகள் எதுவும் பதிவேற்றப்படவில்லை.",
+        noResPosted: "தேர்வு முடிவுகள் எதுவும் இல்லை.",
+        noNoticesPosted: "அறிவிப்புகள் எதுவும் இல்லை."
+      }
+    };
+
+    function applyTeacherTranslations() {
+      const t = tDict[currentLang];
+      document.getElementById("t-nav-title").textContent = t.navTitle;
+      document.getElementById("btn-logout").textContent = t.logout;
+
+      document.getElementById("stat-lbl-students").textContent = t.statStudents;
+      document.getElementById("stat-lbl-classes").textContent = t.statClasses;
+      document.getElementById("stat-lbl-homework").textContent = t.statHw;
+      document.getElementById("stat-lbl-quizzes").textContent = t.statQuiz;
+
+      document.getElementById("t-tab-roster").textContent = t.tabRoster;
+      document.getElementById("t-tab-att").textContent = t.tabAtt;
+      document.getElementById("t-tab-hw").textContent = t.tabHw;
+      document.getElementById("t-tab-submissions").textContent = t.tabSub;
+      document.getElementById("t-tab-quiz").textContent = t.tabQuiz;
+      document.getElementById("t-tab-mat").textContent = t.tabMat;
+      document.getElementById("t-tab-results").textContent = t.tabResults;
+      document.getElementById("t-tab-notices").textContent = t.tabNotices;
+
+      document.getElementById("p-title-roster").textContent = t.pTitleRoster;
+      document.getElementById("p-title-att").textContent = t.pTitleAtt;
+      document.getElementById("p-title-hw").textContent = t.pTitleHw;
+      document.getElementById("p-title-sub").textContent = t.pTitleSub;
+      document.getElementById("p-title-quiz").textContent = t.pTitleQuiz;
+      document.getElementById("p-title-mat").textContent = t.pTitleMat;
+      document.getElementById("p-title-results").textContent = t.pTitleResults;
+      document.getElementById("p-title-notices").textContent = t.pTitleNotices;
+
+      document.getElementById("btn-save-attendance").textContent = t.saveAttBtn;
+      document.getElementById("btn-pub-hw").textContent = t.pubHwBtn;
+      document.getElementById("btn-pub-quiz").textContent = t.pubQuizBtn;
+      document.getElementById("btn-pub-mat").textContent = t.pubMatBtn;
+      document.getElementById("btn-pub-res").textContent = t.pubResBtn;
+      document.getElementById("btn-pub-notice").textContent = t.pubNoticeBtn;
+
+      document.getElementById("p-sub-active-hw").textContent = t.subActiveHw;
+      document.getElementById("p-sub-active-quiz").textContent = t.subActiveQuiz;
+      document.getElementById("p-sub-active-mat").textContent = t.subActiveMat;
+      document.getElementById("p-sub-active-res").textContent = t.subActiveRes;
+      document.getElementById("p-sub-active-notices").textContent = t.subActiveNotices;
+    }
+
+    document.getElementById("btn-en").addEventListener("click", () => {
+      currentLang = "en";
+      document.getElementById("btn-en").classList.add("active");
+      document.getElementById("btn-ta").classList.remove("active");
+      applyTeacherTranslations();
+      renderRoster();
+      renderAttendanceList();
+      loadHomeworkList();
+      loadQuizList();
+      loadMaterialsList();
+      loadResultsList();
+      loadNoticesList();
+    });
+
+    document.getElementById("btn-ta").addEventListener("click", () => {
+      currentLang = "ta";
+      document.getElementById("btn-ta").classList.add("active");
+      document.getElementById("btn-en").classList.remove("active");
+      applyTeacherTranslations();
+      renderRoster();
+      renderAttendanceList();
+      loadHomeworkList();
+      loadQuizList();
+      loadMaterialsList();
+      loadResultsList();
+      loadNoticesList();
+    });
 
     document.getElementById("att-date").value = new Date().toISOString().split("T")[0];
 
@@ -787,6 +958,7 @@
             document.getElementById("teacher-name").textContent = currentTeacher.fullName || "Teacher";
             document.getElementById("school-name").textContent = currentTeacher.schoolName || "EduPortal School";
           }
+          applyTeacherTranslations();
           await refreshAllData();
         } catch (e) {
           console.error("Profile fetch error", e);
@@ -799,7 +971,6 @@
       window.location.href = "login.html";
     });
 
-    // Tab Navigation Switching
     const tabBtns = document.querySelectorAll(".nav-tab-btn");
     const panels = document.querySelectorAll(".panel-box");
 
@@ -821,8 +992,7 @@
     function normalizeVal(val) {
       return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
     }
-
-    // 1. Load All Students
+          // 1. Load All Students
     async function loadStudents() {
       try {
         const q = query(collection(db, "users"), where("role", "==", "student"));
@@ -841,6 +1011,7 @@
     }
 
     function renderRoster() {
+      const t = tDict[currentLang];
       const search = document.getElementById("roster-search").value.toLowerCase();
       const classFilter = document.getElementById("roster-class-filter").value;
       const secFilter = document.getElementById("roster-sec-filter").value;
@@ -863,7 +1034,7 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No students found for this class and section.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">${t.noStudentsFound}</td></tr>`;
         return;
       }
 
@@ -888,6 +1059,7 @@
 
     // 2. Attendance Filter
     function renderAttendanceList() {
+      const t = tDict[currentLang];
       const selectedClass = normalizeVal(document.getElementById("att-class-select").value);
       const selectedSec = document.getElementById("att-sec-select").value.trim().toUpperCase();
       const container = document.getElementById("att-student-list");
@@ -899,7 +1071,7 @@
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No students registered in Class ${document.getElementById("att-class-select").value} - Section ${selectedSec}.</p>`;
+        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noAttStudents}</p>`;
         return;
       }
 
@@ -945,7 +1117,7 @@
           records: records,
           createdAt: new Date().toISOString()
         });
-        alert("Attendance recorded successfully!");
+        alert(currentLang === "ta" ? "வருகைப் பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது!" : "Attendance recorded successfully!");
       } catch (e) {
         alert("Error: " + e.message);
       }
@@ -967,7 +1139,7 @@
           teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
           createdAt: new Date().toISOString()
         });
-        alert("Homework published successfully!");
+        alert(currentLang === "ta" ? "வீட்டுப்பாடம் வெற்றிகரமாக வெளியிடப்பட்டது!" : "Homework published successfully!");
         e.target.reset();
         await loadHomeworkList();
       } catch (err) {
@@ -976,6 +1148,7 @@
     });
 
     async function loadHomeworkList() {
+      const t = tDict[currentLang];
       try {
         const q = query(collection(db, "homework"));
         const snap = await getDocs(q);
@@ -990,11 +1163,11 @@
         document.getElementById("stat-homework").textContent = cachedHomework.length;
 
         hwFilterSelect.innerHTML = cachedHomework.length === 0
-          ? `<option value="">No homework posted yet</option>`
+          ? `<option value="">${t.noHwPosted}</option>`
           : cachedHomework.map(h => `<option value="${h.id}">${h.title} (Class ${h.className} - Sec ${h.section || "All"})</option>`).join("");
 
         if (cachedHomework.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No active homework posted yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noHwPosted}</p>`;
           return;
         }
 
@@ -1003,10 +1176,10 @@
           html += `
             <div class="card-entry">
               <h4>${hw.title} (${hw.subject})</h4>
-              <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | Deadline: ${hw.deadline}</div>
+              <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | ${t.deadlineWord} ${hw.deadline}</div>
               <p class="card-desc">${hw.instructions || ""}</p>
-              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Attached Link</a><br/>` : ""}
-              <button class="btn-review-hw" data-id="${hw.id}">View Submissions</button>
+              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">${t.viewLink}</a><br/>` : ""}
+              <button class="btn-review-hw" data-id="${hw.id}">${t.viewSubBtn}</button>
             </div>
           `;
         });
@@ -1026,22 +1199,21 @@
 
     // 4. Submissions Review
     async function loadSubmissions() {
+      const t = tDict[currentLang];
       const hwId = document.getElementById("submission-hw-filter").value;
       const tbody = document.getElementById("submission-tbody");
 
       if (!hwId) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No homework selected.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">${t.noHwPosted}</td></tr>`;
         return;
       }
-
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Loading student submissions...</td></tr>`;
 
       try {
         const q = query(collection(db, "homework_submissions"), where("homeworkId", "==", hwId));
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No submissions received for this homework yet.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">${t.noSubReceived}</td></tr>`;
           return;
         }
 
@@ -1050,7 +1222,7 @@
           const sub = docSnap.data();
           const isLink = sub.answer && (sub.answer.startsWith("http://") || sub.answer.startsWith("https://"));
           const answerDisplay = isLink 
-            ? `<a href="${sub.answer}" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: underline;">🔗 View Drive / Link</a>`
+            ? `<a href="${sub.answer}" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: underline;">${t.openDriveLink}</a>`
             : sub.answer;
           const dateStr = sub.submittedAt ? new Date(sub.submittedAt).toLocaleDateString() : "-";
 
@@ -1072,7 +1244,7 @@
 
     document.getElementById("submission-hw-filter").addEventListener("change", loadSubmissions);
 
-    // 5. Create Test / Quiz (0 to 100 Marks)
+    // 5. Create Test / Quiz
     document.getElementById("form-quiz").addEventListener("submit", async (e) => {
       e.preventDefault();
       const qCards = document.querySelectorAll(".q-card");
@@ -1105,22 +1277,23 @@
           teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
           createdAt: new Date().toISOString()
         });
-        alert("Online Quiz/Exam published successfully!");
+        alert(currentLang === "ta" ? "ஆன்லைன் தேர்வு வெற்றிகரமாக வெளியிடப்பட்டது!" : "Online Quiz/Exam published successfully!");
         e.target.reset();
         await loadQuizList();
       } catch (err) {
-        alert("Error creating quiz: " + err.message);
+        alert("Error: " + err.message);
       }
     });
 
     async function loadQuizList() {
+      const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "quizzes"));
         const container = document.getElementById("quiz-list-container");
         document.getElementById("stat-quizzes").textContent = snap.size;
 
         if (snap.empty) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No tests published yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQuizPosted}</p>`;
           return;
         }
 
@@ -1154,7 +1327,7 @@
           schoolName: currentTeacher ? currentTeacher.schoolName : "",
           createdAt: new Date().toISOString()
         });
-        alert("Study material published!");
+        alert(currentLang === "ta" ? "பாடக் குறிப்பு வெற்றிகரமாக வெளியிடப்பட்டது!" : "Study material published!");
         e.target.reset();
         loadMaterialsList();
       } catch (err) {
@@ -1163,12 +1336,13 @@
     });
 
     async function loadMaterialsList() {
+      const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "materials"));
         const container = document.getElementById("mat-list-container");
 
         if (snap.empty) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No materials uploaded yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noMatPosted}</p>`;
           return;
         }
 
@@ -1179,7 +1353,7 @@
             <div class="card-entry">
               <h4>${mat.title} - ${mat.subject}</h4>
               <div class="card-meta">Class ${mat.className} - Section ${mat.section || "All"}</div>
-              <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Link</a>
+              <a class="link-attach" href="${mat.link}" target="_blank">${t.openDriveLink}</a>
             </div>
           `;
         });
@@ -1189,7 +1363,7 @@
       }
     }
 
-    // 7. Upload Exam Results (Marks 0 to 100)
+    // 7. Upload Exam Results
     document.getElementById("form-results").addEventListener("submit", async (e) => {
       e.preventDefault();
       const scored = Math.min(100, Math.max(0, Number(document.getElementById("res-marks").value)));
@@ -1207,7 +1381,7 @@
           schoolName: currentTeacher ? currentTeacher.schoolName : "",
           createdAt: new Date().toISOString()
         });
-        alert("Exam result uploaded successfully!");
+        alert(currentLang === "ta" ? "தேர்வு முடிவு வெற்றிகரமாக பதிவேற்றப்பட்டது!" : "Exam result uploaded successfully!");
         e.target.reset();
         loadResultsList();
       } catch (err) {
@@ -1216,12 +1390,13 @@
     });
 
     async function loadResultsList() {
+      const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "exam_results"));
         const container = document.getElementById("res-list-container");
 
         if (snap.empty) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No results uploaded yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noResPosted}</p>`;
           return;
         }
 
@@ -1232,7 +1407,7 @@
             <div class="card-entry">
               <h4>${r.examName} - ${r.subject}</h4>
               <div class="card-meta">Class ${r.className} - Section ${r.section} | Roll No: ${r.rollNumber}</div>
-              <p class="card-desc"><strong>Score:</strong> ${r.marksScored} / ${r.totalMarks}</p>
+              <p class="card-desc"><strong>${t.scoreWord}</strong> ${r.marksScored} / ${r.totalMarks}</p>
             </div>
           `;
         });
@@ -1252,7 +1427,7 @@
           schoolName: currentTeacher ? currentTeacher.schoolName : "",
           createdAt: new Date().toISOString()
         });
-        alert("Notice published!");
+        alert(currentLang === "ta" ? "அறிவிப்பு வெளியிடப்பட்டது!" : "Notice published!");
         e.target.reset();
         loadNoticesList();
       } catch (e) {
@@ -1261,16 +1436,18 @@
     });
 
     async function loadNoticesList() {
+      const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "notices"));
         const container = document.getElementById("notice-list-container");
         document.getElementById("stat-notices").textContent = snap.size;
 
         if (snap.empty) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No notices posted yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noNoticesPosted}</p>`;
           return;
         }
-          let html = "";
+
+        let html = "";
         snap.forEach(docSnap => {
           const n = docSnap.data();
           html += `
@@ -1297,4 +1474,3 @@
   </script>
 </body>
 </html>
-        
