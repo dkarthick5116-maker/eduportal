@@ -10,13 +10,14 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Global Cache & State
+// Global State
 let currentTeacher = null;
 let cachedStudents = [];
 let cachedHomework = [];
 let cachedQPs = [];
 let currentLang = "en";
 let qpFormatMode = "type";
+let currentSubmissionType = "exam"; // "exam" or "hw"
 
 // Translation Dictionary
 const tDict = {
@@ -32,6 +33,7 @@ const tDict = {
     noQp: "No question papers published yet.",
     noHw: "No homework posted yet.",
     noSub: "No submissions yet.",
+    noExamSub: "No students have submitted answers for this exam yet.",
     noMat: "No study materials posted.",
     noResults: "No results recorded.",
     noNotices: "No notices posted."
@@ -48,20 +50,20 @@ const tDict = {
     noQp: "வினாத்தாள்கள் எதுவும் இல்லை.",
     noHw: "வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
     noSub: "சமர்ப்பிப்புகள் எதுவும் இல்லை.",
+    noExamSub: "இந்தத் தேர்விற்கு எந்த மாணவரும் விடை சமர்ப்பிக்கவில்லை.",
     noMat: "பாடக் குறிப்புகள் எதுவும் இல்லை.",
     noResults: "தேர்வு முடிவுகள் எதுவும் இல்லை.",
     noNotices: "அறிவிப்புகள் எதுவும் இல்லை."
   }
 };
 
-// Immediate DOM Setup
 document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   setupLanguage();
   setupExamToggles();
 });
 
-// Instant Responsive Tab Switcher
+// Tab Switcher and Submission Mode Toggle
 function setupTabs() {
   const tabBtns = document.querySelectorAll(".nav-tab-btn");
   const panels = document.querySelectorAll(".panel-box");
@@ -80,13 +82,42 @@ function setupTabs() {
       }
 
       if (targetId === "tab-submissions") {
-        loadSubmissions();
+        if (currentSubmissionType === "exam") {
+          loadExamSubmissions();
+        } else {
+          loadSubmissions();
+        }
       }
     });
   });
+
+  // Toggle between Exam Answers and Homework Answers in Submissions tab
+  const btnSubExam = document.getElementById("btn-sub-type-exam");
+  const btnSubHw = document.getElementById("btn-sub-type-hw");
+  const boxFilterExam = document.getElementById("box-filter-exam");
+  const boxFilterHw = document.getElementById("box-filter-hw");
+
+  if (btnSubExam && btnSubHw) {
+    btnSubExam.addEventListener("click", () => {
+      currentSubmissionType = "exam";
+      btnSubExam.classList.add("active");
+      btnSubHw.classList.remove("active");
+      if (boxFilterExam) boxFilterExam.classList.remove("hidden");
+      if (boxFilterHw) boxFilterHw.classList.add("hidden");
+      loadExamSubmissions();
+    });
+
+    btnSubHw.addEventListener("click", () => {
+      currentSubmissionType = "hw";
+      btnSubHw.classList.add("active");
+      btnSubExam.classList.remove("active");
+      if (boxFilterHw) boxFilterHw.classList.remove("hidden");
+      if (boxFilterExam) boxFilterExam.classList.add("hidden");
+      loadSubmissions();
+    });
+  }
 }
 
-// Question Paper Mode Toggle (Type vs Drive Upload)
 function setupExamToggles() {
   const btnType = document.getElementById("btn-mode-type");
   const btnUpload = document.getElementById("btn-mode-upload");
@@ -120,7 +151,6 @@ function setupExamToggles() {
   }
 }
 
-// Language Toggle Setup
 function setupLanguage() {
   const btnEn = document.getElementById("btn-en");
   const btnTa = document.getElementById("btn-ta");
@@ -147,8 +177,8 @@ function setupLanguage() {
 function safeText(id, txt) {
   const el = document.getElementById(id);
   if (el) el.textContent = txt;
-}
-// Authentication & Initial Profile Load
+    }
+// Auth Check & Profile Setup
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -165,12 +195,10 @@ onAuthStateChanged(auth, async (user) => {
   } catch (err) {
     console.error("Auth profile error:", err);
   } finally {
-    // Refresh all data regardless of profile retrieval errors
     refreshAllData();
   }
 });
 
-// Logout Handler
 const btnLogout = document.getElementById("btn-logout");
 if (btnLogout) {
   btnLogout.addEventListener("click", async () => {
@@ -179,7 +207,7 @@ if (btnLogout) {
   });
 }
 
-// Data Hydration Pipeline
+// Data Hydration
 async function refreshAllData() {
   await Promise.allSettled([
     loadStudents(),
@@ -312,7 +340,7 @@ document.getElementById("btn-save-attendance")?.addEventListener("click", async 
     alert("Error: " + err.message);
   }
 });
-// 3. EXAM QUESTION PAPERS
+     // 3. EXAM QUESTION PAPERS
 document.getElementById("form-qp")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const qpType = document.getElementById("qp-exam-type").value;
@@ -364,11 +392,19 @@ document.getElementById("form-qp")?.addEventListener("submit", async (e) => {
 
 async function loadQuestionPapers() {
   const container = document.getElementById("qp-list-container");
+  const examFilter = document.getElementById("submission-exam-filter");
   try {
     const snap = await getDocs(collection(db, "question_papers"));
     cachedQPs = [];
     snap.forEach((d) => cachedQPs.push({ id: d.id, ...d.data() }));
     safeText("stat-exams", cachedQPs.length);
+
+    // Populate Exam selection dropdown in Submissions tab
+    if (examFilter) {
+      examFilter.innerHTML = cachedQPs.length === 0
+        ? `<option value="">No exam papers published</option>`
+        : cachedQPs.map((qp) => `<option value="${qp.id}">${qp.examName} - ${qp.subject} (Class ${qp.className})</option>`).join("");
+    }
 
     if (!container) return;
     if (cachedQPs.length === 0) {
@@ -390,7 +426,56 @@ async function loadQuestionPapers() {
   }
 }
 
-// 4. HOMEWORK MANAGEMENT
+// 4. EXAM SUBMISSIONS LOADER (Shows Student Answers for Exams)
+async function loadExamSubmissions() {
+  const tbody = document.getElementById("submission-tbody");
+  const qpId = document.getElementById("submission-exam-filter")?.value;
+  if (!tbody) return;
+
+  if (!qpId) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#64748b;">No exam paper selected.</td></tr>`;
+    return;
+  }
+
+  try {
+    const q = query(collection(db, "exam_submissions"), where("questionPaperId", "==", qpId));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#64748b;">${tDict[currentLang].noExamSub}</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = snap.docs.map((docSnap) => {
+      const sub = docSnap.data();
+      const writtenText = sub.writtenAnswers 
+        ? `<div style="white-space:pre-wrap; max-width:250px; background:#f8fafc; padding:6px; border-radius:4px; font-size:12px; margin-bottom:4px; border:1px solid #e2e8f0;">${sub.writtenAnswers}</div>` 
+        : "";
+      const driveLink = sub.driveLink 
+        ? `<div><a href="${sub.driveLink}" target="_blank" style="color:#2563eb; font-weight:600; text-decoration:underline;">🔗 Open Drive Answer Sheet</a></div>` 
+        : "";
+      const dateStr = sub.submittedAt ? new Date(sub.submittedAt).toLocaleDateString() : "-";
+
+      return `
+        <tr>
+          <td><strong>${sub.rollNumber || "-"}</strong></td>
+          <td>${sub.studentName || "-"}</td>
+          <td>Class ${sub.className} - ${sub.section}</td>
+          <td>
+            ${writtenText}
+            ${driveLink}
+          </td>
+          <td>${dateStr}</td>
+        </tr>
+      `;
+    }).join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;">Error: ${err.message}</td></tr>`;
+  }
+}
+
+document.getElementById("submission-exam-filter")?.addEventListener("change", loadExamSubmissions);
+// 5. HOMEWORK & HOMEWORK SUBMISSIONS
 document.getElementById("form-hw")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   try {
@@ -448,7 +533,7 @@ async function loadHomeworkList() {
     console.error("Error loading homework:", err);
   }
 }
-// 5. SUBMISSIONS REVIEW
+
 async function loadSubmissions() {
   const tbody = document.getElementById("submission-tbody");
   const hwId = document.getElementById("submission-hw-filter")?.value;
@@ -629,3 +714,4 @@ async function loadNoticesList() {
     console.error("Error loading notices:", err);
   }
 }
+
