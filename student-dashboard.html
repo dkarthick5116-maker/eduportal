@@ -256,7 +256,7 @@
 </head>
 <body>
   <div class="top-navbar">
-    <div class="brand-title">Education Portal V2.2</div>
+    <div class="brand-title" id="nav-title">Education Portal V2.2</div>
     <div class="lang-group">
       <button class="lang-pill active" id="btn-en">English</button>
       <button class="lang-pill" id="btn-ta">தமிழ்</button>
@@ -278,16 +278,16 @@
 
     <!-- Navigation Tabs -->
     <div class="tabs-slider">
-      <button class="nav-tab-btn active" data-tab="tab-my-hw">📝 My Homework</button>
-      <button class="nav-tab-btn" data-tab="tab-online-quiz">🎯 Take Quiz / Exam</button>
-      <button class="nav-tab-btn" data-tab="tab-my-mat">📚 Study Notes</button>
-      <button class="nav-tab-btn" data-tab="tab-my-notices">📢 Notices</button>
-      <button class="nav-tab-btn" data-tab="tab-my-results">📊 Report Card</button>
+      <button class="nav-tab-btn active" data-tab="tab-my-hw" id="tab-btn-hw">📝 My Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-online-quiz" id="tab-btn-quiz">🎯 Take Quiz / Exam</button>
+      <button class="nav-tab-btn" data-tab="tab-my-mat" id="tab-btn-mat">📚 Study Notes</button>
+      <button class="nav-tab-btn" data-tab="tab-my-notices" id="tab-btn-notices">📢 Notices</button>
+      <button class="nav-tab-btn" data-tab="tab-my-results" id="tab-btn-results">📊 Report Card</button>
     </div>
 
     <!-- 1. My Homework -->
     <div class="panel-box" id="tab-my-hw">
-      <h3 class="panel-title">Assigned Homework</h3>
+      <h3 class="panel-title" id="title-my-hw">Assigned Homework</h3>
       <div id="hw-container">
         <p style="color: #64748b; font-size: 13px;">Loading homework...</p>
       </div>
@@ -295,7 +295,7 @@
 
     <!-- 2. Take Quiz / Exam -->
     <div class="panel-box hidden" id="tab-online-quiz">
-      <h3 class="panel-title">Active Online Tests & Quizzes</h3>
+      <h3 class="panel-title" id="title-online-quiz">Active Online Tests & Quizzes</h3>
       <div id="quiz-container">
         <p style="color: #64748b; font-size: 13px;">Loading available tests...</p>
       </div>
@@ -303,7 +303,7 @@
 
     <!-- 3. Study Notes -->
     <div class="panel-box hidden" id="tab-my-mat">
-      <h3 class="panel-title">Class Study Notes</h3>
+      <h3 class="panel-title" id="title-my-mat">Class Study Notes</h3>
       <div id="mat-container">
         <p style="color: #64748b; font-size: 13px;">Loading study notes...</p>
       </div>
@@ -311,7 +311,7 @@
 
     <!-- 4. Notices -->
     <div class="panel-box hidden" id="tab-my-notices">
-      <h3 class="panel-title">School Notice Board</h3>
+      <h3 class="panel-title" id="title-my-notices">School Notice Board</h3>
       <div id="notices-container">
         <p style="color: #64748b; font-size: 13px;">Loading notices...</p>
       </div>
@@ -319,15 +319,15 @@
 
     <!-- 5. Report Card -->
     <div class="panel-box hidden" id="tab-my-results">
-      <h3 class="panel-title">My Exam & Quiz Scores</h3>
+      <h3 class="panel-title" id="title-my-results">My Exam & Quiz Scores</h3>
       <div class="table-responsive">
         <table class="results-table">
           <thead>
             <tr>
-              <th>Exam Name</th>
-              <th>Subject</th>
-              <th>Score</th>
-              <th>Total</th>
+              <th id="th-exam-name">Exam Name</th>
+              <th id="th-subject">Subject</th>
+              <th id="th-score">Score</th>
+              <th id="th-total">Total</th>
             </tr>
           </thead>
           <tbody id="results-tbody">
@@ -351,6 +351,126 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let currentStudent = null;
+    let currentLang = "en";
+
+    const dict = {
+      en: {
+        navTitle: "Education Portal V2.2",
+        logout: "Logout",
+        tabHw: "📝 My Homework",
+        tabQuiz: "🎯 Take Quiz / Exam",
+        tabMat: "📚 Study Notes",
+        tabNotices: "📢 Notices",
+        tabResults: "📊 Report Card",
+        titleHw: "Assigned Homework",
+        titleQuiz: "Active Online Tests & Quizzes",
+        titleMat: "Class Study Notes",
+        titleNotices: "School Notice Board",
+        titleResults: "My Exam & Quiz Scores",
+        thExamName: "Exam Name",
+        thSubject: "Subject",
+        thScore: "Score",
+        thTotal: "Total",
+        loadingHw: "Loading homework...",
+        loadingQuiz: "Loading available tests...",
+        loadingMat: "Loading study notes...",
+        loadingNotices: "Loading notices...",
+        loadingResults: "Loading exam marks...",
+        noHw: "No homework assigned for your class and section right now.",
+        noQuiz: "No active tests or quizzes assigned for your class and section.",
+        noMat: "No study materials posted for your class and section yet.",
+        noNotices: "No announcements posted on the notice board.",
+        noResults: "No exam or quiz records found yet.",
+        deadlinePrefix: "Deadline:",
+        viewResource: "🔗 View Assignment Resource",
+        viewDriveMat: "🔗 Open Drive Study Material",
+        submitHwBtn: "Submit",
+        submitExamBtn: "Submit Exam Answers",
+        hwPlaceholder: "Paste your answer or Google Drive link...",
+        hwSuccessAlert: "Homework submitted successfully!",
+        hwEnterAnswerAlert: "Please enter an answer or drive link first.",
+        examScoreText: "Test Completed! Your Score:",
+        questionsWord: "Questions",
+        totalMarksWord: "Total Marks"
+      },
+      ta: {
+        navTitle: "கல்வி தளம் பதிப்பு 2.2",
+        logout: "வெளியேறு",
+        tabHw: "📝 என் வீட்டுப்பாடம்",
+        tabQuiz: "🎯 தேர்வு / வினாடி வினா",
+        tabMat: "📚 பாடக் குறிப்புகள்",
+        tabNotices: "📢 அறிவிப்புகள்",
+        tabResults: "📊 மதிப்பெண் அட்டை",
+        titleHw: "வழங்கப்பட்ட வீட்டுப்பாடங்கள்",
+        titleQuiz: "செயலில் உள்ள தேர்வுகள் / வினாடி வினாக்கள்",
+        titleMat: "வகுப்பு பாடக் குறிப்புகள்",
+        titleNotices: "பள்ளி அறிவிப்புப் பலகை",
+        titleResults: "என் தேர்வு மதிப்பெண்கள்",
+        thExamName: "தேர்வு பெயர்",
+        thSubject: "பாடம்",
+        thScore: "மதிப்பெண்",
+        thTotal: "மொத்தம்",
+        loadingHw: "வீட்டுப்பாடங்கள் ஏற்றப்படுகின்றன...",
+        loadingQuiz: "தேர்வுகள் ஏற்றப்படுகின்றன...",
+        loadingMat: "பாடக் குறிப்புகள் ஏற்றப்படுகின்றன...",
+        loadingNotices: "அறிவிப்புகள் ஏற்றப்படுகின்றன...",
+        loadingResults: "மதிப்பெண்கள் ஏற்றப்படுகின்றன...",
+        noHw: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
+        noQuiz: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு தேர்வுகள் எதுவும் இல்லை.",
+        noMat: "உங்கள் வகுப்புக்கான பாடக் குறிப்புகள் எதுவும் பதிவேற்றப்படவில்லை.",
+        noNotices: "அறிவிப்புகள் எதுவும் இல்லை.",
+        noResults: "தேர்வு பதிவுகள் எதுவும் இல்லை.",
+        deadlinePrefix: "கடைசி நாள்:",
+        viewResource: "🔗 வீட்டுப்பாட குறிப்பை பார்க்கவும்",
+        viewDriveMat: "🔗 டிரைவ் பாட குறிப்பை திறக்கவும்",
+        submitHwBtn: "சமர்ப்பி",
+        submitExamBtn: "தேர்வு விடைகளை சமர்ப்பி",
+        hwPlaceholder: "விடை அல்லது கூகுள் டிரைவ் இணைப்பை உள்ளிடவும்...",
+        hwSuccessAlert: "வீட்டுப்பாடம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+        hwEnterAnswerAlert: "முதலில் உங்கள் விடை அல்லது இணைப்பை உள்ளிடவும்.",
+        examScoreText: "தேர்வு முடிந்தது! உங்கள் மதிப்பெண்:",
+        questionsWord: "கேள்விகள்",
+        totalMarksWord: "மொத்த மதிப்பெண்கள்"
+      }
+    };
+
+    function applyTranslations() {
+      const t = dict[currentLang];
+      document.getElementById("nav-title").textContent = t.navTitle;
+      document.getElementById("btn-logout").textContent = t.logout;
+      document.getElementById("tab-btn-hw").textContent = t.tabHw;
+      document.getElementById("tab-btn-quiz").textContent = t.tabQuiz;
+      document.getElementById("tab-btn-mat").textContent = t.tabMat;
+      document.getElementById("tab-btn-notices").textContent = t.tabNotices;
+      document.getElementById("tab-btn-results").textContent = t.tabResults;
+
+      document.getElementById("title-my-hw").textContent = t.titleHw;
+      document.getElementById("title-online-quiz").textContent = t.titleQuiz;
+      document.getElementById("title-my-mat").textContent = t.titleMat;
+      document.getElementById("title-my-notices").textContent = t.titleNotices;
+      document.getElementById("title-my-results").textContent = t.titleResults;
+
+      document.getElementById("th-exam-name").textContent = t.thExamName;
+      document.getElementById("th-subject").textContent = t.thSubject;
+      document.getElementById("th-score").textContent = t.thScore;
+      document.getElementById("th-total").textContent = t.thTotal;
+    }
+
+    document.getElementById("btn-en").addEventListener("click", () => {
+      currentLang = "en";
+      document.getElementById("btn-en").classList.add("active");
+      document.getElementById("btn-ta").classList.remove("active");
+      applyTranslations();
+      loadStudentData();
+    });
+
+    document.getElementById("btn-ta").addEventListener("click", () => {
+      currentLang = "ta";
+      document.getElementById("btn-ta").classList.add("active");
+      document.getElementById("btn-en").classList.remove("active");
+      applyTranslations();
+      loadStudentData();
+    });
 
     function cleanVal(v) {
       return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
@@ -372,6 +492,7 @@
             document.getElementById("student-class-info").textContent = 
               `Class ${currentStudent.className || "6"} - Section ${currentStudent.section || "A"} | ${boardName}`;
             
+            applyTranslations();
             await loadStudentData();
           }
         } catch (e) {
@@ -385,7 +506,6 @@
       window.location.href = "login.html";
     });
 
-    // Tab Navigation
     const tabBtns = document.querySelectorAll(".nav-tab-btn");
     const panels = document.querySelectorAll(".panel-box");
 
@@ -407,9 +527,10 @@
       await loadNotices();
       await loadResults();
     }
-         // 1. Load Homework (Class & Section Scoped)
+          // 1. Load Homework
     async function loadHomework() {
       const container = document.getElementById("hw-container");
+      const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "homework"));
         const studentClass = cleanVal(currentStudent.className);
@@ -430,7 +551,7 @@
         });
 
         if (items.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No homework assigned for your class and section right now.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noHw}</p>`;
           return;
         }
 
@@ -439,12 +560,12 @@
           html += `
             <div class="card-entry">
               <h4>${hw.title} (${hw.subject})</h4>
-              <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | Deadline: ${hw.deadline}</div>
+              <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | ${t.deadlinePrefix} ${hw.deadline}</div>
               <p class="card-desc">${hw.instructions || ""}</p>
-              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Assignment Resource</a>` : ""}
+              ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">${t.viewResource}</a>` : ""}
               <div class="submit-box">
-                <input type="text" id="ans_${hw.id}" placeholder="Paste your answer or Google Drive link..." />
-                <button type="button" class="btn-submit-hw" data-hwid="${hw.id}">Submit</button>
+                <input type="text" id="ans_${hw.id}" placeholder="${t.hwPlaceholder}" />
+                <button type="button" class="btn-submit-hw" data-hwid="${hw.id}">${t.submitHwBtn}</button>
               </div>
             </div>
           `;
@@ -456,7 +577,7 @@
             const hwId = e.target.getAttribute("data-hwid");
             const answer = document.getElementById(`ans_${hwId}`).value.trim();
             if (!answer) {
-              alert("Please enter an answer or drive link first.");
+              alert(t.hwEnterAnswerAlert);
               return;
             }
             try {
@@ -470,21 +591,22 @@
                 answer: answer,
                 submittedAt: new Date().toISOString()
               });
-              alert("Homework submitted successfully!");
+              alert(t.hwSuccessAlert);
               document.getElementById(`ans_${hwId}`).value = "";
             } catch (err) {
-              alert("Error submitting: " + err.message);
+              alert("Error: " + err.message);
             }
           });
         });
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading homework: ${e.message}</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${e.message}</p>`;
       }
     }
 
-    // 2. Load and Take Online Quizzes (0 to 100 Marks)
+    // 2. Load and Take Online Quizzes
     async function loadQuizzes() {
       const container = document.getElementById("quiz-container");
+      const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "quizzes"));
         const studentClass = cleanVal(currentStudent.className);
@@ -505,7 +627,7 @@
         });
 
         if (availableQuizzes.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No active tests or quizzes assigned for your class and section.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQuiz}</p>`;
           return;
         }
 
@@ -514,7 +636,7 @@
           html += `
             <div class="quiz-card" id="quiz_box_${quiz.id}">
               <h4 style="margin:0 0 4px 0; color:#1e293b;">${quiz.title} (${quiz.subject})</h4>
-              <div class="card-meta">Total Marks: ${quiz.totalMarks} | Questions: ${quiz.questions ? quiz.questions.length : 0}</div>
+              <div class="card-meta">${t.totalMarksWord}: ${quiz.totalMarks} | ${t.questionsWord}: ${quiz.questions ? quiz.questions.length : 0}</div>
               <form class="quiz-form" data-quizid="${quiz.id}">
           `;
 
@@ -541,7 +663,7 @@
           }
 
           html += `
-                <button type="submit" class="btn-submit-exam">Submit Exam Answers</button>
+                <button type="submit" class="btn-submit-exam">${t.submitExamBtn}</button>
               </form>
               <div id="quiz_result_${quiz.id}" style="margin-top: 10px; font-weight: 700; text-align: center;"></div>
             </div>
@@ -549,7 +671,6 @@
         });
         container.innerHTML = html;
 
-        // Process Quiz Submissions and Score Calculation
         container.querySelectorAll(".quiz-form").forEach(form => {
           form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -567,12 +688,10 @@
               }
             });
 
-            // Calculate scaled score up to quiz.totalMarks (0 to 100)
             const scorePerQuestion = targetQuiz.totalMarks / totalQuestions;
             const finalScore = Math.round(correctCount * scorePerQuestion);
 
             try {
-              // 1. Record Quiz Submission
               await addDoc(collection(db, "quiz_submissions"), {
                 quizId: qId,
                 quizTitle: targetQuiz.title,
@@ -586,7 +705,6 @@
                 submittedAt: new Date().toISOString()
               });
 
-              // 2. Publish directly into Student Exam Results
               await addDoc(collection(db, "exam_results"), {
                 examName: `Quiz: ${targetQuiz.title}`,
                 subject: targetQuiz.subject,
@@ -600,21 +718,22 @@
               });
 
               const resDiv = document.getElementById(`quiz_result_${qId}`);
-              resDiv.innerHTML = `<span style="color:#16a34a;">Test Completed! Your Score: ${finalScore} / ${targetQuiz.totalMarks} (${correctCount}/${totalQuestions} correct)</span>`;
+              resDiv.innerHTML = `<span style="color:#16a34a;">${t.examScoreText} ${finalScore} / ${targetQuiz.totalMarks} (${correctCount}/${totalQuestions})</span>`;
               form.querySelector(".btn-submit-exam").disabled = true;
               await loadResults();
             } catch (err) {
-              alert("Error recording test score: " + err.message);
+              alert("Error: " + err.message);
             }
           });
         });
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading quizzes: ${e.message}</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${e.message}</p>`;
       }
-    }
-          // 3. Load Materials (Class & Section Scoped)
+      }
+          // 3. Load Materials
     async function loadMaterials() {
       const container = document.getElementById("mat-container");
+      const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "materials"));
         const studentClass = cleanVal(currentStudent.className);
@@ -635,7 +754,7 @@
         });
 
         if (items.length === 0) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No study materials posted for your class and section yet.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noMat}</p>`;
           return;
         }
 
@@ -645,23 +764,24 @@
             <div class="card-entry">
               <h4>${mat.title} - ${mat.subject}</h4>
               <div class="card-meta">Class ${mat.className} - Section ${mat.section || "All"}</div>
-              <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Study Material</a>
+              <a class="link-attach" href="${mat.link}" target="_blank">${t.viewDriveMat}</a>
             </div>
           `;
         });
         container.innerHTML = html;
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading materials: ${e.message}</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${e.message}</p>`;
       }
     }
 
-    // 4. Load Notices (School-Wide)
+    // 4. Load Notices
     async function loadNotices() {
       const container = document.getElementById("notices-container");
+      const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "notices"));
         if (snap.empty) {
-          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No announcements posted on the notice board.</p>`;
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noNotices}</p>`;
           return;
         }
         let html = "";
@@ -676,13 +796,14 @@
         });
         container.innerHTML = html;
       } catch (e) {
-        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error loading notices: ${e.message}</p>`;
+        container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${e.message}</p>`;
       }
     }
 
-    // 5. Load Results (Filtered by Student Roll Number)
+    // 5. Load Results
     async function loadResults() {
       const tbody = document.getElementById("results-tbody");
+      const t = dict[currentLang];
       try {
         const q = query(
           collection(db, "exam_results"),
@@ -691,7 +812,7 @@
         const snap = await getDocs(q);
 
         if (snap.empty) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">No exam or quiz records found yet.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">${t.noResults}</td></tr>`;
           return;
         }
 
@@ -709,7 +830,7 @@
         });
         tbody.innerHTML = html;
       } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626;">Error loading marks: ${e.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626;">Error: ${e.message}</td></tr>`;
       }
     }
   </script>
