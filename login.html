@@ -8,115 +8,196 @@
   <style>
     body {
       background-color: #f7f5ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       margin: 0;
-      padding: 16px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .login-container {
+    .top-navbar {
+      background: #1e1b4b;
+      color: #ffffff;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .lang-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .lang-pill {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .lang-pill.active {
       background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(124, 58, 237, 0.08);
-      padding: 32px 24px;
+      color: #1e1b4b;
+      font-weight: 700;
+      border-color: #ffffff;
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    .portal-switch-card {
+      background: #ede9fe;
+      border-radius: 12px;
+      padding: 4px;
+      display: flex;
+      width: 100%;
+      max-width: 380px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+
+    .portal-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #4338ca;
+      border: none;
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .portal-tab.active {
+      background: #ffffff;
+      color: #1e1b4b;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .status-banner {
+      width: 100%;
+      max-width: 380px;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .status-banner.success {
+      display: block;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+
+    .status-banner.error {
+      display: block;
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    .form-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      padding: 28px 24px;
       width: 100%;
       max-width: 380px;
       box-sizing: border-box;
-      position: relative;
     }
 
-    .lang-toggle {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: #f4f0ff;
-      border: 1px solid #ddd6fe;
-      color: #6b21a8;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .logo-badge {
-      width: 56px;
-      height: 56px;
-      background: #7c3aed;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px auto;
-      font-size: 28px;
-    }
-
-    .login-container h2 {
+    .form-title {
       text-align: center;
-      color: #4c1d95;
-      margin: 0 0 6px 0;
-      font-size: 24px;
+      color: #1e1b4b;
+      font-size: 20px;
       font-weight: 700;
+      margin: 0 0 20px 0;
     }
 
-    .subtitle {
-      text-align: center;
-      color: #6b7280;
-      font-size: 14px;
-      margin: 0 0 24px 0;
-    }
-
-    .form-group {
+    .field-group {
       margin-bottom: 16px;
-      text-align: left;
     }
 
-    .form-group label {
+    .field-group label {
       display: block;
+      font-size: 13px;
       font-weight: 600;
-      font-size: 14px;
-      color: #1f2937;
+      color: #374151;
       margin-bottom: 6px;
     }
 
-    .form-group input {
+    .field-group input {
       width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #e5e7eb;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
       background: #fdfdfd;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 14px;
       box-sizing: border-box;
       outline: none;
     }
 
-    .form-group input:focus {
-      border-color: #7c3aed;
+    .field-group input:focus {
+      border-color: #4338ca;
       background: #fff;
     }
 
-    .btn-submit {
+    .flex-row-fields {
+      display: flex;
+      gap: 10px;
+    }
+
+    .flex-row-fields .field-group {
+      flex: 1;
+    }
+
+    .submit-button {
       width: 100%;
-      background: #7c3aed;
+      background: #1e1b4b;
       color: #ffffff;
       padding: 12px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       margin-top: 8px;
+      transition: background 0.2s ease;
     }
 
-    .btn-submit:disabled {
+    .submit-button:hover {
+      background: #312e81;
+    }
+
+    .submit-button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
-    .links-area {
+    .footer-actions {
       margin-top: 18px;
       display: flex;
       flex-direction: column;
@@ -125,244 +206,442 @@
       font-size: 13px;
     }
 
-    .links-area a {
-      color: #6b21a8;
+    .footer-actions a {
+      color: #4338ca;
       text-decoration: none;
       font-weight: 500;
       cursor: pointer;
     }
 
-    .status-msg {
-      margin-top: 14px;
-      font-size: 13px;
-      text-align: center;
-      font-weight: 500;
-      min-height: 18px;
-    }
-
-    .status-msg.success {
-      color: #059669;
-    }
-
-    .status-msg.error {
-      color: #dc2626;
-    }
-
     .hidden {
-      display: none;
+      display: none !important;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <button class="lang-toggle" id="lang-btn">தமிழ்</button>
-
-    <div class="logo-badge">📚</div>
-    <h2>EduPortal</h2>
-    <p class="subtitle" id="portal-sub">Sign in to your learning portal</p>
-
-    <form id="auth-form">
-      <div class="form-group">
-        <label id="lbl-email" for="email">Email address</label>
-        <input type="email" id="email" placeholder="Enter your email" required />
-      </div>
-
-      <div class="form-group">
-        <label id="lbl-pass" for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required />
-      </div>
-
-      <div class="form-group hidden" id="confirm-pass-group">
-        <label id="lbl-confirm" for="confirm-password">Confirm password</label>
-        <input type="password" id="confirm-password" placeholder="Confirm your password" />
-      </div>
-
-      <button type="submit" class="btn-submit" id="btn-submit">Login</button>
-    </form>
-
-    <div class="status-msg" id="status-msg"></div>
-
-    <div class="links-area">
-      <a id="btn-forgot" href="javascript:void(0)">Forgot password?</a>
-      <a id="btn-switch-mode" href="javascript:void(0)">Create Account</a>
-      <a href="index.html" id="link-home">&larr; Back to Home</a>
+  <div class="top-navbar">
+    <div class="brand-title">EduPortal</div>
+    <div class="lang-group">
+      <button class="lang-pill active" id="btn-lang-en">English</button>
+      <button class="lang-pill" id="btn-lang-ta">தமிழ்</button>
     </div>
   </div>
 
-  <script type="module">
-    import { auth } from "./firebase-config.js";
+  <div class="content-area">
+    <div class="portal-switch-card">
+      <button type="button" class="portal-tab active" id="tab-student">Student Portal</button>
+      <button type="button" class="portal-tab" id="tab-teacher">Teacher Portal</button>
+    </div>
+
+    <div class="status-banner" id="status-banner"></div>
+
+    <div class="form-card">
+      <h2 class="form-title" id="form-heading">Student Login</h2>
+
+      <form id="portal-form">
+        <!-- Student Name (Register only) -->
+        <div class="field-group hidden" id="grp-student-name">
+          <label id="lbl-student-name" for="student-name">Full Name</label>
+          <input type="text" id="student-name" placeholder="Enter student name" />
+        </div>
+
+        <!-- Teacher Name (Register only) -->
+        <div class="field-group hidden" id="grp-teacher-name">
+          <label id="lbl-teacher-name" for="teacher-name">Full Name</label>
+          <input type="text" id="teacher-name" placeholder="Enter teacher name" />
+        </div>
+
+        <!-- School Name -->
+        <div class="field-group" id="grp-school">
+          <label id="lbl-school" for="school-name">School Name</label>
+          <input type="text" id="school-name" placeholder="e.g. GHSS Chennai" required />
+        </div>
+
+        <!-- Class & Section (Student Register only) -->
+        <div class="flex-row-fields hidden" id="grp-class-sec">
+          <div class="field-group">
+            <label id="lbl-class" for="student-class">Class</label>
+            <input type="text" id="student-class" placeholder="e.g. 6" />
+          </div>
+          <div class="field-group">
+            <label id="lbl-sec" for="student-sec">Section</label>
+            <input type="text" id="student-sec" placeholder="e.g. A" />
+          </div>
+        </div>
+
+        <!-- Roll Number (Student only) -->
+        <div class="field-group" id="grp-roll">
+          <label id="lbl-roll" for="student-roll">Roll Number</label>
+          <input type="text" id="student-roll" placeholder="Enter roll number" required />
+        </div>
+
+        <!-- Email Address (Teacher only) -->
+        <div class="field-group hidden" id="grp-teacher-email">
+          <label id="lbl-teacher-email" for="teacher-email">Email Address</label>
+          <input type="email" id="teacher-email" placeholder="Enter teacher email" />
+        </div>
+
+        <!-- Password -->
+        <div class="field-group" id="grp-pass">
+          <label id="lbl-pass" for="account-password">Password</label>
+          <input type="password" id="account-password" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="submit-button" id="btn-submit">Login</button>
+      </form>
+
+      <div class="footer-actions">
+        <a id="btn-forgot" href="javascript:void(0)">Forgot Password?</a>
+        <a id="btn-toggle-mode" href="javascript:void(0)">New student? Register here</a>
+        <a href="index.html" id="link-home">&larr; Back to Home</a>
+      </div>
+    </div>
+  </div>
+    <script type="module">
+    import { auth, db } from "./firebase-config.js";
     import { 
       signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword, 
-      sendPasswordResetEmail 
+      createUserWithEmailAndPassword,
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      doc, 
+      setDoc 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    let activePortal = "student";
     let isRegisterMode = false;
     let currentLang = "en";
 
     const translations = {
       en: {
-        loginSub: "Sign in to your learning portal",
-        registerSub: "Create your EduPortal account",
-        lblEmail: "Email address",
-        placeholderEmail: "Enter your email",
-        lblPass: "Password",
-        placeholderPass: "Enter your password",
-        lblConfirm: "Confirm password",
-        placeholderConfirm: "Confirm your password",
-        btnLogin: "Login",
-        btnRegister: "Create Account",
-        forgotPass: "Forgot password?",
-        switchToRegister: "Create Account",
-        switchToLogin: "Already have an account? Login",
+        studentLogin: "Student Login",
+        studentRegister: "Student Registration",
+        teacherLogin: "Teacher Login",
+        teacherRegister: "Teacher Registration",
+        schoolName: "School Name",
+        schoolPlaceholder: "e.g. GHSS Chennai",
+        rollNumber: "Roll Number",
+        rollPlaceholder: "Enter roll number",
+        teacherEmail: "Email Address",
+        emailPlaceholder: "Enter teacher email",
+        fullName: "Full Name",
+        studentNamePlaceholder: "Enter student name",
+        teacherNamePlaceholder: "Enter teacher name",
+        classLabel: "Class",
+        classPlaceholder: "e.g. 6",
+        secLabel: "Section",
+        secPlaceholder: "e.g. A",
+        password: "Password",
+        passPlaceholder: "Enter password",
+        loginBtn: "Login",
+        registerBtn: "Create Account",
+        forgotPass: "Forgot Password?",
+        toStudentReg: "New student? Register here",
+        toStudentLog: "Already registered? Student Login",
+        toTeacherReg: "New teacher? Register here",
+        toTeacherLog: "Already registered? Teacher Login",
         backHome: "← Back to Home",
-        passMismatch: "Passwords do not match.",
         passTooShort: "Password must be at least 6 characters.",
-        enterEmailFirst: "Please enter your email address first.",
-        resetSuccess: "Password reset link sent to your email.",
-        redirecting: "Redirecting to student dashboard..."
+        fillAllFields: "Please fill in all required fields.",
+        redirectingStudent: "Welcome student! Redirecting...",
+        redirectingTeacher: "Welcome teacher! Redirecting...",
+        resetSent: "Password reset link sent to your email."
       },
       ta: {
-        loginSub: "உங்கள் கணக்கில் உள்நுழையவும்",
-        registerSub: "EduPortal கணக்கை உருவாக்கவும்",
-        lblEmail: "மின்னஞ்சல் முகவரி",
-        placeholderEmail: "மின்னஞ்சலை உள்ளிடவும்",
-        lblPass: "கடவுச்சொல்",
-        placeholderPass: "கடவுச்சொல்லை உள்ளிடவும்",
-        lblConfirm: "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
-        placeholderConfirm: "கடவுச்சொல்லை மீண்டும் உள்ளிடவும்",
-        btnLogin: "உள்நுழை",
-        btnRegister: "கணக்கு உருவாக்கு",
+        studentLogin: "மாணவர் உள்நுழைவு",
+        studentRegister: "மாணவர் பதிவு",
+        teacherLogin: "ஆசிரியர் உள்நுழைவு",
+        teacherRegister: "ஆசிரியர் பதிவு",
+        schoolName: "பள்ளியின் பெயர்",
+        schoolPlaceholder: "எ.கா. அரசு மேல்நிலைப் பள்ளி",
+        rollNumber: "பதிவு எண் (Roll No)",
+        rollPlaceholder: "பதிவு எண்ணை உள்ளிடவும்",
+        teacherEmail: "மின்னஞ்சல் முகவரி",
+        emailPlaceholder: "ஆசிரியர் மின்னஞ்சலை உள்ளிடவும்",
+        fullName: "முழு பெயர்",
+        studentNamePlaceholder: "மாணவர் பெயரை உள்ளிடவும்",
+        teacherNamePlaceholder: "ஆசிரியர் பெயரை உள்ளிடவும்",
+        classLabel: "வகுப்பு",
+        classPlaceholder: "எ.கா. 6",
+        secLabel: "பிரிவு",
+        secPlaceholder: "எ.கா. A",
+        password: "கடவுச்சொல்",
+        passPlaceholder: "கடவுச்சொல்லை உள்ளிடவும்",
+        loginBtn: "உள்நுழை",
+        registerBtn: "கணக்கு உருவாக்கு",
         forgotPass: "கடவுச்சொல் மறந்துவிட்டதா?",
-        switchToRegister: "கணக்கு உருவாக்கு",
-        switchToLogin: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழை",
+        toStudentReg: "புதிய மாணவரா? பதிவு செய்க",
+        toStudentLog: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழை",
+        toTeacherReg: "புதிய ஆசிரியரா? பதிவு செய்க",
+        toTeacherLog: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழை",
         backHome: "← முகப்பு பக்கத்திற்கு",
-        passMismatch: "கடவுச்சொற்கள் பொருந்தவில்லை.",
         passTooShort: "கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.",
-        enterEmailFirst: "முதலில் உங்கள் மின்னஞ்சலை உள்ளிடவும்.",
-        resetSuccess: "கடவுச்சொல் மீட்டமைப்பு இணைப்பு அனுப்பப்பட்டது.",
-        redirecting: "மாணவர் போர்ட்டலுக்கு செல்கிறது..."
+        fillAllFields: "அனைத்து விவரங்களையும் பூர்த்தி செய்யவும்.",
+        redirectingStudent: "வரவேற்கிறோம்! மாணவர் பக்கத்திற்கு செல்கிறது...",
+        redirectingTeacher: "வரவேற்கிறோம்! ஆசிரியர் பக்கத்திற்கு செல்கிறது...",
+        resetSent: "கடவுச்சொல் மீட்டமைப்பு மின்னஞ்சல் அனுப்பப்பட்டது."
       }
     };
 
-    const authForm = document.getElementById("auth-form");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const confirmPasswordInput = document.getElementById("confirm-password");
-    const confirmPassGroup = document.getElementById("confirm-pass-group");
+    const tabStudent = document.getElementById("tab-student");
+    const tabTeacher = document.getElementById("tab-teacher");
+    const formHeading = document.getElementById("form-heading");
+    const statusBanner = document.getElementById("status-banner");
+    const portalForm = document.getElementById("portal-form");
     const btnSubmit = document.getElementById("btn-submit");
-    const btnSwitchMode = document.getElementById("btn-switch-mode");
     const btnForgot = document.getElementById("btn-forgot");
-    const statusMsg = document.getElementById("status-msg");
-    const langBtn = document.getElementById("lang-btn");
-    const portalSub = document.getElementById("portal-sub");
-    const lblEmail = document.getElementById("lbl-email");
-    const lblPass = document.getElementById("lbl-pass");
-    const lblConfirm = document.getElementById("lbl-confirm");
-    const linkHome = document.getElementById("link-home");
+    const btnToggleMode = document.getElementById("btn-toggle-mode");
+    const btnLangEn = document.getElementById("btn-lang-en");
+    const btnLangTa = document.getElementById("btn-lang-ta");
 
-    function updateLanguageUI() {
-      const t = translations[currentLang];
-      langBtn.textContent = currentLang === "en" ? "தமிழ்" : "English";
-      portalSub.textContent = isRegisterMode ? t.registerSub : t.loginSub;
-      lblEmail.textContent = t.lblEmail;
-      emailInput.placeholder = t.placeholderEmail;
-      lblPass.textContent = t.lblPass;
-      passwordInput.placeholder = t.placeholderPass;
-      lblConfirm.textContent = t.lblConfirm;
-      confirmPasswordInput.placeholder = t.placeholderConfirm;
-      btnSubmit.textContent = isRegisterMode ? t.btnRegister : t.btnLogin;
-      btnSwitchMode.textContent = isRegisterMode ? t.switchToLogin : t.switchToRegister;
-      linkHome.textContent = t.backHome;
-      btnForgot.textContent = t.forgotPass;
+    const grpStudentName = document.getElementById("grp-student-name");
+    const grpTeacherName = document.getElementById("grp-teacher-name");
+    const grpSchool = document.getElementById("grp-school");
+    const grpClassSec = document.getElementById("grp-class-sec");
+    const grpRoll = document.getElementById("grp-roll");
+    const grpTeacherEmail = document.getElementById("grp-teacher-email");
+
+    const inputStudentName = document.getElementById("student-name");
+    const inputTeacherName = document.getElementById("teacher-name");
+    const inputSchool = document.getElementById("school-name");
+    const inputClass = document.getElementById("student-class");
+    const inputSec = document.getElementById("student-sec");
+    const inputRoll = document.getElementById("student-roll");
+    const inputTeacherEmail = document.getElementById("teacher-email");
+    const inputPassword = document.getElementById("account-password");
+
+    function cleanString(str) {
+      return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     }
 
-    langBtn.addEventListener("click", () => {
-      currentLang = currentLang === "en" ? "ta" : "en";
-      updateLanguageUI();
-    });
+    function getStudentEmail(school, roll) {
+      const cleanSchool = cleanString(school) || "school";
+      const cleanRoll = cleanString(roll) || "student";
+      return `${cleanRoll}@${cleanSchool}.eduportal`;
+    }
 
-    btnSwitchMode.addEventListener("click", () => {
-      isRegisterMode = !isRegisterMode;
-      statusMsg.textContent = "";
-      statusMsg.className = "status-msg";
+    function showStatus(text, type) {
+      statusBanner.textContent = text;
+      statusBanner.className = `status-banner ${type}`;
+    }
 
-      if (isRegisterMode) {
-        confirmPassGroup.classList.remove("hidden");
-        confirmPasswordInput.setAttribute("required", "required");
-        btnForgot.classList.add("hidden");
-      } else {
-        confirmPassGroup.classList.add("hidden");
-        confirmPasswordInput.removeAttribute("required");
-        btnForgot.classList.remove("hidden");
-      }
-      updateLanguageUI();
-    });
+    function clearStatus() {
+      statusBanner.textContent = "";
+      statusBanner.className = "status-banner";
+    }
 
-    authForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      statusMsg.textContent = "";
-      statusMsg.className = "status-msg";
-      btnSubmit.disabled = true;
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+    function updateView() {
+      clearStatus();
       const t = translations[currentLang];
 
-      try {
-        if (isRegisterMode) {
-          const confirmPassword = confirmPasswordInput.value;
-          if (password !== confirmPassword) {
-            statusMsg.textContent = t.passMismatch;
-            statusMsg.className = "status-msg error";
-            btnSubmit.disabled = false;
-            return;
-          }
-          if (password.length < 6) {
-            statusMsg.textContent = t.passTooShort;
-            statusMsg.className = "status-msg error";
-            btnSubmit.disabled = false;
-            return;
-          }
+      if (activePortal === "student") {
+        tabStudent.classList.add("active");
+        tabTeacher.classList.remove("active");
 
-          await createUserWithEmailAndPassword(auth, email, password);
-          statusMsg.textContent = t.redirecting;
-          statusMsg.className = "status-msg success";
-          setTimeout(() => {
-            window.location.href = "student-dashboard.html";
-          }, 800);
+        grpTeacherEmail.classList.add("hidden");
+        inputTeacherEmail.removeAttribute("required");
+
+        grpTeacherName.classList.add("hidden");
+        inputTeacherName.removeAttribute("required");
+
+        grpSchool.classList.remove("hidden");
+        inputSchool.setAttribute("required", "required");
+
+        grpRoll.classList.remove("hidden");
+        inputRoll.setAttribute("required", "required");
+
+        if (isRegisterMode) {
+          formHeading.textContent = t.studentRegister;
+          grpStudentName.classList.remove("hidden");
+          grpClassSec.classList.remove("hidden");
+          btnSubmit.textContent = t.registerBtn;
+          btnToggleMode.textContent = t.toStudentLog;
+          btnForgot.classList.add("hidden");
         } else {
-          await signInWithEmailAndPassword(auth, email, password);
-          statusMsg.textContent = t.redirecting;
-          statusMsg.className = "status-msg success";
-          setTimeout(() => {
-            window.location.href = "student-dashboard.html";
-          }, 800);
+          formHeading.textContent = t.studentLogin;
+          grpStudentName.classList.add("hidden");
+          grpClassSec.classList.add("hidden");
+          btnSubmit.textContent = t.loginBtn;
+          btnToggleMode.textContent = t.toStudentReg;
+          btnForgot.classList.remove("hidden");
+        }
+      } else {
+        tabTeacher.classList.add("active");
+        tabStudent.classList.remove("active");
+
+        grpRoll.classList.add("hidden");
+        inputRoll.removeAttribute("required");
+
+        grpStudentName.classList.add("hidden");
+        grpClassSec.classList.add("hidden");
+
+        grpTeacherEmail.classList.remove("hidden");
+        inputTeacherEmail.setAttribute("required", "required");
+
+        if (isRegisterMode) {
+          formHeading.textContent = t.teacherRegister;
+          grpTeacherName.classList.remove("hidden");
+          grpSchool.classList.remove("hidden");
+          inputSchool.setAttribute("required", "required");
+          btnSubmit.textContent = t.registerBtn;
+          btnToggleMode.textContent = t.toTeacherLog;
+          btnForgot.classList.add("hidden");
+        } else {
+          formHeading.textContent = t.teacherLogin;
+          grpTeacherName.classList.add("hidden");
+          grpSchool.classList.add("hidden");
+          inputSchool.removeAttribute("required");
+          btnSubmit.textContent = t.loginBtn;
+          btnToggleMode.textContent = t.toTeacherReg;
+          btnForgot.classList.remove("hidden");
+        }
+      }
+    }
+
+    btnLangEn.addEventListener("click", () => {
+      currentLang = "en";
+      btnLangEn.classList.add("active");
+      btnLangTa.classList.remove("active");
+      updateView();
+    });
+
+    btnLangTa.addEventListener("click", () => {
+      currentLang = "ta";
+      btnLangTa.classList.add("active");
+      btnLangEn.classList.remove("active");
+      updateView();
+    });
+
+    tabStudent.addEventListener("click", () => {
+      if (activePortal !== "student") {
+        activePortal = "student";
+        isRegisterMode = false;
+        updateView();
+      }
+    });
+
+    tabTeacher.addEventListener("click", () => {
+      if (activePortal !== "teacher") {
+        activePortal = "teacher";
+        isRegisterMode = false;
+        updateView();
+      }
+    });
+
+    btnToggleMode.addEventListener("click", () => {
+      isRegisterMode = !isRegisterMode;
+      updateView();
+    });
+
+    portalForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearStatus();
+      btnSubmit.disabled = true;
+
+      const password = inputPassword.value;
+      const t = translations[currentLang];
+
+      if (password.length < 6) {
+        showStatus(t.passTooShort, "error");
+        btnSubmit.disabled = false;
+        return;
+      }
+
+      try {
+        if (activePortal === "student") {
+          const school = inputSchool.value.trim();
+          const roll = inputRoll.value.trim();
+          const email = getStudentEmail(school, roll);
+
+          if (isRegisterMode) {
+            const name = inputStudentName.value.trim();
+            const studentClass = inputClass.value.trim();
+            const sec = inputSec.value.trim();
+
+            if (!name || !school || !studentClass || !sec || !roll) {
+              showStatus(t.fillAllFields, "error");
+              btnSubmit.disabled = false;
+              return;
+            }
+
+            const cred = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, "users", cred.user.uid), {
+              role: "student",
+              fullName: name,
+              schoolName: school,
+              className: studentClass,
+              section: sec,
+              rollNumber: roll,
+              email: email,
+              createdAt: new Date().toISOString()
+            });
+
+            showStatus(t.redirectingStudent, "success");
+            setTimeout(() => { window.location.href = "student-dashboard.html"; }, 800);
+          } else {
+            await signInWithEmailAndPassword(auth, email, password);
+            showStatus(t.redirectingStudent, "success");
+            setTimeout(() => { window.location.href = "student-dashboard.html"; }, 800);
+          }
+        } else {
+          const email = inputTeacherEmail.value.trim();
+
+          if (isRegisterMode) {
+            const name = inputTeacherName.value.trim();
+            const school = inputSchool.value.trim();
+
+            if (!name || !email || !school) {
+              showStatus(t.fillAllFields, "error");
+              btnSubmit.disabled = false;
+              return;
+            }
+
+            const cred = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, "users", cred.user.uid), {
+              role: "teacher",
+              fullName: name,
+              schoolName: school,
+              email: email,
+              createdAt: new Date().toISOString()
+            });
+
+            showStatus(t.redirectingTeacher, "success");
+            setTimeout(() => { window.location.href = "teacher-dashboard.html"; }, 800);
+          } else {
+            await signInWithEmailAndPassword(auth, email, password);
+            showStatus(t.redirectingTeacher, "success");
+            setTimeout(() => { window.location.href = "teacher-dashboard.html"; }, 800);
+          }
         }
       } catch (err) {
-        statusMsg.textContent = err.message || "Authentication failed";
-        statusMsg.className = "status-msg error";
+        showStatus(err.message || "Authentication error", "error");
         btnSubmit.disabled = false;
       }
     });
 
     btnForgot.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
       const t = translations[currentLang];
-      if (!email) {
-        statusMsg.textContent = t.enterEmailFirst;
-        statusMsg.className = "status-msg error";
-        return;
-      }
-      try {
-        await sendPasswordResetEmail(auth, email);
-        statusMsg.textContent = t.resetSuccess;
-        statusMsg.className = "status-msg success";
-      } catch (err) {
-        statusMsg.textContent = err.message || "Failed to send reset link";
-        statusMsg.className = "status-msg error";
+      if (activePortal === "teacher") {
+        const email = inputTeacherEmail.value.trim();
+        if (!email) {
+          showStatus("Please enter your teacher email first.", "error");
+          return;
+        }
+        try {
+          await sendPasswordResetEmail(auth, email);
+          showStatus(t.resetSent, "success");
+        } catch (err) {
+          showStatus(err.message, "error");
+        }
+      } else {
+        showStatus("Students should contact their school teacher/admin for password reset.", "error");
       }
     });
+
+    updateView();
   </script>
 </body>
 </html>
+
+  
