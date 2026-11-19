@@ -158,6 +158,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      user-select: none;
     }
     .nav-tab-btn.active {
       background: #1e1b4b;
@@ -177,7 +178,7 @@
       color: #1e1b4b;
       margin: 0 0 16px 0;
     }
-    .field-box {
+        .field-box {
       margin-bottom: 14px;
     }
     .field-box label {
@@ -216,17 +217,6 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 6px;
-    }
-    .btn-action-secondary {
-      background: #ede9fe;
-      color: #4338ca;
-      border: 1px solid #c7d2fe;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 12px;
     }
     .item-list-section {
       margin-top: 24px;
@@ -277,7 +267,6 @@
     }
     .hidden { display: none !important; }
 
-    /* Attendance List */
     .att-row {
       display: flex;
       justify-content: space-between;
@@ -303,7 +292,6 @@
       cursor: pointer;
     }
 
-    /* Tables */
     .roster-table {
       width: 100%;
       border-collapse: collapse;
@@ -331,13 +319,6 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 6px;
-    }
-    .qp-box {
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
     }
     .tab-mode-selector {
       display: flex;
@@ -416,12 +397,92 @@
       <button class="nav-tab-btn" data-tab="tab-results" id="t-tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices" id="t-tab-notices">📢 Notices</button>
     </div>
-        <!-- 1. Question Paper / Exam Generator Tab -->
+        <!-- 1. Students Roster Tab -->
+    <div class="panel-box" id="tab-roster">
+      <h3 class="panel-title" id="p-title-roster">Student Roster</h3>
+      <div class="field-box">
+        <input type="text" id="roster-search" placeholder="Search by name / roll..." />
+      </div>
+      <div class="flex-filter-row">
+        <div class="field-box">
+          <select id="roster-class-filter">
+            <option value="All">All Classes</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <select id="roster-sec-filter">
+            <option value="All">All Sections</option>
+            <option value="A">Section - A</option>
+            <option value="B">Section - B</option>
+            <option value="C">Section - C</option>
+            <option value="D">Section - D</option>
+          </select>
+        </div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th id="th-r-roll">Roll No</th>
+              <th id="th-r-name">Name</th>
+              <th id="th-r-class">Class</th>
+              <th id="th-r-sec">Section</th>
+              <th id="th-r-board">Board</th>
+            </tr>
+          </thead>
+          <tbody id="roster-tbody">
+            <tr><td colspan="5" style="text-align: center; color: #64748b;">Loading students...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2. Attendance Tab -->
+    <div class="panel-box hidden" id="tab-att">
+      <h3 class="panel-title" id="p-title-att">Mark Daily Attendance</h3>
+      <div class="field-box">
+        <input type="date" id="att-date" />
+      </div>
+      <div class="flex-filter-row">
+        <div class="field-box">
+          <select id="att-class-select">
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <select id="att-sec-select">
+            <option value="A">Section - A</option>
+            <option value="B">Section - B</option>
+            <option value="C">Section - C</option>
+            <option value="D">Section - D</option>
+          </select>
+        </div>
+      </div>
+      <div id="att-student-list" style="margin-bottom: 16px;">
+        <p style="color: #64748b; font-size: 13px;">Select class and section to load students...</p>
+      </div>
+      <button class="btn-action-primary" id="btn-save-attendance">Save Attendance</button>
+      <div class="status-msg" id="att-msg"></div>
+    </div>
+
+    <!-- 3. Question Paper Creator & Upload -->
     <div class="panel-box hidden" id="tab-qp">
       <h3 class="panel-title" id="p-title-qp">Exam Question Paper Creator & Upload</h3>
 
       <form id="form-qp">
-        <!-- Exam Name with Predefined List + Custom Typing Option -->
         <div class="flex-filter-row">
           <div class="field-box">
             <label id="lbl-qp-type">Exam Category</label>
@@ -435,7 +496,7 @@
               <option value="Custom">Custom Exam Name (Type Below)...</option>
             </select>
           </div>
-          <div class="field-box" id="box-custom-exam">
+          <div class="field-box hidden" id="box-custom-exam">
             <label id="lbl-qp-custom">Type Custom Exam Name</label>
             <input type="text" id="qp-custom-name" placeholder="e.g. Revision Exam 1" />
           </div>
@@ -489,22 +550,19 @@
           <input type="date" id="qp-exam-date" required />
         </div>
 
-        <!-- Mode Selection: Type Directly OR Upload Link -->
         <label style="font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block;">Select Question Paper Format:</label>
         <div class="tab-mode-selector">
           <button type="button" class="tab-mode-btn active" id="btn-mode-type">✍️ Type Questions Directly</button>
           <button type="button" class="tab-mode-btn" id="btn-mode-upload">📄 Upload Drive / PDF URL</button>
         </div>
 
-        <!-- Section A: Type Questions Directly -->
         <div id="mode-type-container">
           <div class="field-box">
             <label id="lbl-qp-typed">Type Question Paper (Sections, Questions & Marks)</label>
-            <textarea id="qp-typed-text" rows="8" placeholder="Section A: 1-Mark Questions&#10;1. What is the unit of force? [1 Mark]&#10;2. Define photosynthesis. [1 Mark]&#10;&#10;Section B: 5-Mark Questions&#10;3. Explain Newton's Three Laws of Motion with examples. [5 Marks]"></textarea>
+            <textarea id="qp-typed-text" rows="8" placeholder="Section A: 1-Mark Questions&#10;1. What is the unit of force? [1 Mark]&#10;&#10;Section B: 5-Mark Questions&#10;2. Explain Newton's Laws of Motion. [5 Marks]"></textarea>
           </div>
         </div>
 
-        <!-- Section B: Upload Drive URL -->
         <div id="mode-upload-container" class="hidden">
           <div class="field-box">
             <label id="lbl-qp-link">Google Drive / Question Paper Link (PDF / Doc URL)</label>
@@ -523,89 +581,7 @@
         </div>
       </div>
     </div>
-
-    <!-- 2. Students Roster Tab -->
-    <div class="panel-box" id="tab-roster">
-      <h3 class="panel-title" id="p-title-roster">Student Roster</h3>
-      <div class="field-box">
-        <input type="text" id="roster-search" placeholder="Search by name / roll..." />
-      </div>
-      <div class="flex-filter-row">
-        <div class="field-box">
-          <select id="roster-class-filter">
-            <option value="All">All Classes</option>
-            <option value="6">Class 6</option>
-            <option value="7">Class 7</option>
-            <option value="8">Class 8</option>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
-        </div>
-        <div class="field-box">
-          <select id="roster-sec-filter">
-            <option value="All">All Sections</option>
-            <option value="A">Section - A</option>
-            <option value="B">Section - B</option>
-            <option value="C">Section - C</option>
-            <option value="D">Section - D</option>
-          </select>
-        </div>
-      </div>
-      <div style="overflow-x: auto;">
-        <table class="roster-table">
-          <thead>
-            <tr>
-              <th id="th-r-roll">Roll No</th>
-              <th id="th-r-name">Name</th>
-              <th id="th-r-class">Class</th>
-              <th id="th-r-sec">Section</th>
-              <th id="th-r-board">Board</th>
-            </tr>
-          </thead>
-          <tbody id="roster-tbody">
-            <tr><td colspan="5" style="text-align: center; color: #64748b;">Loading students...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 3. Attendance Tab -->
-    <div class="panel-box hidden" id="tab-att">
-      <h3 class="panel-title" id="p-title-att">Mark Daily Attendance</h3>
-      <div class="field-box">
-        <input type="date" id="att-date" />
-      </div>
-      <div class="flex-filter-row">
-        <div class="field-box">
-          <select id="att-class-select">
-            <option value="6">Class 6</option>
-            <option value="7">Class 7</option>
-            <option value="8">Class 8</option>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
-        </div>
-        <div class="field-box">
-          <select id="att-sec-select">
-            <option value="A">Section - A</option>
-            <option value="B">Section - B</option>
-            <option value="C">Section - C</option>
-            <option value="D">Section - D</option>
-          </select>
-        </div>
-      </div>
-      <div id="att-student-list" style="margin-bottom: 16px;">
-        <p style="color: #64748b; font-size: 13px;">Select class and section to load students...</p>
-      </div>
-      <button class="btn-action-primary" id="btn-save-attendance">Save Attendance</button>
-      <div class="status-msg" id="att-msg"></div>
-    </div>
-
-    <!-- 4. Homework Tab -->
+        <!-- 4. Homework Tab -->
     <div class="panel-box hidden" id="tab-hw">
       <h3 class="panel-title" id="p-title-hw">Create Homework</h3>
       <form id="form-hw">
@@ -663,7 +639,8 @@
         </div>
       </div>
     </div>
-        <!-- 5. Submissions Review Tab -->
+
+    <!-- 5. Submissions Review Tab -->
     <div class="panel-box hidden" id="tab-submissions">
       <h3 class="panel-title" id="p-title-sub">Review Student Submissions</h3>
       <div class="field-box">
@@ -758,7 +735,7 @@
               <option value="Custom">Custom Name (Type below)...</option>
             </select>
           </div>
-          <div class="field-box" id="res-custom-box">
+          <div class="field-box hidden" id="res-custom-box">
             <label id="lbl-r-custom">Custom Exam Name</label>
             <input type="text" id="res-custom-name" placeholder="e.g. Model Exam" />
           </div>
@@ -857,7 +834,30 @@
     let cachedHomework = [];
     let cachedQPs = [];
     let currentLang = "en";
-    let qpFormatMode = "type"; // "type" or "upload"
+    let qpFormatMode = "type";
+
+    // Bind DOM controls
+    const btnLangEn = document.getElementById("btn-en");
+    const btnLangTa = document.getElementById("btn-ta");
+    const tabBtns = document.querySelectorAll(".nav-tab-btn");
+    const panels = document.querySelectorAll(".panel-box");
+
+    // Tab Switcher
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach(b => b.classList.remove("active"));
+        panels.forEach(p => p.classList.add("hidden"));
+
+        btn.classList.add("active");
+        const target = btn.getAttribute("data-tab");
+        const panelEl = document.getElementById(target);
+        if (panelEl) panelEl.classList.remove("hidden");
+
+        if (target === "tab-submissions") {
+          loadSubmissions();
+        }
+      });
+    });
 
     const tDict = {
       en: {
@@ -960,111 +960,139 @@
       }
     };
 
-    function applyTeacherTranslations() {
-      const t = tDict[currentLang];
-      document.getElementById("t-nav-title").textContent = t.navTitle;
-      document.getElementById("btn-logout").textContent = t.logout;
-
-      document.getElementById("stat-lbl-students").textContent = t.statStudents;
-      document.getElementById("stat-lbl-classes").textContent = t.statClasses;
-      document.getElementById("stat-lbl-homework").textContent = t.statHw;
-      document.getElementById("stat-lbl-exams").textContent = t.statExams;
-
-      document.getElementById("t-tab-roster").textContent = t.tabRoster;
-      document.getElementById("t-tab-att").textContent = t.tabAtt;
-      document.getElementById("t-tab-qp").textContent = t.tabQp;
-      document.getElementById("t-tab-hw").textContent = t.tabHw;
-      document.getElementById("t-tab-submissions").textContent = t.tabSub;
-      document.getElementById("t-tab-mat").textContent = t.tabMat;
-      document.getElementById("t-tab-results").textContent = t.tabResults;
-      document.getElementById("t-tab-notices").textContent = t.tabNotices;
-
-      document.getElementById("p-title-qp").textContent = t.pTitleQp;
-      document.getElementById("p-title-roster").textContent = t.pTitleRoster;
-      document.getElementById("p-title-att").textContent = t.pTitleAtt;
-      document.getElementById("p-title-hw").textContent = t.pTitleHw;
-      document.getElementById("p-title-sub").textContent = t.pTitleSub;
-      document.getElementById("p-title-mat").textContent = t.pTitleMat;
-      document.getElementById("p-title-results").textContent = t.pTitleResults;
-      document.getElementById("p-title-notices").textContent = t.pTitleNotices;
-
-      document.getElementById("btn-save-attendance").textContent = t.saveAttBtn;
-      document.getElementById("btn-pub-qp").textContent = t.pubQpBtn;
-      document.getElementById("btn-pub-hw").textContent = t.pubHwBtn;
-      document.getElementById("btn-pub-mat").textContent = t.pubMatBtn;
-      document.getElementById("btn-pub-res").textContent = t.pubResBtn;
-      document.getElementById("btn-pub-notice").textContent = t.pubNoticeBtn;
-
-      document.getElementById("p-sub-active-qp").textContent = t.subActiveQp;
-      document.getElementById("p-sub-active-hw").textContent = t.subActiveHw;
-      document.getElementById("p-sub-active-mat").textContent = t.subActiveMat;
-      document.getElementById("p-sub-active-res").textContent = t.subActiveRes;
-      document.getElementById("p-sub-active-notices").textContent = t.subActiveNotices;
+    function safeSet(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
     }
 
-    // Question Paper Mode Toggle (Type vs Upload)
+    function applyTeacherTranslations() {
+      const t = tDict[currentLang];
+      safeSet("t-nav-title", t.navTitle);
+      safeSet("btn-logout", t.logout);
+
+      safeSet("stat-lbl-students", t.statStudents);
+      safeSet("stat-lbl-classes", t.statClasses);
+      safeSet("stat-lbl-homework", t.statHw);
+      safeSet("stat-lbl-exams", t.statExams);
+
+      safeSet("t-tab-roster", t.tabRoster);
+      safeSet("t-tab-att", t.tabAtt);
+      safeSet("t-tab-qp", t.tabQp);
+      safeSet("t-tab-hw", t.tabHw);
+      safeSet("t-tab-submissions", t.tabSub);
+      safeSet("t-tab-mat", t.tabMat);
+      safeSet("t-tab-results", t.tabResults);
+      safeSet("t-tab-notices", t.tabNotices);
+
+      safeSet("p-title-qp", t.pTitleQp);
+      safeSet("p-title-roster", t.pTitleRoster);
+      safeSet("p-title-att", t.pTitleAtt);
+      safeSet("p-title-hw", t.pTitleHw);
+      safeSet("p-title-sub", t.pTitleSub);
+      safeSet("p-title-mat", t.pTitleMat);
+      safeSet("p-title-results", t.pTitleResults);
+      safeSet("p-title-notices", t.pTitleNotices);
+
+      safeSet("btn-save-attendance", t.saveAttBtn);
+      safeSet("btn-pub-qp", t.pubQpBtn);
+      safeSet("btn-pub-hw", t.pubHwBtn);
+      safeSet("btn-pub-mat", t.pubMatBtn);
+      safeSet("btn-pub-res", t.pubResBtn);
+      safeSet("btn-pub-notice", t.pubNoticeBtn);
+
+      safeSet("p-sub-active-qp", t.subActiveQp);
+      safeSet("p-sub-active-hw", t.subActiveHw);
+      safeSet("p-sub-active-mat", t.subActiveMat);
+      safeSet("p-sub-active-res", t.subActiveRes);
+      safeSet("p-sub-active-notices", t.subActiveNotices);
+    }
+
+    // Question Paper Mode Toggle
     const btnModeType = document.getElementById("btn-mode-type");
     const btnModeUpload = document.getElementById("btn-mode-upload");
     const modeTypeContainer = document.getElementById("mode-type-container");
     const modeUploadContainer = document.getElementById("mode-upload-container");
 
-    btnModeType.addEventListener("click", () => {
-      qpFormatMode = "type";
-      btnModeType.classList.add("active");
-      btnModeUpload.classList.remove("active");
-      modeTypeContainer.classList.remove("hidden");
-      modeUploadContainer.classList.add("hidden");
-    });
+    if (btnModeType && btnModeUpload) {
+      btnModeType.addEventListener("click", () => {
+        qpFormatMode = "type";
+        btnModeType.classList.add("active");
+        btnModeUpload.classList.remove("active");
+        modeTypeContainer.classList.remove("hidden");
+        modeUploadContainer.classList.add("hidden");
+      });
 
-    btnModeUpload.addEventListener("click", () => {
-      qpFormatMode = "upload";
-      btnModeUpload.classList.add("active");
-      btnModeType.classList.remove("active");
-      modeUploadContainer.classList.remove("hidden");
-      modeTypeContainer.classList.add("hidden");
-    });
+      btnModeUpload.addEventListener("click", () => {
+        qpFormatMode = "upload";
+        btnModeUpload.classList.add("active");
+        btnModeType.classList.remove("active");
+        modeUploadContainer.classList.remove("hidden");
+        modeTypeContainer.classList.add("hidden");
+      });
+    }
 
     // Custom Exam Selector
     const qpExamSelect = document.getElementById("qp-exam-type");
     const customExamBox = document.getElementById("box-custom-exam");
-    qpExamSelect.addEventListener("change", () => {
-      if (qpExamSelect.value === "Custom") {
-        customExamBox.style.display = "block";
-      } else {
-        customExamBox.style.display = "none";
-      }
-    });
+    if (qpExamSelect && customExamBox) {
+      qpExamSelect.addEventListener("change", () => {
+        if (qpExamSelect.value === "Custom") {
+          customExamBox.classList.remove("hidden");
+        } else {
+          customExamBox.classList.add("hidden");
+        }
+      });
+    }
 
-    btnLangEn.addEventListener("click", () => {
-      currentLang = "en";
-      btnLangEn.classList.add("active");
-      btnLangTa.classList.remove("active");
-      applyTeacherTranslations();
-      renderRoster();
-      renderAttendanceList();
-      loadQuestionPapers();
-      loadHomeworkList();
-      loadMaterialsList();
-      loadResultsList();
-      loadNoticesList();
-    });
+    const resExamSelect = document.getElementById("res-exam-select");
+    const resCustomBox = document.getElementById("res-custom-box");
+    if (resExamSelect && resCustomBox) {
+      resExamSelect.addEventListener("change", () => {
+        if (resExamSelect.value === "Custom") {
+          resCustomBox.classList.remove("hidden");
+        } else {
+          resCustomBox.classList.add("hidden");
+        }
+      });
+    }
 
-    btnLangTa.addEventListener("click", () => {
-      currentLang = "ta";
-      btnLangTa.classList.add("active");
-      btnLangEn.classList.remove("active");
-      applyTeacherTranslations();
-      renderRoster();
-      renderAttendanceList();
-      loadQuestionPapers();
-      loadHomeworkList();
-      loadMaterialsList();
-      loadResultsList();
-      loadNoticesList();
-    });
+    if (btnLangEn) {
+      btnLangEn.addEventListener("click", () => {
+        currentLang = "en";
+        btnLangEn.classList.add("active");
+        if (btnLangTa) btnLangTa.classList.remove("active");
+        applyTeacherTranslations();
+        renderRoster();
+        renderAttendanceList();
+        loadQuestionPapers();
+        loadHomeworkList();
+        loadMaterialsList();
+        loadResultsList();
+        loadNoticesList();
+      });
+    }
 
-    document.getElementById("att-date").value = new Date().toISOString().split("T")[0];
-    document.getElementById("qp-exam-date").value = new Date().toISOString().split("T")[0];
+    if (btnLangTa) {
+      btnLangTa.addEventListener("click", () => {
+        currentLang = "ta";
+        btnLangTa.classList.add("active");
+        if (btnLangEn) btnLangEn.classList.remove("active");
+        applyTeacherTranslations();
+        renderRoster();
+        renderAttendanceList();
+        loadQuestionPapers();
+        loadHomeworkList();
+        loadMaterialsList();
+        loadResultsList();
+        loadNoticesList();
+      });
+    }
+
+    const attDateEl = document.getElementById("att-date");
+    if (attDateEl) attDateEl.value = new Date().toISOString().split("T")[0];
+
+    const qpExamDateEl = document.getElementById("qp-exam-date");
+    if (qpExamDateEl) qpExamDateEl.value = new Date().toISOString().split("T")[0];
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -1075,8 +1103,8 @@
           const snap = await getDoc(docRef);
           if (snap.exists()) {
             currentTeacher = snap.data();
-            document.getElementById("teacher-name").textContent = currentTeacher.fullName || "Teacher";
-            document.getElementById("school-name").textContent = currentTeacher.schoolName || "EduPortal School";
+            safeSet("teacher-name", currentTeacher.fullName || "Teacher");
+            safeSet("school-name", currentTeacher.schoolName || "EduPortal School");
           }
           applyTeacherTranslations();
           await refreshAllData();
@@ -1086,89 +1114,76 @@
       }
     });
 
-    document.getElementById("btn-logout").addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "login.html";
-    });
-
-    const tabBtns = document.querySelectorAll(".nav-tab-btn");
-    const panels = document.querySelectorAll(".panel-box");
-
-    tabBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        tabBtns.forEach(b => b.classList.remove("active"));
-        panels.forEach(p => p.classList.add("hidden"));
-
-        btn.classList.add("active");
-        const target = btn.getAttribute("data-tab");
-        document.getElementById(target).classList.remove("hidden");
-
-        if (target === "tab-submissions") {
-          loadSubmissions();
-        }
+    const logoutBtn = document.getElementById("btn-logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href = "login.html";
       });
-    });
+    }
 
     function normalizeVal(val) {
       return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
     }
 
     // 1. Question Paper Creation & Upload
-    document.getElementById("form-qp").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const examType = qpExamSelect.value;
-      const finalExamName = (examType === "Custom") 
-        ? document.getElementById("qp-custom-name").value.trim() 
-        : examType;
+    const formQp = document.getElementById("form-qp");
+    if (formQp) {
+      formQp.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const examType = qpExamSelect.value;
+        const finalExamName = (examType === "Custom") 
+          ? document.getElementById("qp-custom-name").value.trim() 
+          : examType;
 
-      if (!finalExamName) {
-        alert("Please enter the exam name.");
-        return;
-      }
+        if (!finalExamName) {
+          alert("Please enter the exam name.");
+          return;
+        }
 
-      const subject = document.getElementById("qp-subject").value.trim();
-      const board = document.getElementById("qp-board").value;
-      const className = document.getElementById("qp-class").value;
-      const section = document.getElementById("qp-sec").value;
-      const totalMarks = Number(document.getElementById("qp-total-marks").value);
-      const examDate = document.getElementById("qp-exam-date").value;
+        const subject = document.getElementById("qp-subject").value.trim();
+        const board = document.getElementById("qp-board").value;
+        const className = document.getElementById("qp-class").value;
+        const section = document.getElementById("qp-sec").value;
+        const totalMarks = Number(document.getElementById("qp-total-marks").value);
+        const examDate = document.getElementById("qp-exam-date").value;
+        const typedQuestions = document.getElementById("qp-typed-text").value.trim();
+        const driveLink = document.getElementById("qp-file-link").value.trim();
 
-      const typedQuestions = document.getElementById("qp-typed-text").value.trim();
-      const driveLink = document.getElementById("qp-file-link").value.trim();
+        if (qpFormatMode === "type" && !typedQuestions) {
+          alert("Please type the questions or switch to Upload Link mode.");
+          return;
+        }
+        if (qpFormatMode === "upload" && !driveLink) {
+          alert("Please paste the Google Drive or PDF link.");
+          return;
+        }
 
-      if (qpFormatMode === "type" && !typedQuestions) {
-        alert("Please type the questions or switch to Upload Link mode.");
-        return;
-      }
-      if (qpFormatMode === "upload" && !driveLink) {
-        alert("Please paste the Google Drive or PDF link.");
-        return;
-      }
+        try {
+          await addDoc(collection(db, "question_papers"), {
+            examName: finalExamName,
+            subject: subject,
+            board: board,
+            className: className,
+            section: section,
+            totalMarks: totalMarks,
+            examDate: examDate,
+            formatMode: qpFormatMode,
+            typedContent: typedQuestions,
+            fileLink: driveLink,
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
+            createdAt: new Date().toISOString()
+          });
 
-      try {
-        await addDoc(collection(db, "question_papers"), {
-          examName: finalExamName,
-          subject: subject,
-          board: board,
-          className: className,
-          section: section,
-          totalMarks: totalMarks,
-          examDate: examDate,
-          formatMode: qpFormatMode,
-          typedContent: typedQuestions,
-          fileLink: driveLink,
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
-          createdAt: new Date().toISOString()
-        });
-
-        alert(currentLang === "ta" ? "வினாத்தாள் வெற்றிகரமாக வெளியிடப்பட்டது!" : "Question Paper Published Successfully!");
-        e.target.reset();
-        await loadQuestionPapers();
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    });
+          alert(currentLang === "ta" ? "வினாத்தாள் வெற்றிகரமாக வெளியிடப்பட்டது!" : "Question Paper Published Successfully!");
+          formQp.reset();
+          await loadQuestionPapers();
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    }
 
     async function loadQuestionPapers() {
       const t = tDict[currentLang];
@@ -1180,8 +1195,9 @@
           cachedQPs.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        document.getElementById("stat-exams").textContent = cachedQPs.length;
+        safeSet("stat-exams", cachedQPs.length);
 
+        if (!container) return;
         if (cachedQPs.length === 0) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noQpPosted}</p>`;
           return;
@@ -1216,7 +1232,7 @@
           cachedStudents.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        document.getElementById("stat-students").textContent = cachedStudents.length;
+        safeSet("stat-students", cachedStudents.length);
         renderRoster();
         renderAttendanceList();
       } catch (err) {
@@ -1226,10 +1242,15 @@
 
     function renderRoster() {
       const t = tDict[currentLang];
-      const search = document.getElementById("roster-search").value.toLowerCase();
-      const classFilter = document.getElementById("roster-class-filter").value;
-      const secFilter = document.getElementById("roster-sec-filter").value;
+      const searchEl = document.getElementById("roster-search");
+      const classFilterEl = document.getElementById("roster-class-filter");
+      const secFilterEl = document.getElementById("roster-sec-filter");
       const tbody = document.getElementById("roster-tbody");
+      if (!tbody) return;
+
+      const search = searchEl ? searchEl.value.toLowerCase() : "";
+      const classFilter = classFilterEl ? classFilterEl.value : "All";
+      const secFilter = secFilterEl ? secFilterEl.value : "All";
 
       const filtered = cachedStudents.filter(s => {
         const studentClass = normalizeVal(s.className);
@@ -1267,16 +1288,23 @@
       tbody.innerHTML = html;
     }
 
-    document.getElementById("roster-search").addEventListener("input", renderRoster);
-    document.getElementById("roster-class-filter").addEventListener("change", renderRoster);
-    document.getElementById("roster-sec-filter").addEventListener("change", renderRoster);
+    const rSearch = document.getElementById("roster-search");
+    if (rSearch) rSearch.addEventListener("input", renderRoster);
+    const rClass = document.getElementById("roster-class-filter");
+    if (rClass) rClass.addEventListener("change", renderRoster);
+    const rSec = document.getElementById("roster-sec-filter");
+    if (rSec) rSec.addEventListener("change", renderRoster);
 
     // 3. Attendance Filter
     function renderAttendanceList() {
       const t = tDict[currentLang];
-      const selectedClass = normalizeVal(document.getElementById("att-class-select").value);
-      const selectedSec = document.getElementById("att-sec-select").value.trim().toUpperCase();
+      const classEl = document.getElementById("att-class-select");
+      const secEl = document.getElementById("att-sec-select");
       const container = document.getElementById("att-student-list");
+      if (!container || !classEl || !secEl) return;
+
+      const selectedClass = normalizeVal(classEl.value);
+      const selectedSec = secEl.value.trim().toUpperCase();
 
       const filtered = cachedStudents.filter(s => {
         const studentClass = normalizeVal(s.className);
@@ -1305,61 +1333,68 @@
       container.innerHTML = html;
     }
 
-    document.getElementById("att-class-select").addEventListener("change", renderAttendanceList);
-    document.getElementById("att-sec-select").addEventListener("change", renderAttendanceList);
+    const attClassSel = document.getElementById("att-class-select");
+    if (attClassSel) attClassSel.addEventListener("change", renderAttendanceList);
+    const attSecSel = document.getElementById("att-sec-select");
+    if (attSecSel) attSecSel.addEventListener("change", renderAttendanceList);
 
-    document.getElementById("btn-save-attendance").addEventListener("click", async () => {
-      const date = document.getElementById("att-date").value;
-      const selectedClass = document.getElementById("att-class-select").value;
-      const selectedSec = document.getElementById("att-sec-select").value;
-      const rows = document.querySelectorAll(".att-row");
-      const records = [];
+     const btnSaveAtt = document.getElementById("btn-save-attendance");
+    if (btnSaveAtt) {
+      btnSaveAtt.addEventListener("click", async () => {
+        const date = document.getElementById("att-date").value;
+        const selectedClass = document.getElementById("att-class-select").value;
+        const selectedSec = document.getElementById("att-sec-select").value;
+        const rows = document.querySelectorAll(".att-row");
+        const records = [];
 
-      rows.forEach(r => {
-        const id = r.getAttribute("data-id");
-        const roll = r.getAttribute("data-roll");
-        const val = r.querySelector(`input[name="att_${id}"]:checked`).value;
-        records.push({ studentId: id, rollNumber: roll, status: val });
+        rows.forEach(r => {
+          const id = r.getAttribute("data-id");
+          const roll = r.getAttribute("data-roll");
+          const val = r.querySelector(`input[name="att_${id}"]:checked`).value;
+          records.push({ studentId: id, rollNumber: roll, status: val });
+        });
+
+        try {
+          await addDoc(collection(db, "attendance"), {
+            date: date,
+            className: selectedClass,
+            section: selectedSec,
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            records: records,
+            createdAt: new Date().toISOString()
+          });
+          alert(currentLang === "ta" ? "வருகைப் பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது!" : "Attendance recorded successfully!");
+        } catch (e) {
+          alert("Error: " + e.message);
+        }
       });
-
-      try {
-        await addDoc(collection(db, "attendance"), {
-          date: date,
-          className: selectedClass,
-          section: selectedSec,
-         schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          records: records,
-          createdAt: new Date().toISOString()
-        });
-        alert(currentLang === "ta" ? "வருகைப் பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது!" : "Attendance recorded successfully!");
-      } catch (e) {
-        alert("Error: " + e.message);
       }
-    });
-
-    // 4. Post Homework
-    document.getElementById("form-hw").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        await addDoc(collection(db, "homework"), {
-          title: document.getElementById("hw-title").value.trim(),
-          subject: document.getElementById("hw-subject").value.trim(),
-          className: document.getElementById("hw-class").value,
-          section: document.getElementById("hw-sec").value,
-          deadline: document.getElementById("hw-deadline").value,
-          instructions: document.getElementById("hw-instructions").value.trim(),
-          link: document.getElementById("hw-link").value.trim(),
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
-          createdAt: new Date().toISOString()
-        });
-        alert(currentLang === "ta" ? "வீட்டுப்பாடம் வெற்றிகரமாக வெளியிடப்பட்டது!" : "Homework published successfully!");
-        e.target.reset();
-        await loadHomeworkList();
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    });
+          // 4. Post Homework
+    const formHw = document.getElementById("form-hw");
+    if (formHw) {
+      formHw.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await addDoc(collection(db, "homework"), {
+            title: document.getElementById("hw-title").value.trim(),
+            subject: document.getElementById("hw-subject").value.trim(),
+            className: document.getElementById("hw-class").value,
+            section: document.getElementById("hw-sec").value,
+            deadline: document.getElementById("hw-deadline").value,
+            instructions: document.getElementById("hw-instructions").value.trim(),
+            link: document.getElementById("hw-link").value.trim(),
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            teacherName: currentTeacher ? currentTeacher.fullName : "Teacher",
+            createdAt: new Date().toISOString()
+          });
+          alert(currentLang === "ta" ? "வீட்டுப்பாடம் வெற்றிகரமாக வெளியிடப்பட்டது!" : "Homework published successfully!");
+          formHw.reset();
+          await loadHomeworkList();
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    }
 
     async function loadHomeworkList() {
       const t = tDict[currentLang];
@@ -1374,12 +1409,15 @@
           cachedHomework.push({ id: docSnap.id, ...docSnap.data() });
         });
 
-        document.getElementById("stat-homework").textContent = cachedHomework.length;
+        safeSet("stat-homework", cachedHomework.length);
 
-        hwFilterSelect.innerHTML = cachedHomework.length === 0
-          ? `<option value="">${t.noHwPosted}</option>`
-          : cachedHomework.map(h => `<option value="${h.id}">${h.title} (Class ${h.className} - Sec ${h.section || "All"})</option>`).join("");
+        if (hwFilterSelect) {
+          hwFilterSelect.innerHTML = cachedHomework.length === 0
+            ? `<option value="">${t.noHwPosted}</option>`
+            : cachedHomework.map(h => `<option value="${h.id}">${h.title} (Class ${h.className} - Sec ${h.section || "All"})</option>`).join("");
+        }
 
+        if (!container) return;
         if (cachedHomework.length === 0) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noHwPosted}</p>`;
           return;
@@ -1402,8 +1440,9 @@
         container.querySelectorAll(".btn-review-hw").forEach(btn => {
           btn.addEventListener("click", (e) => {
             const hwId = e.target.getAttribute("data-id");
-            hwFilterSelect.value = hwId;
-            document.querySelector('[data-tab="tab-submissions"]').click();
+            if (hwFilterSelect) hwFilterSelect.value = hwId;
+            const subTab = document.querySelector('[data-tab="tab-submissions"]');
+            if (subTab) subTab.click();
           });
         });
       } catch (err) {
@@ -1414,8 +1453,10 @@
     // 5. Submissions Review
     async function loadSubmissions() {
       const t = tDict[currentLang];
-      const hwId = document.getElementById("submission-hw-filter").value;
+      const filterEl = document.getElementById("submission-hw-filter");
       const tbody = document.getElementById("submission-tbody");
+      if (!tbody || !filterEl) return;
+      const hwId = filterEl.value;
 
       if (!hwId) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">${t.noHwPosted}</td></tr>`;
@@ -1456,34 +1497,39 @@
       }
     }
 
-    document.getElementById("submission-hw-filter").addEventListener("change", loadSubmissions);
+    const subFilter = document.getElementById("submission-hw-filter");
+    if (subFilter) subFilter.addEventListener("change", loadSubmissions);
 
     // 6. Post Materials
-    document.getElementById("form-mat").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        await addDoc(collection(db, "materials"), {
-          title: document.getElementById("mat-title").value.trim(),
-          subject: document.getElementById("mat-subject").value.trim(),
-          className: document.getElementById("mat-class").value,
-          section: document.getElementById("mat-sec").value,
-          link: document.getElementById("mat-link").value.trim(),
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          createdAt: new Date().toISOString()
-        });
-        alert(currentLang === "ta" ? "பாடக் குறிப்பு வெற்றிகரமாக வெளியிடப்பட்டது!" : "Study material published!");
-        e.target.reset();
-        loadMaterialsList();
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    });
+    const formMat = document.getElementById("form-mat");
+    if (formMat) {
+      formMat.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await addDoc(collection(db, "materials"), {
+            title: document.getElementById("mat-title").value.trim(),
+            subject: document.getElementById("mat-subject").value.trim(),
+            className: document.getElementById("mat-class").value,
+            section: document.getElementById("mat-sec").value,
+            link: document.getElementById("mat-link").value.trim(),
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            createdAt: new Date().toISOString()
+          });
+          alert(currentLang === "ta" ? "பாடக் குறிப்பு வெற்றிகரமாக வெளியிடப்பட்டது!" : "Study material published!");
+          formMat.reset();
+          loadMaterialsList();
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    }
 
     async function loadMaterialsList() {
       const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "materials"));
         const container = document.getElementById("mat-list-container");
+        if (!container) return;
 
         if (snap.empty) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noMatPosted}</p>`;
@@ -1508,41 +1554,45 @@
     }
 
     // 7. Upload Exam Results
-    document.getElementById("form-results").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const examChoice = document.getElementById("res-exam-select").value;
-      const finalExamName = (examChoice === "Custom") 
-        ? document.getElementById("res-custom-name").value.trim() 
-        : examChoice;
+    const formResults = document.getElementById("form-results");
+    if (formResults) {
+      formResults.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const examChoice = document.getElementById("res-exam-select").value;
+        const finalExamName = (examChoice === "Custom") 
+          ? document.getElementById("res-custom-name").value.trim() 
+          : examChoice;
 
-      const scored = Math.min(100, Math.max(0, Number(document.getElementById("res-marks").value)));
-      const total = Math.min(100, Math.max(1, Number(document.getElementById("res-total").value)));
+        const scored = Math.min(100, Math.max(0, Number(document.getElementById("res-marks").value)));
+        const total = Math.min(100, Math.max(1, Number(document.getElementById("res-total").value)));
 
-      try {
-        await addDoc(collection(db, "exam_results"), {
-          examName: finalExamName,
-          subject: document.getElementById("res-subject").value.trim(),
-          className: document.getElementById("res-class").value,
-          section: document.getElementById("res-sec").value,
-          rollNumber: document.getElementById("res-roll").value.trim(),
-          marksScored: scored,
-          totalMarks: total,
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          createdAt: new Date().toISOString()
-        });
-        alert(currentLang === "ta" ? "தேர்வு முடிவு வெற்றிகரமாக பதிவேற்றப்பட்டது!" : "Exam result uploaded successfully!");
-        e.target.reset();
-        loadResultsList();
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    });
+        try {
+          await addDoc(collection(db, "exam_results"), {
+            examName: finalExamName,
+            subject: document.getElementById("res-subject").value.trim(),
+            className: document.getElementById("res-class").value,
+            section: document.getElementById("res-sec").value,
+            rollNumber: document.getElementById("res-roll").value.trim(),
+            marksScored: scored,
+            totalMarks: total,
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            createdAt: new Date().toISOString()
+          });
+          alert(currentLang === "ta" ? "தேர்வு முடிவு வெற்றிகரமாக பதிவேற்றப்பட்டது!" : "Exam result uploaded successfully!");
+          formResults.reset();
+          loadResultsList();
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    }
 
     async function loadResultsList() {
       const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "exam_results"));
         const container = document.getElementById("res-list-container");
+        if (!container) return;
 
         if (snap.empty) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noResPosted}</p>`;
@@ -1567,29 +1617,34 @@
     }
 
     // 8. Post Notices
-    document.getElementById("form-notice").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        await addDoc(collection(db, "notices"), {
-          title: document.getElementById("notice-title").value.trim(),
-          details: document.getElementById("notice-desc").value.trim(),
-          schoolName: currentTeacher ? currentTeacher.schoolName : "",
-          createdAt: new Date().toISOString()
-        });
-        alert(currentLang === "ta" ? "அறிவிப்பு வெளியிடப்பட்டது!" : "Notice published!");
-        e.target.reset();
-        loadNoticesList();
-      } catch (e) {
-        alert("Error: " + e.message);
-      }
-    });
+    const formNotice = document.getElementById("form-notice");
+    if (formNotice) {
+      formNotice.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await addDoc(collection(db, "notices"), {
+            title: document.getElementById("notice-title").value.trim(),
+            details: document.getElementById("notice-desc").value.trim(),
+            schoolName: currentTeacher ? currentTeacher.schoolName : "",
+            createdAt: new Date().toISOString()
+          });
+          alert(currentLang === "ta" ? "அறிவிப்பு வெளியிடப்பட்டது!" : "Notice published!");
+          formNotice.reset();
+          loadNoticesList();
+        } catch (e) {
+          alert("Error: " + e.message);
+        }
+      });
+    }
 
     async function loadNoticesList() {
       const t = tDict[currentLang];
       try {
         const snap = await getDocs(collection(db, "notices"));
         const container = document.getElementById("notice-list-container");
+        safeSet("stat-notices", snap.size);
 
+        if (!container) return;
         if (snap.empty) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noNoticesPosted}</p>`;
           return;
