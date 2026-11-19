@@ -175,8 +175,13 @@
       outline: none;
       background: #ffffff;
     }
-    .field-box input:focus, .field-box select:focus, .field-box textarea:focus {
-      border-color: #1e293b;
+    .flex-filter-row {
+      display: flex;
+      gap: 8px;
+    }
+    .flex-filter-row .field-box {
+      flex: 1;
+      margin-bottom: 14px;
     }
     .btn-action-primary {
       width: 100%;
@@ -236,8 +241,6 @@
       font-weight: 600;
       text-align: center;
     }
-    .status-msg.success { color: #16a34a; }
-    .status-msg.error { color: #dc2626; }
     .hidden { display: none !important; }
 
     /* Attendance List */
@@ -342,17 +345,28 @@
       <div class="field-box">
         <input type="text" id="roster-search" placeholder="Search by name / roll..." />
       </div>
-      <div class="field-box">
-        <select id="roster-class-filter">
-          <option value="All">All Classes</option>
-          <option value="Class 6">Class 6</option>
-          <option value="Class 7">Class 7</option>
-          <option value="Class 8">Class 8</option>
-          <option value="Class 9">Class 9</option>
-          <option value="Class 10">Class 10</option>
-          <option value="Class 11">Class 11</option>
-          <option value="Class 12">Class 12</option>
-        </select>
+      <div class="flex-filter-row">
+        <div class="field-box">
+          <select id="roster-class-filter">
+            <option value="All">All Classes</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <select id="roster-sec-filter">
+            <option value="All">All Sections</option>
+            <option value="A">Section - A</option>
+            <option value="B">Section - B</option>
+            <option value="C">Section - C</option>
+            <option value="D">Section - D</option>
+          </select>
+        </div>
       </div>
       <div style="overflow-x: auto;">
         <table class="roster-table">
@@ -361,11 +375,12 @@
               <th>Roll No</th>
               <th>Name</th>
               <th>Class</th>
+              <th>Section</th>
               <th>Board</th>
             </tr>
           </thead>
           <tbody id="roster-tbody">
-            <tr><td colspan="4" style="text-align: center; color: #64748b;">Loading students...</td></tr>
+            <tr><td colspan="5" style="text-align: center; color: #64748b;">Loading students...</td></tr>
           </tbody>
         </table>
       </div>
@@ -377,19 +392,29 @@
       <div class="field-box">
         <input type="date" id="att-date" />
       </div>
-      <div class="field-box">
-        <select id="att-class-select">
-          <option value="Class 6">Class 6</option>
-          <option value="Class 7">Class 7</option>
-          <option value="Class 8">Class 8</option>
-          <option value="Class 9">Class 9</option>
-          <option value="Class 10">Class 10</option>
-          <option value="Class 11" selected>Class 11</option>
-          <option value="Class 12">Class 12</option>
-        </select>
+      <div class="flex-filter-row">
+        <div class="field-box">
+          <select id="att-class-select">
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+          </select>
+        </div>
+        <div class="field-box">
+          <select id="att-sec-select">
+            <option value="A">Section - A</option>
+            <option value="B">Section - B</option>
+            <option value="C">Section - C</option>
+            <option value="D">Section - D</option>
+          </select>
+        </div>
       </div>
       <div id="att-student-list" style="margin-bottom: 16px;">
-        <p style="color: #64748b; font-size: 13px;">Select class to load students...</p>
+        <p style="color: #64748b; font-size: 13px;">Select class and section to load students...</p>
       </div>
       <button class="btn-action-primary" id="btn-save-attendance">Save Attendance</button>
       <div class="status-msg" id="att-msg"></div>
@@ -407,17 +432,29 @@
           <label>Subject</label>
           <input type="text" id="hw-subject" placeholder="e.g. Mathematics" required />
         </div>
-        <div class="field-box">
-          <label>Target Class</label>
-          <select id="hw-class">
-            <option value="Class 6">Class 6</option>
-            <option value="Class 7">Class 7</option>
-            <option value="Class 8">Class 8</option>
-            <option value="Class 9">Class 9</option>
-            <option value="Class 10">Class 10</option>
-            <option value="Class 11">Class 11</option>
-            <option value="Class 12">Class 12</option>
-          </select>
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label>Target Class</label>
+            <select id="hw-class">
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label>Section</label>
+            <select id="hw-sec">
+              <option value="All">All Sections</option>
+              <option value="A">Section - A</option>
+              <option value="B">Section - B</option>
+              <option value="C">Section - C</option>
+              <option value="D">Section - D</option>
+            </select>
+          </div>
         </div>
         <div class="field-box">
           <label>Submission Deadline</label>
@@ -457,13 +494,13 @@
         <div class="field-box">
           <label>Class</label>
           <select id="mat-class">
-            <option value="Class 6">Class 6</option>
-            <option value="Class 7">Class 7</option>
-            <option value="Class 8">Class 8</option>
-            <option value="Class 9">Class 9</option>
-            <option value="Class 10">Class 10</option>
-            <option value="Class 11">Class 11</option>
-            <option value="Class 12">Class 12</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
           </select>
         </div>
         <div class="field-box">
@@ -514,14 +551,12 @@
       addDoc, 
       query, 
       where, 
-      getDocs,
-      setDoc
+      getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let currentTeacher = null;
     let cachedStudents = [];
 
-    // Set Default Today's Date
     document.getElementById("att-date").value = new Date().toISOString().split("T")[0];
 
     onAuthStateChanged(auth, async (user) => {
@@ -563,7 +598,11 @@
       });
     });
 
-    // Load & Filter Students for Roster & Attendance
+    function normalizeVal(val) {
+      return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+    }
+
+    // Load All Students
     async function loadStudents() {
       try {
         const q = query(collection(db, "users"), where("role", "==", "student"));
@@ -581,22 +620,31 @@
       }
     }
 
+    // Roster Filtering (Class & Section)
     function renderRoster() {
       const search = document.getElementById("roster-search").value.toLowerCase();
       const classFilter = document.getElementById("roster-class-filter").value;
+      const secFilter = document.getElementById("roster-sec-filter").value;
       const tbody = document.getElementById("roster-tbody");
 
       const filtered = cachedStudents.filter(s => {
-        const matchesClass = (classFilter === "All") || 
-          (`Class ${s.className}` === classFilter || s.className === classFilter);
+        const studentClass = normalizeVal(s.className);
+        const targetClass = normalizeVal(classFilter);
+        const matchesClass = (classFilter === "All") || (studentClass === targetClass);
+
+        const studentSec = (s.section || "").trim().toUpperCase();
+        const targetSec = secFilter.trim().toUpperCase();
+        const matchesSec = (secFilter === "All") || (studentSec === targetSec);
+
         const matchesSearch = !search || 
           (s.fullName && s.fullName.toLowerCase().includes(search)) || 
           (s.rollNumber && s.rollNumber.toString().includes(search));
-        return matchesClass && matchesSearch;
+
+        return matchesClass && matchesSec && matchesSearch;
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">No students found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">No students found for this class and section.</td></tr>`;
         return;
       }
 
@@ -607,6 +655,7 @@
             <td><strong>${s.rollNumber || "-"}</strong></td>
             <td>${s.fullName || "-"}</td>
             <td>Class ${s.className || "-"}</td>
+            <td>Section - ${s.section || "-"}</td>
             <td>${s.board || "State Board"}</td>
           </tr>
         `;
@@ -616,18 +665,22 @@
 
     document.getElementById("roster-search").addEventListener("input", renderRoster);
     document.getElementById("roster-class-filter").addEventListener("change", renderRoster);
+    document.getElementById("roster-sec-filter").addEventListener("change", renderRoster);
 
-    // Attendance List Render
+    // Attendance Filter by Class & Section
     function renderAttendanceList() {
-      const selectedClass = document.getElementById("att-class-select").value;
+      const selectedClass = normalizeVal(document.getElementById("att-class-select").value);
+      const selectedSec = document.getElementById("att-sec-select").value.trim().toUpperCase();
       const container = document.getElementById("att-student-list");
 
-      const filtered = cachedStudents.filter(s => 
-        `Class ${s.className}` === selectedClass || s.className === selectedClass
-      );
+      const filtered = cachedStudents.filter(s => {
+        const studentClass = normalizeVal(s.className);
+        const studentSec = (s.section || "").trim().toUpperCase();
+        return studentClass === selectedClass && studentSec === selectedSec;
+      });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No students registered in ${selectedClass}.</p>`;
+        container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No students registered in Class ${document.getElementById("att-class-select").value} - Section ${selectedSec}.</p>`;
         return;
       }
 
@@ -648,11 +701,13 @@
     }
 
     document.getElementById("att-class-select").addEventListener("change", renderAttendanceList);
+    document.getElementById("att-sec-select").addEventListener("change", renderAttendanceList);
 
     // Save Attendance
     document.getElementById("btn-save-attendance").addEventListener("click", async () => {
       const date = document.getElementById("att-date").value;
       const selectedClass = document.getElementById("att-class-select").value;
+      const selectedSec = document.getElementById("att-sec-select").value;
       const rows = document.querySelectorAll(".att-row");
       const records = [];
 
@@ -667,6 +722,7 @@
         await addDoc(collection(db, "attendance"), {
           date: date,
           className: selectedClass,
+          section: selectedSec,
           schoolName: currentTeacher ? currentTeacher.schoolName : "",
           records: records,
           createdAt: new Date().toISOString()
@@ -685,6 +741,7 @@
           title: document.getElementById("hw-title").value.trim(),
           subject: document.getElementById("hw-subject").value.trim(),
           className: document.getElementById("hw-class").value,
+          section: document.getElementById("hw-sec").value,
           deadline: document.getElementById("hw-deadline").value,
           instructions: document.getElementById("hw-instructions").value.trim(),
           link: document.getElementById("hw-link").value.trim(),
@@ -718,7 +775,7 @@
           html += `
             <div class="card-entry">
               <h4>${hw.title} (${hw.subject})</h4>
-              <div class="card-meta">${hw.className} | Deadline: ${hw.deadline}</div>
+              <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | Deadline: ${hw.deadline}</div>
               <p class="card-desc">${hw.instructions || ""}</p>
               ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">🔗 View Attached Link</a>` : ""}
             </div>
@@ -765,7 +822,7 @@
           const mat = docSnap.data();
           html += `
             <div class="card-entry">
-              <h4>${mat.title} - ${mat.subject} (${mat.className})</h4>
+              <h4>${mat.title} - ${mat.subject} (Class ${mat.className})</h4>
               <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Link</a>
             </div>
           `;
