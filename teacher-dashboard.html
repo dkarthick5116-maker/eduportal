@@ -336,6 +336,7 @@
       <button class="nav-tab-btn" data-tab="tab-att">📅 Attendance</button>
       <button class="nav-tab-btn" data-tab="tab-hw">📝 Homework</button>
       <button class="nav-tab-btn" data-tab="tab-mat">📚 Materials</button>
+      <button class="nav-tab-btn" data-tab="tab-results">📊 Exam Results</button>
       <button class="nav-tab-btn" data-tab="tab-notices">📢 Notices</button>
     </div>
 
@@ -491,17 +492,29 @@
           <label>Subject</label>
           <input type="text" id="mat-subject" placeholder="e.g. Science" required />
         </div>
-        <div class="field-box">
-          <label>Class</label>
-          <select id="mat-class">
-            <option value="6">Class 6</option>
-            <option value="7">Class 7</option>
-            <option value="8">Class 8</option>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label>Class</label>
+            <select id="mat-class">
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label>Section</label>
+            <select id="mat-sec">
+              <option value="All">All Sections</option>
+              <option value="A">Section - A</option>
+              <option value="B">Section - B</option>
+              <option value="C">Section - C</option>
+              <option value="D">Section - D</option>
+            </select>
+          </div>
         </div>
         <div class="field-box">
           <label>Google Drive / Resource Link (URL)</label>
@@ -518,9 +531,69 @@
       </div>
     </div>
 
-    <!-- 5. Notices Tab -->
+    <!-- 5. Exam Results Tab -->
+    <div class="panel-box hidden" id="tab-results">
+      <h3 class="panel-title">Upload Exam Results</h3>
+      <form id="form-results">
+        <div class="field-box">
+          <label>Exam Name</label>
+          <input type="text" id="res-exam-name" placeholder="e.g. Mid-Term 1 / Quarterly Exam" required />
+        </div>
+        <div class="field-box">
+          <label>Subject</label>
+          <input type="text" id="res-subject" placeholder="e.g. Science" required />
+        </div>
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label>Class</label>
+            <select id="res-class">
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label>Section</label>
+            <select id="res-sec">
+              <option value="A">Section - A</option>
+              <option value="B">Section - B</option>
+              <option value="C">Section - C</option>
+              <option value="D">Section - D</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-box">
+          <label>Student Roll Number</label>
+          <input type="text" id="res-roll" placeholder="e.g. 1002" required />
+        </div>
+        <div class="flex-filter-row">
+          <div class="field-box">
+            <label>Marks Scored</label>
+            <input type="number" id="res-marks" placeholder="e.g. 88" required />
+          </div>
+          <div class="field-box">
+            <label>Total Marks</label>
+            <input type="number" id="res-total" placeholder="e.g. 100" required />
+          </div>
+        </div>
+        <button type="submit" class="btn-action-primary">Upload Result</button>
+        <div class="status-msg" id="res-status"></div>
+      </form>
+      <div class="item-list-section">
+        <h4 class="sub-section-title">Recently Uploaded Exam Results</h4>
+        <div id="res-list-container">
+          <p style="color: #64748b; font-size: 13px;">No results uploaded yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Notices Tab (School-Wide, No Section) -->
     <div class="panel-box hidden" id="tab-notices">
-      <h3 class="panel-title">Post Notice / Announcement</h3>
+      <h3 class="panel-title">Post School Notice / Announcement</h3>
       <form id="form-notice">
         <div class="field-box">
           <label>Notice Title</label>
@@ -787,7 +860,7 @@
       }
     }
 
-    // Post Materials
+    // Post Materials (with Section)
     document.getElementById("form-mat").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -795,6 +868,7 @@
           title: document.getElementById("mat-title").value.trim(),
           subject: document.getElementById("mat-subject").value.trim(),
           className: document.getElementById("mat-class").value,
+          section: document.getElementById("mat-sec").value,
           link: document.getElementById("mat-link").value.trim(),
           schoolName: currentTeacher ? currentTeacher.schoolName : "",
           createdAt: new Date().toISOString()
@@ -822,7 +896,8 @@
           const mat = docSnap.data();
           html += `
             <div class="card-entry">
-              <h4>${mat.title} - ${mat.subject} (Class ${mat.className})</h4>
+              <h4>${mat.title} - ${mat.subject}</h4>
+              <div class="card-meta">Class ${mat.className} - Section ${mat.section || "All"}</div>
               <a class="link-attach" href="${mat.link}" target="_blank">🔗 Open Drive Link</a>
             </div>
           `;
@@ -833,7 +908,57 @@
       }
     }
 
-    // Post Notices
+    // Upload Exam Results (with Class & Section)
+    document.getElementById("form-results").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "exam_results"), {
+          examName: document.getElementById("res-exam-name").value.trim(),
+          subject: document.getElementById("res-subject").value.trim(),
+          className: document.getElementById("res-class").value,
+          section: document.getElementById("res-sec").value,
+          rollNumber: document.getElementById("res-roll").value.trim(),
+          marksScored: Number(document.getElementById("res-marks").value),
+          totalMarks: Number(document.getElementById("res-total").value),
+          schoolName: currentTeacher ? currentTeacher.schoolName : "",
+          createdAt: new Date().toISOString()
+        });
+        alert("Exam result uploaded successfully!");
+        e.target.reset();
+        loadResultsList();
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+
+    async function loadResultsList() {
+      try {
+        const snap = await getDocs(collection(db, "exam_results"));
+        const container = document.getElementById("res-list-container");
+
+        if (snap.empty) {
+          container.innerHTML = `<p style="color: #64748b; font-size: 13px;">No results uploaded yet.</p>`;
+          return;
+        }
+
+        let html = "";
+        snap.forEach(docSnap => {
+          const r = docSnap.data();
+          html += `
+            <div class="card-entry">
+              <h4>${r.examName} - ${r.subject}</h4>
+              <div class="card-meta">Class ${r.className} - Section ${r.section} | Roll No: ${r.rollNumber}</div>
+              <p class="card-desc"><strong>Score:</strong> ${r.marksScored} / ${r.totalMarks}</p>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Post Notices (School-Wide)
     document.getElementById("form-notice").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -882,6 +1007,7 @@
       await loadStudents();
       await loadHomeworkList();
       await loadMaterialsList();
+      await loadResultsList();
       await loadNoticesList();
     }
   </script>
