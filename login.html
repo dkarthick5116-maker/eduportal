@@ -66,7 +66,7 @@
       color: #1e1b4b;
       font-weight: 700;
     }
-    .auth-wrapper {
+        .auth-wrapper {
       max-width: 440px;
       margin: 24px auto;
       padding: 0 16px;
@@ -95,7 +95,7 @@
       color: #1e1b4b;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-        .auth-card {
+    .auth-card {
       background: #ffffff;
       border-radius: 16px;
       padding: 24px 20px;
@@ -200,13 +200,11 @@
   </div>
 
   <div class="auth-wrapper">
-    <!-- Portal Type Switcher -->
     <div class="portal-toggle">
       <button id="toggle-student" class="active">Student Portal</button>
       <button id="toggle-teacher">Teacher Portal</button>
     </div>
 
-    <!-- Error/Success Alerts -->
     <div id="alert-error" class="alert-box alert-error"></div>
     <div id="alert-success" class="alert-box alert-success"></div>
 
@@ -237,17 +235,17 @@
         <div class="form-row">
           <div class="form-group">
             <label id="lbl-stu-class">Class</label>
-            <input type="text" id="reg-stu-class" placeholder="e.g. 7" required />
+            <input type="text" id="reg-stu-class" placeholder="e.g. 6" required />
           </div>
           <div class="form-group">
             <label id="lbl-stu-sec">Section</label>
-            <input type="text" id="reg-stu-sec" placeholder="e.g. B" required />
+            <input type="text" id="reg-stu-sec" placeholder="e.g. A" required />
           </div>
         </div>
 
         <div class="form-group">
           <label id="lbl-stu-roll">Roll Number</label>
-          <input type="text" id="reg-stu-roll" placeholder="e.g. 1001" required />
+          <input type="text" id="reg-stu-roll" placeholder="e.g. 6A001" required />
         </div>
 
         <div class="form-group">
@@ -274,17 +272,17 @@
         <div class="form-row">
           <div class="form-group">
             <label id="lbl-stu-login-class">Class</label>
-            <input type="text" id="login-stu-class" placeholder="e.g. 7" required />
+            <input type="text" id="login-stu-class" placeholder="e.g. 6" required />
           </div>
           <div class="form-group">
             <label id="lbl-stu-login-sec">Section</label>
-            <input type="text" id="login-stu-sec" placeholder="e.g. B" required />
+            <input type="text" id="login-stu-sec" placeholder="e.g. A" required />
           </div>
         </div>
 
         <div class="form-group">
           <label id="lbl-stu-login-roll">Roll Number</label>
-          <input type="text" id="login-stu-roll" placeholder="e.g. 1001" required />
+          <input type="text" id="login-stu-roll" placeholder="e.g. 6A001" required />
         </div>
 
         <div class="form-group">
@@ -368,7 +366,7 @@
         <div id="stu-reset-info" class="hidden">
           <p style="font-size: 13px; color: #475569; line-height: 1.5; background: #e0e7ff; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
             ℹ️ <strong>Student Account:</strong><br/>
-            Student passwords are managed by the school. Please contact your class teacher to reset your password.
+            Student passwords are managed by your school administration. Please contact your class teacher to reset your password.
           </p>
         </div>
 
@@ -403,12 +401,12 @@
       getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Clean String Helper
+    // Normalizers
     function cleanStr(val) {
       return (val || "").toString().toLowerCase().replace(/[^a-z0-9]/g, "").trim();
     }
 
-    // Unique synthetic email generation formula to prevent collisions
+    // Unique student synthetic email generator
     function buildStudentEmail(schoolName, className, section, rollNumber) {
       const s = cleanStr(schoolName);
       const c = cleanStr(className);
@@ -417,7 +415,7 @@
       return `${s}_c${c}_s${sec}_${r}@eduportal.com`;
     }
 
-    // Teacher synthetic email generation formula
+    // Teacher synthetic/actual email generator
     function buildTeacherEmail(schoolName, emailOrUser) {
       const input = (emailOrUser || "").trim().toLowerCase();
       if (input.includes("@")) return input;
@@ -445,7 +443,7 @@
       document.getElementById("alert-success").style.display = "none";
     }
 
-    // Auto-redirect if already signed in
+    // Auto-redirect if session is active
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -463,7 +461,7 @@
         }
       }
     });
-          // Elements & Form Switching Logic
+          // Form navigation logic
     const toggleStudent = document.getElementById("toggle-student");
     const toggleTeacher = document.getElementById("toggle-teacher");
 
@@ -518,7 +516,7 @@
       fTchLog.classList.remove("hidden");
     });
 
-    // Student Forgot Password Click Handler
+    // Student Forgot Password View
     document.getElementById("link-stu-forgot-pwd")?.addEventListener("click", () => {
       hideAllForms();
       fForgot.classList.remove("hidden");
@@ -526,7 +524,7 @@
       tchResetBox.classList.add("hidden");
     });
 
-    // Teacher Forgot Password Click Handler
+    // Teacher Forgot Password View
     document.getElementById("link-tch-forgot-pwd")?.addEventListener("click", () => {
       hideAllForms();
       fForgot.classList.remove("hidden");
@@ -534,7 +532,7 @@
       tchResetBox.classList.remove("hidden");
     });
 
-    // Return to Login Screen Link
+    // Back to Login
     document.getElementById("link-back-to-login")?.addEventListener("click", () => {
       hideAllForms();
       if (toggleTeacher.classList.contains("active")) {
@@ -543,7 +541,7 @@
         fStuLog.classList.remove("hidden");
       }
     });
-          // 1. Student Registration Handler
+          // 1. Student Registration
     fStuReg.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearAlerts();
@@ -585,7 +583,7 @@
       }
     });
 
-    // 2. Student Login Handler
+    // 2. Student Login
     fStuLog.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearAlerts();
@@ -612,7 +610,7 @@
       }
     });
 
-    // 3. Teacher Login Handler
+    // 3. Teacher Login
     fTchLog.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearAlerts();
@@ -637,7 +635,7 @@
       }
     });
 
-    // 4. Teacher Registration Handler
+    // 4. Teacher Registration
     fTchReg.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearAlerts();
@@ -671,8 +669,7 @@
         btn.textContent = "Register Teacher";
       }
     });
-
-    // 5. Password Reset Link Request Handler
+          // 5. Password Reset Request Handler
     fForgot?.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearAlerts();
@@ -712,5 +709,3 @@
   </script>
 </body>
 </html>
-
-      
