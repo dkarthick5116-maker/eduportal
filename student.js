@@ -13,13 +13,33 @@ import {
 let currentStudent = null;
 let currentLang = "en";
 
-// Strict normalizers to prevent cross-school leaks
+// Strict normalizers
 function cleanSchool(s) {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 }
 
 function cleanClass(v) {
   return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+}
+
+function boardsMatch(b1, b2) {
+  const norm1 = (b1 || "").trim().toLowerCase();
+  const norm2 = (b2 || "").trim().toLowerCase();
+  if (!norm1 || !norm2 || norm1 === "all" || norm2 === "all" || norm1 === norm2) return true;
+
+  const isState1 = norm1.includes("state") || norm1.includes("samacheer");
+  const isState2 = norm2.includes("state") || norm2.includes("samacheer");
+  if (isState1 && isState2) return true;
+
+  const isCbse1 = norm1.includes("cbse");
+  const isCbse2 = norm2.includes("cbse");
+  if (isCbse1 && isCbse2) return true;
+
+  const isIcse1 = norm1.includes("icse");
+  const isIcse2 = norm2.includes("icse");
+  if (isIcse1 && isIcse2) return true;
+
+  return false;
 }
 
 const dict = {
@@ -99,7 +119,6 @@ const dict = {
   }
 };
 
-// DOM Initialization
 document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   setupLanguage();
@@ -176,7 +195,7 @@ function safeText(id, txt) {
   if (el) el.textContent = txt;
 }
 
-// Authentication & Profile Hydration
+// Authentication & Profile Fetching
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -221,7 +240,7 @@ async function loadStudentData() {
   ]);
 }
 
-// 1. QUESTION PAPERS (STRICT SCHOOL ISOLATION)
+// 1. QUESTION PAPERS (FLEXIBLE BOARD MATCHING + STRICT SCHOOL ISOLATION)
 async function loadQuestionPapers() {
   const container = document.getElementById("qp-container");
   const t = dict[currentLang];
@@ -232,7 +251,7 @@ async function loadQuestionPapers() {
     const studentSchool = cleanSchool(currentStudent?.schoolName);
     const studentClass = cleanClass(currentStudent?.className);
     const studentSec = (currentStudent?.section || "").trim().toUpperCase();
-    const studentBoard = (currentStudent?.board || "State Board").trim().toLowerCase();
+    const studentBoard = currentStudent?.board || "State Board";
     const items = [];
 
     snap.forEach((docSnap) => {
@@ -240,13 +259,13 @@ async function loadQuestionPapers() {
       const targetSchool = cleanSchool(data.schoolName);
       const targetClass = cleanClass(data.className);
       const targetSec = (data.section || "All").trim().toUpperCase();
-      const targetBoard = (data.board || "State Board").trim().toLowerCase();
+      const targetBoard = data.board || "";
 
-      // STRICT SCHOOL CHECK: School name must exist and match student's registered school
+      // Strict school and class match
       const matchesSchool = Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool;
       const matchesClass = targetClass === studentClass;
       const matchesSec = targetSec === "ALL" || targetSec === studentSec;
-      const matchesBoard = !data.board || targetBoard === studentBoard;
+      const matchesBoard = boardsMatch(targetBoard, studentBoard);
 
       if (matchesSchool && matchesClass && matchesSec && matchesBoard) {
         items.push({ id: docSnap.id, ...data });
@@ -335,8 +354,7 @@ async function loadQuestionPapers() {
   } catch (err) {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
-}
-
+    }
 // 2. HOMEWORK (STRICT SCHOOL ISOLATION)
 async function loadHomework() {
   const container = document.getElementById("hw-container");
@@ -537,5 +555,5 @@ async function loadResults() {
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error: ${err.message}</td></tr>`;
   }
-    }
-      
+                                                         }
+          
