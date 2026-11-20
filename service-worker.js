@@ -1,5 +1,5 @@
 // Service Worker Cache Version
-const CACHE_NAME = "eduportal-v10";
+const CACHE_NAME = "eduportal-v11";
 
 // Essential App Shell & Static Assets to Pre-cache
 const ASSETS_TO_CACHE = [
@@ -41,11 +41,12 @@ self.addEventListener("activate", (event) => {
   );
   self.clients.claim();
 });
+
 // 3. FETCH EVENT: Real-time network bypass for Firebase APIs + Cache-first for UI files
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
-  // Strictly bypass service worker caching for Firebase Auth & Firestore live data
+  // Bypass service worker caching for Firebase Auth & Firestore live data
   if (
     requestUrl.origin.includes("firestore.googleapis.com") ||
     requestUrl.origin.includes("identitytoolkit.googleapis.com") ||
