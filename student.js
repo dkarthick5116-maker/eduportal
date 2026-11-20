@@ -1,0 +1,541 @@
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+  doc, 
+  getDoc, 
+  collection, 
+  query, 
+  where, 
+  getDocs,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+let currentStudent = null;
+let currentLang = "en";
+
+// Strict normalizers to prevent cross-school leaks
+function cleanSchool(s) {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+}
+
+function cleanClass(v) {
+  return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+}
+
+const dict = {
+  en: {
+    navTitle: "Education Portal V2.2",
+    logout: "Logout",
+    tabQp: "📝 Question Papers",
+    tabHw: "📚 My Homework",
+    tabMat: "📖 Study Notes",
+    tabNotices: "📢 Notices",
+    tabResults: "📊 Report Card",
+    titleQp: "Exam Question Papers & Write Answers",
+    titleHw: "Assigned Homework",
+    titleMat: "Class Study Notes",
+    titleNotices: "School Notice Board",
+    titleResults: "My Exam Marks",
+    thExamName: "Exam Name",
+    thSubject: "Subject",
+    thScore: "Score",
+    thTotal: "Total",
+    noQp: "No question papers published for your class and section yet.",
+    noHw: "No homework assigned for your class and section right now.",
+    noMat: "No study materials posted for your class and section yet.",
+    noNotices: "No announcements posted on the notice board.",
+    noResults: "No exam records found yet.",
+    examDateWord: "Exam Date:",
+    marksWord: "Total Marks:",
+    deadlinePrefix: "Deadline:",
+    viewResource: "🔗 View Assignment Resource",
+    viewDriveMat: "🔗 Open Drive Study Material",
+    openQpPdf: "📄 Open Official Question Paper Link",
+    submitHwBtn: "Submit Homework",
+    submitAnswersBtn: "Submit Exam Answers",
+    writeAnswersHeader: "Write Your Exam Answers Below:",
+    answerTextPlaceholder: "Type your answers here (e.g. Q1. Answer..., Q2. Answer...)...",
+    driveOptionalPlaceholder: "Or paste handwritten answer sheet Google Drive link (Optional)...",
+    examSubmitSuccess: "Exam answers submitted successfully!",
+    hwSuccessAlert: "Homework submitted successfully!",
+    enterAnswerAlert: "Please write an answer or paste a drive link first."
+  },
+  ta: {
+    navTitle: "கல்வி தளம் பதிப்பு 2.2",
+    logout: "வெளியேறு",
+    tabQp: "📝 வினாத்தாள்கள்",
+    tabHw: "📚 என் வீட்டுப்பாடம்",
+    tabMat: "📖 பாடக் குறிப்புகள்",
+    tabNotices: "📢 அறிவிப்புகள்",
+    tabResults: "📊 மதிப்பெண் அட்டை",
+    titleQp: "வினாத்தாள்கள் & விடை எழுதுதல்",
+    titleHw: "வழங்கப்பட்ட வீட்டுப்பாடங்கள்",
+    titleMat: "வகுப்பு பாடக் குறிப்புகள்",
+    titleNotices: "பள்ளி அறிவிப்புப் பலகை",
+    titleResults: "என் தேர்வு மதிப்பெண்கள்",
+    thExamName: "தேர்வு பெயர்",
+    thSubject: "பாடம்",
+    thScore: "மதிப்பெண்",
+    thTotal: "மொத்தம்",
+    noQp: "உங்கள் பள்ளி மற்றும் வகுப்பிற்கு வினாத்தாள்கள் எதுவும் இல்லை.",
+    noHw: "உங்கள் பள்ளி மற்றும் வகுப்பிற்கு வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
+    noMat: "உங்கள் வகுப்புக்கான பாடக் குறிப்புகள் எதுவும் பதிவேற்றப்படவில்லை.",
+    noNotices: "அறிவிப்புகள் எதுவும் இல்லை.",
+    noResults: "தேர்வு பதிவுகள் எதுவும் இல்லை.",
+    examDateWord: "தேர்வு தேதி:",
+    marksWord: "மொத்த மதிப்பெண்கள்:",
+    deadlinePrefix: "கடைசி நாள்:",
+    viewResource: "🔗 வீட்டுப்பாட குறிப்பை பார்க்கவும்",
+    viewDriveMat: "🔗 டிரைவ் பாட குறிப்பை திறக்கவும்",
+    openQpPdf: "📄 அதிகாரப்பூர்வ வினாத்தாள் இணைப்பை திறக்கவும்",
+    submitHwBtn: "வீட்டுப்பாடம் சமர்ப்பி",
+    submitAnswersBtn: "தேர்வு விடைகளை சமர்ப்பி",
+    writeAnswersHeader: "உங்கள் தேர்வு விடைகளை கீழே எழுதவும்:",
+    answerTextPlaceholder: "உங்கள் விடைகளை இங்கே தட்டச்சு செய்யவும் (எ.கா: கேள்வி 1. விடை...)...",
+    driveOptionalPlaceholder: "அல்லது கையால் எழுதிய விடைத்தாள் டிரைவ் இணைப்பை உள்ளிடவும்...",
+    examSubmitSuccess: "தேர்வு விடைகள் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+    hwSuccessAlert: "வீட்டுப்பாடம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
+    enterAnswerAlert: "முதலில் உங்கள் விடை அல்லது இணைப்பை உள்ளிடவும்."
+  }
+};
+
+// DOM Initialization
+document.addEventListener("DOMContentLoaded", () => {
+  setupTabs();
+  setupLanguage();
+});
+
+function setupTabs() {
+  const tabBtns = document.querySelectorAll(".nav-tab-btn");
+  const panels = document.querySelectorAll(".panel-box");
+
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      panels.forEach((p) => p.classList.add("hidden"));
+
+      btn.classList.add("active");
+      const target = btn.getAttribute("data-tab");
+      const targetPanel = document.getElementById(target);
+      if (targetPanel) {
+        targetPanel.classList.remove("hidden");
+      }
+    });
+  });
+}
+
+function setupLanguage() {
+  const btnEn = document.getElementById("btn-en");
+  const btnTa = document.getElementById("btn-ta");
+
+  if (btnEn && btnTa) {
+    btnEn.addEventListener("click", () => {
+      currentLang = "en";
+      btnEn.classList.add("active");
+      btnTa.classList.remove("active");
+      applyTranslations();
+      loadStudentData();
+    });
+
+    btnTa.addEventListener("click", () => {
+      currentLang = "ta";
+      btnTa.classList.add("active");
+      btnEn.classList.remove("active");
+      applyTranslations();
+      loadStudentData();
+    });
+  }
+}
+
+function applyTranslations() {
+  const t = dict[currentLang];
+  safeText("nav-title", t.navTitle);
+  safeText("btn-logout", t.logout);
+
+  safeText("tab-btn-qp", t.tabQp);
+  safeText("tab-btn-hw", t.tabHw);
+  safeText("tab-btn-mat", t.tabMat);
+  safeText("tab-btn-notices", t.tabNotices);
+  safeText("tab-btn-results", t.tabResults);
+
+  safeText("title-exam-qp", t.titleQp);
+  safeText("title-my-hw", t.titleHw);
+  safeText("title-my-mat", t.titleMat);
+  safeText("title-my-notices", t.titleNotices);
+  safeText("title-my-results", t.titleResults);
+
+  safeText("th-exam-name", t.thExamName);
+  safeText("th-subject", t.thSubject);
+  safeText("th-score", t.thScore);
+  safeText("th-total", t.thTotal);
+}
+
+function safeText(id, txt) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = txt;
+}
+
+// Authentication & Profile Hydration
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      currentStudent = snap.data();
+      safeText("student-name", currentStudent.fullName || "Student");
+      safeText("student-school", currentStudent.schoolName || "EduPortal School");
+
+      const boardName = currentStudent.board || "State Board";
+      safeText(
+        "student-class-info",
+        `Class ${currentStudent.className || "6"} - Section ${currentStudent.section || "A"} | ${boardName}`
+      );
+
+      applyTranslations();
+      await loadStudentData();
+    }
+  } catch (err) {
+    console.error("Auth profile error:", err);
+  }
+});
+
+const btnLogout = document.getElementById("btn-logout");
+if (btnLogout) {
+  btnLogout.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+}
+
+async function loadStudentData() {
+  await Promise.allSettled([
+    loadQuestionPapers(),
+    loadHomework(),
+    loadMaterials(),
+    loadNotices(),
+    loadResults()
+  ]);
+}
+
+// 1. QUESTION PAPERS (STRICT SCHOOL ISOLATION)
+async function loadQuestionPapers() {
+  const container = document.getElementById("qp-container");
+  const t = dict[currentLang];
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(collection(db, "question_papers"));
+    const studentSchool = cleanSchool(currentStudent?.schoolName);
+    const studentClass = cleanClass(currentStudent?.className);
+    const studentSec = (currentStudent?.section || "").trim().toUpperCase();
+    const studentBoard = (currentStudent?.board || "State Board").trim().toLowerCase();
+    const items = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const targetSchool = cleanSchool(data.schoolName);
+      const targetClass = cleanClass(data.className);
+      const targetSec = (data.section || "All").trim().toUpperCase();
+      const targetBoard = (data.board || "State Board").trim().toLowerCase();
+
+      // STRICT SCHOOL CHECK: School name must exist and match student's registered school
+      const matchesSchool = Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool;
+      const matchesClass = targetClass === studentClass;
+      const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+      const matchesBoard = !data.board || targetBoard === studentBoard;
+
+      if (matchesSchool && matchesClass && matchesSec && matchesBoard) {
+        items.push({ id: docSnap.id, ...data });
+      }
+    });
+
+    if (items.length === 0) {
+      container.innerHTML = `<p style="color:#64748b;font-size:13px;">${t.noQp}</p>`;
+      return;
+    }
+
+    container.innerHTML = items.map((qp) => `
+      <div class="card-entry" id="card_qp_${qp.id}">
+        <h4>${qp.examName} - ${qp.subject}</h4>
+        <div class="card-meta">Class ${qp.className} - Section ${qp.section || "All"} | ${t.examDateWord} ${qp.examDate || "-"} | ${t.marksWord} ${qp.totalMarks}</div>
+        
+        ${qp.formatMode === "type"
+          ? `<div class="card-desc"><strong>Question Paper:</strong><br/>${qp.typedContent}</div>`
+          : `<a class="link-attach" href="${qp.fileLink}" target="_blank">${t.openQpPdf}</a>`
+        }
+
+        <div class="submit-box">
+          <strong style="font-size:12px;color:#1e1b4b;">${t.writeAnswersHeader}</strong>
+          <textarea rows="6" id="text_ans_${qp.id}" placeholder="${t.answerTextPlaceholder}"></textarea>
+          <input type="text" id="drive_ans_${qp.id}" placeholder="${t.driveOptionalPlaceholder}" />
+          <button type="button" class="btn-submit-action btn-submit-qp-ans" 
+            data-qpid="${qp.id}" 
+            data-exam="${qp.examName}" 
+            data-subject="${qp.subject}"
+            data-marks="${qp.totalMarks}">
+            ${t.submitAnswersBtn}
+          </button>
+        </div>
+      </div>
+    `).join("");
+
+    container.querySelectorAll(".btn-submit-qp-ans").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const qpId = btn.getAttribute("data-qpid");
+        const examName = btn.getAttribute("data-exam");
+        const subject = btn.getAttribute("data-subject");
+        const totalMarks = btn.getAttribute("data-marks");
+
+        const writtenText = document.getElementById(`text_ans_${qpId}`)?.value.trim() || "";
+        const driveLink = document.getElementById(`drive_ans_${qpId}`)?.value.trim() || "";
+
+        if (!writtenText && !driveLink) {
+          alert(t.enterAnswerAlert);
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Submitting...";
+
+        try {
+          await addDoc(collection(db, "exam_submissions"), {
+            questionPaperId: qpId,
+            examName: examName,
+            subject: subject,
+            totalMarks: Number(totalMarks),
+            studentId: auth.currentUser.uid,
+            studentName: currentStudent.fullName,
+            rollNumber: currentStudent.rollNumber,
+            className: currentStudent.className,
+            section: currentStudent.section,
+            board: currentStudent.board || "State Board",
+            schoolName: currentStudent.schoolName || "",
+            writtenAnswers: writtenText,
+            driveLink: driveLink,
+            submittedAt: new Date().toISOString()
+          });
+
+          alert(t.examSubmitSuccess);
+          btn.textContent = "Submitted ✓";
+          const txtEl = document.getElementById(`text_ans_${qpId}`);
+          const drvEl = document.getElementById(`drive_ans_${qpId}`);
+          if (txtEl) txtEl.disabled = true;
+          if (drvEl) drvEl.disabled = true;
+        } catch (err) {
+          alert("Error submitting answers: " + err.message);
+          btn.disabled = false;
+          btn.textContent = t.submitAnswersBtn;
+        }
+      });
+    });
+  } catch (err) {
+    container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
+  }
+}
+
+// 2. HOMEWORK (STRICT SCHOOL ISOLATION)
+async function loadHomework() {
+  const container = document.getElementById("hw-container");
+  const t = dict[currentLang];
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(collection(db, "homework"));
+    const studentSchool = cleanSchool(currentStudent?.schoolName);
+    const studentClass = cleanClass(currentStudent?.className);
+    const studentSec = (currentStudent?.section || "").trim().toUpperCase();
+    const items = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const targetSchool = cleanSchool(data.schoolName);
+      const targetClass = cleanClass(data.className);
+      const targetSec = (data.section || "All").trim().toUpperCase();
+
+      const matchesSchool = Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool;
+      const matchesClass = targetClass === studentClass;
+      const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+
+      if (matchesSchool && matchesClass && matchesSec) {
+        items.push({ id: docSnap.id, ...data });
+      }
+    });
+
+    if (items.length === 0) {
+      container.innerHTML = `<p style="color:#64748b;font-size:13px;">${t.noHw}</p>`;
+      return;
+    }
+
+    container.innerHTML = items.map((hw) => `
+      <div class="card-entry">
+        <h4>${hw.title} (${hw.subject})</h4>
+        <div class="card-meta">Class ${hw.className} - Section ${hw.section || "All"} | ${t.deadlinePrefix} ${hw.deadline}</div>
+        <p class="card-desc">${hw.instructions || ""}</p>
+        ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">${t.viewResource}</a>` : ""}
+        <div class="submit-box">
+          <input type="text" id="ans_${hw.id}" placeholder="Paste your answer or Google Drive link..." />
+          <button type="button" class="btn-submit-action btn-submit-hw" data-hwid="${hw.id}">${t.submitHwBtn}</button>
+        </div>
+      </div>
+    `).join("");
+
+    container.querySelectorAll(".btn-submit-hw").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const hwId = e.target.getAttribute("data-hwid");
+        const ansInput = document.getElementById(`ans_${hwId}`);
+        const answer = ansInput?.value.trim() || "";
+
+        if (!answer) {
+          alert(t.enterAnswerAlert);
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "homework_submissions"), {
+            homeworkId: hwId,
+            studentId: auth.currentUser.uid,
+            studentName: currentStudent.fullName,
+            rollNumber: currentStudent.rollNumber,
+            className: currentStudent.className,
+            section: currentStudent.section,
+            schoolName: currentStudent.schoolName || "",
+            answer: answer,
+            submittedAt: new Date().toISOString()
+          });
+          alert(t.hwSuccessAlert);
+          if (ansInput) ansInput.value = "";
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    });
+  } catch (err) {
+    container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
+  }
+}
+
+// 3. STUDY MATERIALS (STRICT SCHOOL ISOLATION)
+async function loadMaterials() {
+  const container = document.getElementById("mat-container");
+  const t = dict[currentLang];
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(collection(db, "materials"));
+    const studentSchool = cleanSchool(currentStudent?.schoolName);
+    const studentClass = cleanClass(currentStudent?.className);
+    const studentSec = (currentStudent?.section || "").trim().toUpperCase();
+    const items = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const targetSchool = cleanSchool(data.schoolName);
+      const targetClass = cleanClass(data.className);
+      const targetSec = (data.section || "All").trim().toUpperCase();
+
+      const matchesSchool = Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool;
+      const matchesClass = targetClass === studentClass;
+      const matchesSec = targetSec === "ALL" || targetSec === studentSec;
+
+      if (matchesSchool && matchesClass && matchesSec) {
+        items.push(data);
+      }
+    });
+
+    if (items.length === 0) {
+      container.innerHTML = `<p style="color:#64748b;font-size:13px;">${t.noMat}</p>`;
+      return;
+    }
+
+    container.innerHTML = items.map((mat) => `
+      <div class="card-entry">
+        <h4>${mat.title} - ${mat.subject}</h4>
+        <div class="card-meta">Class ${mat.className} - Section ${mat.section || "All"}</div>
+        <a class="link-attach" href="${mat.link}" target="_blank">${t.viewDriveMat}</a>
+      </div>
+    `).join("");
+  } catch (err) {
+    container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
+  }
+}
+
+// 4. NOTICES (STRICT SCHOOL ISOLATION)
+async function loadNotices() {
+  const container = document.getElementById("notices-container");
+  const t = dict[currentLang];
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(collection(db, "notices"));
+    const studentSchool = cleanSchool(currentStudent?.schoolName);
+    const items = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const targetSchool = cleanSchool(data.schoolName);
+      if (Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool) {
+        items.push(data);
+      }
+    });
+
+    if (items.length === 0) {
+      container.innerHTML = `<p style="color:#64748b;font-size:13px;">${t.noNotices}</p>`;
+      return;
+    }
+
+    container.innerHTML = items.map((n) => `
+      <div class="card-entry">
+        <h4>${n.title}</h4>
+        <p class="card-desc">${n.details}</p>
+      </div>
+    `).join("");
+  } catch (err) {
+    container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
+  }
+}
+
+// 5. EXAM RESULTS (STRICT ROLL NUMBER & SCHOOL ISOLATION)
+async function loadResults() {
+  const tbody = document.getElementById("results-tbody");
+  const t = dict[currentLang];
+  if (!tbody) return;
+
+  try {
+    const q = query(
+      collection(db, "exam_results"),
+      where("rollNumber", "==", (currentStudent?.rollNumber || "").toString())
+    );
+    const snap = await getDocs(q);
+    const studentSchool = cleanSchool(currentStudent?.schoolName);
+    const items = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const targetSchool = cleanSchool(data.schoolName);
+      if (Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool) {
+        items.push(data);
+      }
+    });
+
+    if (items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#64748b;">${t.noResults}</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = items.map((r) => `
+      <tr>
+        <td><strong>${r.examName || "-"}</strong></td>
+        <td>${r.subject || "-"}</td>
+        <td><strong>${r.marksScored}</strong></td>
+        <td>${r.totalMarks}</td>
+      </tr>
+    `).join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error: ${err.message}</td></tr>`;
+  }
+    }
+      
