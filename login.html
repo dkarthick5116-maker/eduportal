@@ -6,9 +6,9 @@
   <title>EduPortal - Login & Registration</title>
 
   <!-- PWA & App Icons -->
-  <link rel="icon" type="image/png" href="file_0000000018c8820bbb5ed8b1c124a4c3.png" />
-  <link rel="apple-touch-icon" href="file_0000000018c8820bbb5ed8b1c124a4c3.png" />
-  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="apple-touch-icon" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
+  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#1e1b4b" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -17,186 +17,146 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      background-color: #f7f5ff;
+      background-color: #f1f5f9;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1f2937;
     }
-
     .top-navbar {
       background: #1e1b4b;
       color: #ffffff;
-      padding: 12px 20px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-
     .brand-container {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-
     .brand-logo {
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: 6px;
       object-fit: cover;
     }
-
     .brand-title {
       font-size: 18px;
       font-weight: 700;
       letter-spacing: 0.5px;
     }
-
     .lang-group {
       display: flex;
       gap: 6px;
     }
-
     .lang-pill {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff;
-      padding: 5px 12px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 4px 10px;
       border-radius: 6px;
       font-size: 13px;
       cursor: pointer;
     }
-
     .lang-pill.active {
       background: #ffffff;
       color: #1e1b4b;
       font-weight: 700;
-      border-color: #ffffff;
     }
-        .content-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 24px 16px;
+    .auth-wrapper {
+      max-width: 440px;
+      margin: 24px auto;
+      padding: 0 16px;
       box-sizing: border-box;
     }
-
-    .portal-switch-card {
-      background: #ede9fe;
-      border-radius: 12px;
+    .portal-toggle {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 10px;
       padding: 4px;
-      display: flex;
-      width: 100%;
-      max-width: 380px;
-      margin-bottom: 20px;
-      box-sizing: border-box;
+      margin-bottom: 16px;
     }
-
-    .portal-tab {
+    .portal-toggle button {
       flex: 1;
-      text-align: center;
-      padding: 10px 8px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #4338ca;
+      padding: 10px;
       border: none;
       background: transparent;
-      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      border-radius: 8px;
+      cursor: pointer;
     }
-
-    .portal-tab.active {
+    .portal-toggle button.active {
       background: #ffffff;
       color: #1e1b4b;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
-    .status-banner {
-      width: 100%;
-      max-width: 380px;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 13px;
-      margin-bottom: 16px;
-      box-sizing: border-box;
-      display: none;
-    }
-
-    .status-banner.success {
-      display: block;
-      background: #dcfce7;
-      border: 1px solid #86efac;
-      color: #166534;
-    }
-
-    .status-banner.error {
-      display: block;
-      background: #fee2e2;
-      border: 1px solid #fca5a5;
-      color: #991b1b;
-    }
-
-    .form-card {
+    .auth-card {
       background: #ffffff;
       border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-      padding: 28px 24px;
-      width: 100%;
-      max-width: 380px;
-      box-sizing: border-box;
+      padding: 24px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-
-    .form-title {
-      text-align: center;
-      color: #1e1b4b;
+    .auth-title {
       font-size: 20px;
       font-weight: 700;
-      margin: 0 0 20px 0;
+      color: #1e1b4b;
+      text-align: center;
+      margin: 0 0 16px 0;
     }
-
-    .field-group {
-      margin-bottom: 16px;
-    }
-
-    .field-group label {
-      display: block;
+    .alert-box {
+      padding: 10px 14px;
+      border-radius: 8px;
       font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .alert-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .alert-success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
       font-weight: 600;
-      color: #374151;
+      color: #475569;
       margin-bottom: 6px;
     }
-
-    .field-group input, .field-group select {
+    .form-group input, .form-group select {
       width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #d1d5db;
-      background: #fdfdfd;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       font-size: 14px;
       box-sizing: border-box;
       outline: none;
+      background: #f8fafc;
     }
-
-    .field-group input:focus, .field-group select:focus {
+    .form-group input:focus, .form-group select:focus {
       border-color: #4338ca;
-      background: #fff;
+      background: #ffffff;
     }
-
-    .flex-row-fields {
+    .form-row {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
-
-    .flex-row-fields .field-group {
+    .form-row .form-group {
       flex: 1;
     }
-
-    .submit-button {
+    .btn-submit {
       width: 100%;
       background: #1e1b4b;
       color: #ffffff;
@@ -204,539 +164,455 @@
       border: none;
       border-radius: 8px;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s ease;
+      margin-top: 10px;
     }
-
-    .submit-button:hover {
-      background: #312e81;
-    }
-
-    .submit-button:disabled {
+    .btn-submit:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
-
-    .footer-actions {
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
+    .switch-mode-text {
+      text-align: center;
       font-size: 13px;
+      color: #64748b;
+      margin-top: 16px;
     }
-
-    .footer-actions a {
-      color: #4338ca;
+    .switch-mode-text a {
+      color: #2563eb;
+      font-weight: 600;
       text-decoration: none;
-      font-weight: 500;
       cursor: pointer;
     }
-
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div class="top-navbar">
     <div class="brand-container">
-      <img src="file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
+      <img src="/file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
       <span class="brand-title">EduPortal</span>
     </div>
     <div class="lang-group">
-      <button class="lang-pill active" id="btn-lang-en">English</button>
-      <button class="lang-pill" id="btn-lang-ta">தமிழ்</button>
+      <button class="lang-pill active" id="btn-en">English</button>
+      <button class="lang-pill" id="btn-ta">தமிழ்</button>
     </div>
   </div>
-
-  <div class="content-area">
-    <div class="portal-switch-card">
-      <button type="button" class="portal-tab active" id="tab-student">Student Portal</button>
-      <button type="button" class="portal-tab" id="tab-teacher">Teacher Portal</button>
+    <div class="auth-wrapper">
+    <!-- Portal Type Switcher -->
+    <div class="portal-toggle">
+      <button id="toggle-student" class="active">Student Portal</button>
+      <button id="toggle-teacher">Teacher Portal</button>
     </div>
 
-    <div class="status-banner" id="status-banner"></div>
+    <!-- Error/Success Alerts -->
+    <div id="alert-error" class="alert-box alert-error"></div>
+    <div id="alert-success" class="alert-box alert-success"></div>
 
-    <div class="form-card">
-      <h2 class="form-title" id="form-heading">Student Login</h2>
+    <div class="auth-card">
+      <!-- 1. STUDENT REGISTRATION FORM -->
+      <form id="form-student-register" class="auth-form">
+        <h2 class="auth-title" id="title-student-reg">Student Registration</h2>
 
-      <form id="portal-form">
-        <!-- Student Name (Register only) -->
-        <div class="field-group hidden" id="grp-student-name">
-          <label id="lbl-student-name" for="student-name">Full Name</label>
-          <input type="text" id="student-name" placeholder="Enter student name" />
+        <div class="form-group">
+          <label id="lbl-stu-name">Full Name</label>
+          <input type="text" id="reg-stu-name" placeholder="Enter student name" required />
         </div>
 
-        <!-- Teacher Name (Register only) -->
-        <div class="field-group hidden" id="grp-teacher-name">
-          <label id="lbl-teacher-name" for="teacher-name">Full Name</label>
-          <input type="text" id="teacher-name" placeholder="Enter teacher name" />
+        <div class="form-group">
+          <label id="lbl-stu-school">School Name</label>
+          <input type="text" id="reg-stu-school" placeholder="e.g. Bhc school" required />
         </div>
 
-        <!-- School Name -->
-        <div class="field-group" id="grp-school">
-          <label id="lbl-school" for="school-name">School Name</label>
-          <input type="text" id="school-name" placeholder="e.g. GHSS Chennai" required />
-        </div>
-
-        <!-- Curriculum / Board Selection (Registration only) -->
-        <div class="field-group hidden" id="grp-curriculum">
-          <label id="lbl-curriculum" for="board-select">Curriculum / Board</label>
-          <select id="board-select">
-            <option value="State Board">Tamil Nadu State Board (Samacheer Kalvi)</option>
-            <option value="CBSE">CBSE (Central Board)</option>
+        <div class="form-group">
+          <label id="lbl-stu-board">Curriculum / Board</label>
+          <select id="reg-stu-board">
+            <option value="Tamil Nadu State Board (Samacheer Kalvi)">Tamil Nadu State Board (Samacheer Kalvi)</option>
+            <option value="CBSE">CBSE</option>
+            <option value="ICSE">ICSE</option>
           </select>
         </div>
 
-        <!-- Class & Section (Student Register only) -->
-        <div class="flex-row-fields hidden" id="grp-class-sec">
-          <div class="field-group">
-            <label id="lbl-class" for="student-class">Class</label>
-            <input type="text" id="student-class" placeholder="e.g. 6" />
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lbl-stu-class">Class</label>
+            <input type="text" id="reg-stu-class" placeholder="e.g. 7" required />
           </div>
-          <div class="field-group">
-            <label id="lbl-sec" for="student-sec">Section</label>
-            <input type="text" id="student-sec" placeholder="e.g. A" />
+          <div class="form-group">
+            <label id="lbl-stu-sec">Section</label>
+            <input type="text" id="reg-stu-sec" placeholder="e.g. B" required />
           </div>
         </div>
 
-        <!-- Roll Number (Student only) -->
-        <div class="field-group" id="grp-roll">
-          <label id="lbl-roll" for="student-roll">Roll Number</label>
-          <input type="text" id="student-roll" placeholder="Enter roll number" required />
+        <div class="form-group">
+          <label id="lbl-stu-roll">Roll Number</label>
+          <input type="text" id="reg-stu-roll" placeholder="e.g. 1001" required />
         </div>
 
-        <!-- Email Address (Teacher only) -->
-        <div class="field-group hidden" id="grp-teacher-email">
-          <label id="lbl-teacher-email" for="teacher-email">Email Address</label>
-          <input type="email" id="teacher-email" placeholder="Enter teacher email" />
+        <div class="form-group">
+          <label id="lbl-stu-pwd">Password</label>
+          <input type="password" id="reg-stu-pwd" placeholder="Enter password" required />
         </div>
 
-        <!-- Password -->
-        <div class="field-group" id="grp-pass">
-          <label id="lbl-pass" for="account-password">Password</label>
-          <input type="password" id="account-password" placeholder="Enter password" required />
-        </div>
-
-        <button type="submit" class="submit-button" id="btn-submit">Login</button>
+        <button type="submit" class="btn-submit" id="btn-stu-reg-submit">Create Account</button>
+        <p class="switch-mode-text">
+          <span id="txt-have-acc">Already have an account?</span> 
+          <a id="link-show-stu-login">Login here</a>
+        </p>
       </form>
 
-      <div class="footer-actions">
-        <a id="btn-forgot" href="javascript:void(0)">Forgot Password?</a>
-        <a id="btn-toggle-mode" href="javascript:void(0)">New student? Register here</a>
-        <a href="index.html" id="link-home">&larr; Back to Home</a>
-      </div>
+      <!-- 2. STUDENT LOGIN FORM -->
+      <form id="form-student-login" class="auth-form hidden">
+        <h2 class="auth-title" id="title-student-login">Student Login</h2>
+
+        <div class="form-group">
+          <label id="lbl-stu-login-school">School Name</label>
+          <input type="text" id="login-stu-school" placeholder="e.g. Bhc school" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lbl-stu-login-class">Class</label>
+            <input type="text" id="login-stu-class" placeholder="e.g. 7" required />
+          </div>
+          <div class="form-group">
+            <label id="lbl-stu-login-sec">Section</label>
+            <input type="text" id="login-stu-sec" placeholder="e.g. B" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-stu-login-roll">Roll Number</label>
+          <input type="text" id="login-stu-roll" placeholder="e.g. 1001" required />
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-stu-login-pwd">Password</label>
+          <input type="password" id="login-stu-pwd" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-stu-login-submit">Login</button>
+        <p class="switch-mode-text">
+          <span id="txt-need-acc">New student?</span> 
+          <a id="link-show-stu-reg">Create Account</a>
+        </p>
+      </form>
+
+      <!-- 3. TEACHER LOGIN FORM -->
+      <form id="form-teacher-login" class="auth-form hidden">
+        <h2 class="auth-title" id="title-teacher-login">Teacher Login</h2>
+
+        <div class="form-group">
+          <label id="lbl-tch-login-school">School Name</label>
+          <input type="text" id="login-tch-school" placeholder="e.g. GHSS Salem" required />
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-tch-login-id">Email / Username</label>
+          <input type="text" id="login-tch-id" placeholder="e.g. teacher@school.com" required />
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-tch-login-pwd">Password</label>
+          <input type="password" id="login-tch-pwd" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-tch-login-submit">Login as Teacher</button>
+        <p class="switch-mode-text">
+          <span id="txt-tch-need-acc">New teacher?</span> 
+          <a id="link-show-tch-reg">Register here</a>
+        </p>
+      </form>
+
+      <!-- 4. TEACHER REGISTRATION FORM -->
+      <form id="form-teacher-register" class="auth-form hidden">
+        <h2 class="auth-title" id="title-teacher-reg">Teacher Registration</h2>
+
+        <div class="form-group">
+          <label id="lbl-tch-reg-name">Full Name</label>
+          <input type="text" id="reg-tch-name" placeholder="Enter teacher name" required />
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-tch-reg-school">School Name</label>
+          <input type="text" id="reg-tch-school" placeholder="e.g. GHSS Salem" required />
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-tch-reg-email">Official Email</label>
+          <input type="email" id="reg-tch-email" placeholder="e.g. teacher@school.com" required />
+        </div>
+
+        <div class="form-group">
+          <label id="lbl-tch-reg-pwd">Password</label>
+          <input type="password" id="reg-tch-pwd" placeholder="Set password" required />
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-tch-reg-submit">Register Teacher</button>
+        <p class="switch-mode-text">
+          <span id="txt-tch-have-acc">Already registered?</span> 
+          <a id="link-show-tch-login">Login here</a>
+        </p>
+      </form>
     </div>
-  </div>
-    <script type="module">
+    </div>
+      <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { 
+      createUserWithEmailAndPassword, 
       signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword,
-      sendPasswordResetEmail
+      onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
       doc, 
-      setDoc 
+      setDoc, 
+      getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    let activePortal = "student";
-    let isRegisterMode = false;
-    let currentLang = "en";
-
-    const translations = {
-      en: {
-        studentPortalTab: "Student Portal",
-        teacherPortalTab: "Teacher Portal",
-        studentLogin: "Student Login",
-        studentRegister: "Student Registration",
-        teacherLogin: "Teacher Login",
-        teacherRegister: "Teacher Registration",
-        schoolName: "School Name",
-        schoolPlaceholder: "e.g. GHSS Chennai",
-        curriculumLabel: "Curriculum / Board",
-        rollNumber: "Roll Number",
-        rollPlaceholder: "Enter roll number",
-        teacherEmail: "Email Address",
-        emailPlaceholder: "Enter teacher email",
-        fullName: "Full Name",
-        studentNamePlaceholder: "Enter student name",
-        teacherNamePlaceholder: "Enter teacher name",
-        classLabel: "Class",
-        classPlaceholder: "e.g. 6",
-        secLabel: "Section",
-        secPlaceholder: "e.g. A",
-        password: "Password",
-        passPlaceholder: "Enter password",
-        loginBtn: "Login",
-        registerBtn: "Create Account",
-        forgotPass: "Forgot Password?",
-        toStudentReg: "New student? Register here",
-        toStudentLog: "Already registered? Student Login",
-        toTeacherReg: "New teacher? Register here",
-        toTeacherLog: "Already registered? Teacher Login",
-        backHome: "← Back to Home",
-        passTooShort: "Password must be at least 6 characters.",
-        fillAllFields: "Please fill in all required fields.",
-        redirectingStudent: "Welcome student! Redirecting...",
-        redirectingTeacher: "Welcome teacher! Redirecting...",
-        resetSent: "Password reset link sent to your email."
-      },
-      ta: {
-        studentPortalTab: "மாணவர் தளம்",
-        teacherPortalTab: "ஆசிரியர் தளம்",
-        studentLogin: "மாணவர் உள்நுழைவு",
-        studentRegister: "மாணவர் பதிவு",
-        teacherLogin: "ஆசிரியர் உள்நுழைவு",
-        teacherRegister: "ஆசிரியர் பதிவு",
-        schoolName: "பள்ளியின் பெயர்",
-        schoolPlaceholder: "எ.கா. அரசு மேல்நிலைப் பள்ளி",
-        curriculumLabel: "பாடத்திட்டம் / வாரியம்",
-        rollNumber: "பதிவு எண் (Roll No)",
-        rollPlaceholder: "பதிவு எண்ணை உள்ளிடவும்",
-        teacherEmail: "மின்னஞ்சல் முகவரி",
-        emailPlaceholder: "ஆசிரியர் மின்னஞ்சலை உள்ளிடவும்",
-        fullName: "முழு பெயர்",
-        studentNamePlaceholder: "மாணவர் பெயரை உள்ளிடவும்",
-        teacherNamePlaceholder: "ஆசிரியர் பெயரை உள்ளிடவும்",
-        classLabel: "வகுப்பு",
-        classPlaceholder: "எ.கா. 6",
-        secLabel: "பிரிவு",
-        secPlaceholder: "எ.கா. A",
-        password: "கடவுச்சொல்",
-        passPlaceholder: "கடவுச்சொல்லை உள்ளிடவும்",
-        loginBtn: "உள்நுழை",
-        registerBtn: "கணக்கு உருவாக்கு",
-        forgotPass: "கடவுச்சொல் மறந்துவிட்டதா?",
-        toStudentReg: "புதிய மாணவரா? பதிவு செய்க",
-        toStudentLog: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழை",
-        toTeacherReg: "புதிய ஆசிரியரா? பதிவு செய்க",
-        toTeacherLog: "ஏற்கனவே கணக்கு உள்ளதா? உள்நுழை",
-        backHome: "← முகப்பு பக்கத்திற்கு",
-        passTooShort: "கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.",
-        fillAllFields: "அனைத்து விவரங்களையும் பூர்த்தி செய்யவும்.",
-        redirectingStudent: "வரவேற்கிறோம்! மாணவர் பக்கத்திற்கு செல்கிறது...",
-        redirectingTeacher: "வரவேற்கிறோம்! ஆசிரியர் பக்கத்திற்கு செல்கிறது...",
-        resetSent: "கடவுச்சொல் மீட்டமைப்பு மின்னஞ்சல் அனுப்பப்பட்டது."
-      }
-    };
-
-    const tabStudent = document.getElementById("tab-student");
-    const tabTeacher = document.getElementById("tab-teacher");
-    const formHeading = document.getElementById("form-heading");
-    const statusBanner = document.getElementById("status-banner");
-    const portalForm = document.getElementById("portal-form");
-    const btnSubmit = document.getElementById("btn-submit");
-    const btnForgot = document.getElementById("btn-forgot");
-    const btnToggleMode = document.getElementById("btn-toggle-mode");
-    const btnLangEn = document.getElementById("btn-lang-en");
-    const btnLangTa = document.getElementById("btn-lang-ta");
-    const linkHome = document.getElementById("link-home");
-
-    const grpStudentName = document.getElementById("grp-student-name");
-    const grpTeacherName = document.getElementById("grp-teacher-name");
-    const grpSchool = document.getElementById("grp-school");
-    const grpCurriculum = document.getElementById("grp-curriculum");
-    const grpClassSec = document.getElementById("grp-class-sec");
-    const grpRoll = document.getElementById("grp-roll");
-    const grpTeacherEmail = document.getElementById("grp-teacher-email");
-
-    const lblStudentName = document.getElementById("lbl-student-name");
-    const lblTeacherName = document.getElementById("lbl-teacher-name");
-    const lblSchool = document.getElementById("lbl-school");
-    const lblCurriculum = document.getElementById("lbl-curriculum");
-    const lblClass = document.getElementById("lbl-class");
-    const lblSec = document.getElementById("lbl-sec");
-    const lblRoll = document.getElementById("lbl-roll");
-    const lblTeacherEmail = document.getElementById("lbl-teacher-email");
-    const lblPass = document.getElementById("lbl-pass");
-
-    const inputStudentName = document.getElementById("student-name");
-    const inputTeacherName = document.getElementById("teacher-name");
-    const inputSchool = document.getElementById("school-name");
-    const selectBoard = document.getElementById("board-select");
-    const inputClass = document.getElementById("student-class");
-    const inputSec = document.getElementById("student-sec");
-    const inputRoll = document.getElementById("student-roll");
-    const inputTeacherEmail = document.getElementById("teacher-email");
-    const inputPassword = document.getElementById("account-password");
-       function cleanString(str) {
-      return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    // Normalizers & Synthetic Email Formulas
+    function cleanStr(val) {
+      return (val || "").toString().toLowerCase().replace(/[^a-z0-9]/g, "").trim();
     }
 
-    function getStudentEmail(school, roll) {
-      const cleanSchool = cleanString(school) || "school";
-      const cleanRoll = cleanString(roll) || "student";
-      return `${cleanRoll}@${cleanSchool}.eduportal`;
+    function buildStudentEmail(schoolName, className, section, rollNumber) {
+      const s = cleanStr(schoolName);
+      const c = cleanStr(className);
+      const sec = cleanStr(section);
+      const r = cleanStr(rollNumber);
+      return `${s}_c${c}_s${sec}_${r}@eduportal.com`;
     }
 
-    function showStatus(text, type) {
-      statusBanner.textContent = text;
-      statusBanner.className = `status-banner ${type}`;
+    function buildTeacherEmail(schoolName, emailOrUser) {
+      const input = (emailOrUser || "").trim().toLowerCase();
+      if (input.includes("@")) return input;
+      const s = cleanStr(schoolName);
+      const u = cleanStr(input);
+      return `${s}_teacher_${u}@eduportal.com`;
     }
 
-    function clearStatus() {
-      statusBanner.textContent = "";
-      statusBanner.className = "status-banner";
+    function showError(msg) {
+      const el = document.getElementById("alert-error");
+      el.textContent = msg;
+      el.style.display = "block";
+      document.getElementById("alert-success").style.display = "none";
     }
 
-    function updateView() {
-      clearStatus();
-      const t = translations[currentLang];
+    function showSuccess(msg) {
+      const el = document.getElementById("alert-success");
+      el.textContent = msg;
+      el.style.display = "block";
+      document.getElementById("alert-error").style.display = "none";
+    }
 
-      tabStudent.textContent = t.studentPortalTab;
-      tabTeacher.textContent = t.teacherPortalTab;
-      lblSchool.textContent = t.schoolName;
-      inputSchool.placeholder = t.schoolPlaceholder;
-      lblCurriculum.textContent = t.curriculumLabel;
-      lblPass.textContent = t.password;
-      inputPassword.placeholder = t.passPlaceholder;
-      btnForgot.textContent = t.forgotPass;
-      linkHome.textContent = t.backHome;
+    function clearAlerts() {
+      document.getElementById("alert-error").style.display = "none";
+      document.getElementById("alert-success").style.display = "none";
+    }
 
-      if (activePortal === "student") {
-        tabStudent.classList.add("active");
-        tabTeacher.classList.remove("active");
-
-        grpTeacherEmail.classList.add("hidden");
-        inputTeacherEmail.removeAttribute("required");
-
-        grpTeacherName.classList.add("hidden");
-        inputTeacherName.removeAttribute("required");
-
-        grpSchool.classList.remove("hidden");
-        inputSchool.setAttribute("required", "required");
-
-        grpRoll.classList.remove("hidden");
-        inputRoll.setAttribute("required", "required");
-        lblRoll.textContent = t.rollNumber;
-        inputRoll.placeholder = t.rollPlaceholder;
-
-        if (isRegisterMode) {
-          formHeading.textContent = t.studentRegister;
-          grpStudentName.classList.remove("hidden");
-          lblStudentName.textContent = t.fullName;
-          inputStudentName.placeholder = t.studentNamePlaceholder;
-
-          grpCurriculum.classList.remove("hidden");
-          grpClassSec.classList.remove("hidden");
-          lblClass.textContent = t.classLabel;
-          inputClass.placeholder = t.classPlaceholder;
-          lblSec.textContent = t.secLabel;
-          inputSec.placeholder = t.secPlaceholder;
-
-          btnSubmit.textContent = t.registerBtn;
-          btnToggleMode.textContent = t.toStudentLog;
-          btnForgot.classList.add("hidden");
-        } else {
-          formHeading.textContent = t.studentLogin;
-          grpStudentName.classList.add("hidden");
-          grpCurriculum.classList.add("hidden");
-          grpClassSec.classList.add("hidden");
-
-          btnSubmit.textContent = t.loginBtn;
-          btnToggleMode.textContent = t.toStudentReg;
-          btnForgot.classList.remove("hidden");
-        }
-      } else {
-        tabTeacher.classList.add("active");
-        tabStudent.classList.remove("active");
-
-        grpRoll.classList.add("hidden");
-        inputRoll.removeAttribute("required");
-
-        grpStudentName.classList.add("hidden");
-        grpClassSec.classList.add("hidden");
-
-        grpTeacherEmail.classList.remove("hidden");
-        inputTeacherEmail.setAttribute("required", "required");
-        lblTeacherEmail.textContent = t.teacherEmail;
-        inputTeacherEmail.placeholder = t.emailPlaceholder;
-
-        if (isRegisterMode) {
-          formHeading.textContent = t.teacherRegister;
-          grpTeacherName.classList.remove("hidden");
-          lblTeacherName.textContent = t.fullName;
-          inputTeacherName.placeholder = t.teacherNamePlaceholder;
-
-          grpSchool.classList.remove("hidden");
-          inputSchool.setAttribute("required", "required");
-
-          grpCurriculum.classList.remove("hidden");
-          btnSubmit.textContent = t.registerBtn;
-          btnToggleMode.textContent = t.toTeacherLog;
-          btnForgot.classList.add("hidden");
-        } else {
-          formHeading.textContent = t.teacherLogin;
-          grpTeacherName.classList.add("hidden");
-          grpSchool.classList.add("hidden");
-          grpCurriculum.classList.add("hidden");
-          inputSchool.removeAttribute("required");
-
-          btnSubmit.textContent = t.loginBtn;
-          btnToggleMode.textContent = t.toTeacherReg;
-          btnForgot.classList.remove("hidden");
+    // Auto-redirect if already signed in
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const snap = await getDoc(doc(db, "users", user.uid));
+          if (snap.exists()) {
+            const data = snap.data();
+            if (data.role === "teacher") {
+              window.location.href = "teacher-dashboard.html";
+            } else {
+              window.location.href = "student-dashboard.html";
+            }
+          }
+        } catch (e) {
+          console.error("Auth redirect error:", e);
         }
       }
+    });
+
+    // Form Switching Logic
+    const toggleStudent = document.getElementById("toggle-student");
+    const toggleTeacher = document.getElementById("toggle-teacher");
+
+    const fStuReg = document.getElementById("form-student-register");
+    const fStuLog = document.getElementById("form-student-login");
+    const fTchLog = document.getElementById("form-teacher-login");
+    const fTchReg = document.getElementById("form-teacher-register");
+
+    function hideAllForms() {
+      clearAlerts();
+      fStuReg.classList.add("hidden");
+      fStuLog.classList.add("hidden");
+      fTchLog.classList.add("hidden");
+      fTchReg.classList.add("hidden");
     }
 
-    btnLangEn.addEventListener("click", () => {
-      currentLang = "en";
-      btnLangEn.classList.add("active");
-      btnLangTa.classList.remove("active");
-      updateView();
+    toggleStudent.addEventListener("click", () => {
+      toggleStudent.classList.add("active");
+      toggleTeacher.classList.remove("active");
+      hideAllForms();
+      fStuLog.classList.remove("hidden");
     });
 
-    btnLangTa.addEventListener("click", () => {
-      currentLang = "ta";
-      btnLangTa.classList.add("active");
-      btnLangEn.classList.remove("active");
-      updateView();
+    toggleTeacher.addEventListener("click", () => {
+      toggleTeacher.classList.add("active");
+      toggleStudent.classList.remove("active");
+      hideAllForms();
+      fTchLog.classList.remove("hidden");
     });
 
-    tabStudent.addEventListener("click", () => {
-      if (activePortal !== "student") {
-        activePortal = "student";
-        isRegisterMode = false;
-        updateView();
-      }
+    document.getElementById("link-show-stu-login").addEventListener("click", () => {
+      hideAllForms();
+      fStuLog.classList.remove("hidden");
+    });
+    document.getElementById("link-show-stu-reg").addEventListener("click", () => {
+      hideAllForms();
+      fStuReg.classList.remove("hidden");
+    });
+    document.getElementById("link-show-tch-reg").addEventListener("click", () => {
+      hideAllForms();
+      fTchReg.classList.remove("hidden");
+    });
+    document.getElementById("link-show-tch-login").addEventListener("click", () => {
+      hideAllForms();
+      fTchLog.classList.remove("hidden");
     });
 
-    tabTeacher.addEventListener("click", () => {
-      if (activePortal !== "teacher") {
-        activePortal = "teacher";
-        isRegisterMode = false;
-        updateView();
-      }
-    });
-
-    btnToggleMode.addEventListener("click", () => {
-      isRegisterMode = !isRegisterMode;
-      updateView();
-    });
-          portalForm.addEventListener("submit", async (e) => {
+    // 1. Student Registration Handler
+    fStuReg.addEventListener("submit", async (e) => {
       e.preventDefault();
-      clearStatus();
-      btnSubmit.disabled = true;
+      clearAlerts();
 
-      const password = inputPassword.value;
-      const t = translations[currentLang];
+      const fullName = document.getElementById("reg-stu-name").value.trim();
+      const schoolName = document.getElementById("reg-stu-school").value.trim();
+      const board = document.getElementById("reg-stu-board").value;
+      const className = document.getElementById("reg-stu-class").value.trim();
+      const section = document.getElementById("reg-stu-sec").value.trim().toUpperCase();
+      const rollNumber = document.getElementById("reg-stu-roll").value.trim();
+      const password = document.getElementById("reg-stu-pwd").value;
 
-      if (password.length < 6) {
-        showStatus(t.passTooShort, "error");
-        btnSubmit.disabled = false;
-        return;
-      }
+      const syntheticEmail = buildStudentEmail(schoolName, className, section, rollNumber);
+      const btn = document.getElementById("btn-stu-reg-submit");
+      btn.disabled = true;
+      btn.textContent = "Creating Account...";
 
       try {
-        if (activePortal === "student") {
-          const school = inputSchool.value.trim();
-          const roll = inputRoll.value.trim();
-          const email = getStudentEmail(school, roll);
+        const cred = await createUserWithEmailAndPassword(auth, syntheticEmail, password);
+        await setDoc(doc(db, "users", cred.user.uid), {
+          uid: cred.user.uid,
+          role: "student",
+          fullName,
+          schoolName,
+          board,
+          className,
+          section,
+          rollNumber,
+          email: syntheticEmail,
+          createdAt: new Date().toISOString()
+        });
 
-          if (isRegisterMode) {
-            const name = inputStudentName.value.trim();
-            const studentClass = inputClass.value.trim();
-            const sec = inputSec.value.trim();
-            const board = selectBoard.value;
-
-            if (!name || !school || !studentClass || !sec || !roll) {
-              showStatus(t.fillAllFields, "error");
-              btnSubmit.disabled = false;
-              return;
-            }
-
-            const cred = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, "users", cred.user.uid), {
-              role: "student",
-              fullName: name,
-              schoolName: school,
-              board: board,
-              className: studentClass,
-              section: sec,
-              rollNumber: roll,
-              email: email,
-              createdAt: new Date().toISOString()
-            });
-
-            showStatus(t.redirectingStudent, "success");
-            setTimeout(() => { window.location.href = "student-dashboard.html"; }, 800);
-          } else {
-            await signInWithEmailAndPassword(auth, email, password);
-            showStatus(t.redirectingStudent, "success");
-            setTimeout(() => { window.location.href = "student-dashboard.html"; }, 800);
-          }
-        } else {
-          // Teacher Portal
-          const email = inputTeacherEmail.value.trim();
-
-          if (isRegisterMode) {
-            const name = inputTeacherName.value.trim();
-            const school = inputSchool.value.trim();
-            const board = selectBoard.value;
-
-            if (!name || !email || !school) {
-              showStatus(t.fillAllFields, "error");
-              btnSubmit.disabled = false;
-              return;
-            }
-
-            const cred = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, "users", cred.user.uid), {
-              role: "teacher",
-              fullName: name,
-              schoolName: school,
-              board: board,
-              email: email,
-              createdAt: new Date().toISOString()
-            });
-
-            showStatus(t.redirectingTeacher, "success");
-            setTimeout(() => { window.location.href = "teacher-dashboard.html"; }, 800);
-          } else {
-            await signInWithEmailAndPassword(auth, email, password);
-            showStatus(t.redirectingTeacher, "success");
-            setTimeout(() => { window.location.href = "teacher-dashboard.html"; }, 800);
-          }
-        }
+        showSuccess("Account created successfully! Redirecting...");
+        window.location.href = "student-dashboard.html";
       } catch (err) {
-        showStatus(err.message || "Authentication error", "error");
-        btnSubmit.disabled = false;
+        showError(err.message);
+        btn.disabled = false;
+        btn.textContent = "Create Account";
       }
     });
 
-    btnForgot.addEventListener("click", async () => {
-      const t = translations[currentLang];
-      if (activePortal === "teacher") {
-        const email = inputTeacherEmail.value.trim();
-        if (!email) {
-          showStatus("Please enter your teacher email first.", "error");
-          return;
-        }
-        try {
-          await sendPasswordResetEmail(auth, email);
-          showStatus(t.resetSent, "success");
-        } catch (err) {
-          showStatus(err.message, "error");
-        }
-      } else {
-        showStatus("Students should contact their school teacher/admin for password reset.", "error");
+    // 2. Student Login Handler
+    fStuLog.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearAlerts();
+
+      const schoolName = document.getElementById("login-stu-school").value.trim();
+      const className = document.getElementById("login-stu-class").value.trim();
+      const section = document.getElementById("login-stu-sec").value.trim().toUpperCase();
+      const rollNumber = document.getElementById("login-stu-roll").value.trim();
+      const password = document.getElementById("login-stu-pwd").value;
+
+      const syntheticEmail = buildStudentEmail(schoolName, className, section, rollNumber);
+      const btn = document.getElementById("btn-stu-login-submit");
+      btn.disabled = true;
+      btn.textContent = "Logging in...";
+
+      try {
+        await signInWithEmailAndPassword(auth, syntheticEmail, password);
+        showSuccess("Login successful! Redirecting...");
+        window.location.href = "student-dashboard.html";
+      } catch (err) {
+        showError("Invalid School, Class, Section, Roll Number, or Password.");
+        btn.disabled = false;
+        btn.textContent = "Login";
       }
     });
 
-    updateView();
+    // 3. Teacher Login Handler
+    fTchLog.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearAlerts();
+
+      const schoolName = document.getElementById("login-tch-school").value.trim();
+      const emailOrUser = document.getElementById("login-tch-id").value.trim();
+      const password = document.getElementById("login-tch-pwd").value;
+
+      const finalEmail = buildTeacherEmail(schoolName, emailOrUser);
+      const btn = document.getElementById("btn-tch-login-submit");
+      btn.disabled = true;
+      btn.textContent = "Logging in...";
+
+      try {
+        await signInWithEmailAndPassword(auth, finalEmail, password);
+        showSuccess("Login successful! Redirecting...");
+        window.location.href = "teacher-dashboard.html";
+      } catch (err) {
+        showError("Invalid teacher credentials: " + err.message);
+        btn.disabled = false;
+        btn.textContent = "Login as Teacher";
+      }
+    });
+
+    // 4. Teacher Registration Handler
+    fTchReg.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearAlerts();
+
+      const fullName = document.getElementById("reg-tch-name").value.trim();
+      const schoolName = document.getElementById("reg-tch-school").value.trim();
+      const email = document.getElementById("reg-tch-email").value.trim();
+      const password = document.getElementById("reg-tch-pwd").value;
+
+      const finalEmail = buildTeacherEmail(schoolName, email);
+      const btn = document.getElementById("btn-tch-reg-submit");
+      btn.disabled = true;
+      btn.textContent = "Registering...";
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, finalEmail, password);
+        await setDoc(doc(db, "users", cred.user.uid), {
+          uid: cred.user.uid,
+          role: "teacher",
+          fullName,
+          schoolName,
+          email: finalEmail,
+          createdAt: new Date().toISOString()
+        });
+
+        showSuccess("Teacher registered successfully! Redirecting...");
+        window.location.href = "teacher-dashboard.html";
+      } catch (err) {
+        showError(err.message);
+        btn.disabled = false;
+        btn.textContent = "Register Teacher";
+      }
+    });
   </script>
 
   <!-- PWA Service Worker Registration -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js")
-          .then(() => console.log("Service Worker Registered"))
-          .catch((err) => console.log("SW Registration Failed:", err));
+        navigator.serviceWorker.register("/service-worker.js")
+          .then(() => console.log("[PWA] Service Worker active"))
+          .catch((err) => console.log("[PWA] SW error:", err));
       });
     }
   </script>
