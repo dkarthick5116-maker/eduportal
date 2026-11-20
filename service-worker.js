@@ -1,5 +1,5 @@
 // Service Worker Cache Version
-const CACHE_NAME = "eduportal-v12";
+const CACHE_NAME = "eduportal-v15";
 
 // Essential App Shell & Static Assets to Pre-cache
 const ASSETS_TO_CACHE = [
