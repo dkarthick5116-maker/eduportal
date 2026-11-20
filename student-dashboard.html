@@ -120,7 +120,7 @@
       font-size: 13px;
       cursor: pointer;
     }
-    .tabs-slider {
+        .tabs-slider {
       display: flex;
       gap: 8px;
       overflow-x: auto;
@@ -279,7 +279,7 @@
         <div class="avatar-icon">🎓</div>
         <div>
           <h2 class="profile-name" id="student-name">Student</h2>
-          <p class="profile-sub" id="student-school">GHSS Salem</p>
+          <p class="profile-sub" id="student-school">Loading school...</p>
           <span class="badge-info" id="student-class-info">Loading details...</span>
         </div>
       </div>
@@ -294,7 +294,8 @@
       <button class="nav-tab-btn" data-tab="tab-my-notices" id="tab-btn-notices">📢 Notices</button>
       <button class="nav-tab-btn" data-tab="tab-my-results" id="tab-btn-results">📊 Report Card</button>
     </div>
-        <!-- 1. Exam Question Papers & Answer Writing Tab -->
+
+    <!-- 1. Question Papers -->
     <div class="panel-box" id="tab-exam-qp">
       <h3 class="panel-title" id="title-exam-qp">Exam Question Papers & Write Answers</h3>
       <div id="qp-container">
@@ -302,7 +303,7 @@
       </div>
     </div>
 
-    <!-- 2. My Homework -->
+    <!-- 2. Homework -->
     <div class="panel-box hidden" id="tab-my-hw">
       <h3 class="panel-title" id="title-my-hw">Assigned Homework</h3>
       <div id="hw-container">
@@ -362,6 +363,15 @@
     let currentStudent = null;
     let currentLang = "en";
 
+    // Strict Normalizer for School & Class matching
+    function cleanSchool(s) {
+      return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+    }
+
+    function cleanClass(v) {
+      return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+    }
+
     const dict = {
       en: {
         navTitle: "Education Portal V2.2",
@@ -380,11 +390,6 @@
         thSubject: "Subject",
         thScore: "Score",
         thTotal: "Total",
-        loadingQp: "Loading question papers...",
-        loadingHw: "Loading homework...",
-        loadingMat: "Loading study notes...",
-        loadingNotices: "Loading notices...",
-        loadingResults: "Loading exam marks...",
         noQp: "No question papers published for your class and section yet.",
         noHw: "No homework assigned for your class and section right now.",
         noMat: "No study materials posted for your class and section yet.",
@@ -422,13 +427,8 @@
         thSubject: "பாடம்",
         thScore: "மதிப்பெண்",
         thTotal: "மொத்தம்",
-        loadingQp: "வினாத்தாள்கள் ஏற்றப்படுகின்றன...",
-        loadingHw: "வீட்டுப்பாடங்கள் ஏற்றப்படுகின்றன...",
-        loadingMat: "பாடக் குறிப்புகள் ஏற்றப்படுகின்றன...",
-        loadingNotices: "அறிவிப்புகள் ஏற்றப்படுகின்றன...",
-        loadingResults: "மதிப்பெண்கள் ஏற்றப்படுகின்றன...",
-        noQp: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு வினாத்தாள்கள் எதுவும் இல்லை.",
-        noHw: "உங்கள் வகுப்பு மற்றும் பிரிவிற்கு வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
+        noQp: "உங்கள் பள்ளி மற்றும் வகுப்பிற்கு வினாத்தாள்கள் எதுவும் இல்லை.",
+        noHw: "உங்கள் பள்ளி மற்றும் வகுப்பிற்கு வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
         noMat: "உங்கள் வகுப்புக்கான பாடக் குறிப்புகள் எதுவும் பதிவேற்றப்படவில்லை.",
         noNotices: "அறிவிப்புகள் எதுவும் இல்லை.",
         noResults: "தேர்வு பதிவுகள் எதுவும் இல்லை.",
@@ -488,10 +488,6 @@
       loadStudentData();
     });
 
-    function cleanVal(v) {
-      return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
-    }
-
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
@@ -537,34 +533,40 @@
     });
 
     async function loadStudentData() {
-      await loadQuestionPapers();
-      await loadHomework();
-      await loadMaterials();
-      await loadNotices();
-      await loadResults();
+      await Promise.allSettled([
+        loadQuestionPapers(),
+        loadHomework(),
+        loadMaterials(),
+        loadNotices(),
+        loadResults()
+      ]);
     }
-          // 1. Load Question Papers with Answer Writing Feature
+          // 1. Load Question Papers (WITH STRICT SCHOOL MATCH)
     async function loadQuestionPapers() {
       const container = document.getElementById("qp-container");
       const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "question_papers"));
-        const studentClass = cleanVal(currentStudent.className);
+        const studentSchool = cleanSchool(currentStudent.schoolName);
+        const studentClass = cleanClass(currentStudent.className);
         const studentSec = (currentStudent.section || "").trim().toUpperCase();
         const studentBoard = (currentStudent.board || "State Board").trim().toLowerCase();
         const items = [];
 
         snap.forEach(docSnap => {
           const data = docSnap.data();
-          const targetClass = cleanVal(data.className);
+          const targetSchool = cleanSchool(data.schoolName);
+          const targetClass = cleanClass(data.className);
           const targetSec = (data.section || "All").trim().toUpperCase();
           const targetBoard = (data.board || "State Board").trim().toLowerCase();
 
+          // STRICT SCHOOL CHECK: Only show if school matches!
+          const matchesSchool = !targetSchool || targetSchool === studentSchool;
           const matchesClass = targetClass === studentClass;
           const matchesSec = targetSec === "ALL" || targetSec === studentSec;
           const matchesBoard = !data.board || targetBoard === studentBoard;
 
-          if (matchesClass && matchesSec && matchesBoard) {
+          if (matchesSchool && matchesClass && matchesSec && matchesBoard) {
             items.push({ id: docSnap.id, ...data });
           }
         });
@@ -603,9 +605,8 @@
         });
         container.innerHTML = html;
 
-        // Answer Submission Listener
         container.querySelectorAll(".btn-submit-qp-ans").forEach(btn => {
-          btn.addEventListener("click", async (e) => {
+          btn.addEventListener("click", async () => {
             const qpId = btn.getAttribute("data-qpid");
             const examName = btn.getAttribute("data-exam");
             const subject = btn.getAttribute("data-subject");
@@ -656,25 +657,29 @@
         container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${err.message}</p>`;
       }
     }
-          // 2. Load Homework
+
+    // 2. Load Homework (WITH STRICT SCHOOL MATCH)
     async function loadHomework() {
       const container = document.getElementById("hw-container");
       const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "homework"));
-        const studentClass = cleanVal(currentStudent.className);
+        const studentSchool = cleanSchool(currentStudent.schoolName);
+        const studentClass = cleanClass(currentStudent.className);
         const studentSec = (currentStudent.section || "").trim().toUpperCase();
         const items = [];
 
         snap.forEach(docSnap => {
           const data = docSnap.data();
-          const targetClass = cleanVal(data.className);
+          const targetSchool = cleanSchool(data.schoolName);
+          const targetClass = cleanClass(data.className);
           const targetSec = (data.section || "All").trim().toUpperCase();
 
+          const matchesSchool = !targetSchool || targetSchool === studentSchool;
           const matchesClass = targetClass === studentClass;
           const matchesSec = targetSec === "ALL" || targetSec === studentSec;
 
-          if (matchesClass && matchesSec) {
+          if (matchesSchool && matchesClass && matchesSec) {
             items.push({ id: docSnap.id, ...data });
           }
         });
@@ -717,6 +722,7 @@
                 rollNumber: currentStudent.rollNumber,
                 className: currentStudent.className,
                 section: currentStudent.section,
+                schoolName: currentStudent.schoolName || "",
                 answer: answer,
                 submittedAt: new Date().toISOString()
               });
@@ -730,27 +736,29 @@
       } catch (e) {
         container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${e.message}</p>`;
       }
-    }
-
-    // 3. Load Materials
+      }
+             // 3. Load Materials (WITH STRICT SCHOOL MATCH)
     async function loadMaterials() {
       const container = document.getElementById("mat-container");
       const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "materials"));
-        const studentClass = cleanVal(currentStudent.className);
+        const studentSchool = cleanSchool(currentStudent.schoolName);
+        const studentClass = cleanClass(currentStudent.className);
         const studentSec = (currentStudent.section || "").trim().toUpperCase();
         const items = [];
 
         snap.forEach(docSnap => {
           const data = docSnap.data();
-          const targetClass = cleanVal(data.className);
+          const targetSchool = cleanSchool(data.schoolName);
+          const targetClass = cleanClass(data.className);
           const targetSec = (data.section || "All").trim().toUpperCase();
 
+          const matchesSchool = !targetSchool || targetSchool === studentSchool;
           const matchesClass = targetClass === studentClass;
           const matchesSec = targetSec === "ALL" || targetSec === studentSec;
 
-          if (matchesClass && matchesSec) {
+          if (matchesSchool && matchesClass && matchesSec) {
             items.push(data);
           }
         });
@@ -776,19 +784,30 @@
       }
     }
 
-    // 4. Load Notices
+    // 4. Load Notices (WITH STRICT SCHOOL MATCH)
     async function loadNotices() {
       const container = document.getElementById("notices-container");
       const t = dict[currentLang];
       try {
         const snap = await getDocs(collection(db, "notices"));
-        if (snap.empty) {
+        const studentSchool = cleanSchool(currentStudent.schoolName);
+        const items = [];
+
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const targetSchool = cleanSchool(data.schoolName);
+          if (!targetSchool || targetSchool === studentSchool) {
+            items.push(data);
+          }
+        });
+
+        if (items.length === 0) {
           container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${t.noNotices}</p>`;
           return;
         }
+
         let html = "";
-        snap.forEach(docSnap => {
-          const n = docSnap.data();
+        items.forEach(n => {
           html += `
             <div class="card-entry">
               <h4>${n.title}</h4>
@@ -802,7 +821,7 @@
       }
     }
 
-    // 5. Load Results
+    // 5. Load Results (BY ROLL NUMBER & SCHOOL)
     async function loadResults() {
       const tbody = document.getElementById("results-tbody");
       const t = dict[currentLang];
@@ -812,15 +831,24 @@
           where("rollNumber", "==", currentStudent.rollNumber.toString())
         );
         const snap = await getDocs(q);
+        const studentSchool = cleanSchool(currentStudent.schoolName);
+        const items = [];
 
-        if (snap.empty) {
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const targetSchool = cleanSchool(data.schoolName);
+          if (!targetSchool || targetSchool === studentSchool) {
+            items.push(data);
+          }
+        });
+
+        if (items.length === 0) {
           tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748b;">${t.noResults}</td></tr>`;
           return;
         }
 
         let html = "";
-        snap.forEach(docSnap => {
-          const r = docSnap.data();
+        items.forEach(r => {
           html += `
             <tr>
               <td><strong>${r.examName || "-"}</strong></td>
@@ -841,7 +869,7 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js")
+        navigator.serviceWorker.register("/sw.js")
           .then(() => console.log("[PWA] Service Worker registered"))
           .catch((err) => console.log("[PWA] SW error:", err));
       });
@@ -849,3 +877,5 @@
   </script>
 </body>
 </html>
+
+    
