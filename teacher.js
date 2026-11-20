@@ -10,7 +10,7 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Global State
+// Global App State
 let currentTeacher = null;
 let cachedStudents = [];
 let cachedHomework = [];
@@ -19,10 +19,24 @@ let currentLang = "en";
 let qpFormatMode = "type";
 let currentSubmissionType = "exam"; // "exam" or "hw"
 
+// Strict Normalizer to eliminate cross-school leaks
+function cleanSchoolName(name) {
+  return (name || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+}
+
+function normalizeClassVal(val) {
+  return (val || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+}
+
+function safeText(id, txt) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = txt;
+}
+
 // Translation Dictionary
 const tDict = {
   en: {
-    noStudents: "No students found",
+    noStudents: "No students found for this school.",
     loadingStudents: "Loading students...",
     attendanceSaved: "Attendance recorded successfully!",
     qpPublished: "Question Paper Published Successfully!",
@@ -32,14 +46,14 @@ const tDict = {
     noticePublished: "Notice published successfully!",
     noQp: "No question papers published yet.",
     noHw: "No homework posted yet.",
-    noSub: "No submissions yet.",
+    noSub: "No homework submissions yet.",
     noExamSub: "No students have submitted answers for this exam yet.",
     noMat: "No study materials posted.",
     noResults: "No results recorded.",
     noNotices: "No notices posted."
   },
   ta: {
-    noStudents: "மாணவர்கள் யாரும் இல்லை",
+    noStudents: "இந்த பள்ளிக்கான மாணவர்கள் யாரும் இல்லை.",
     loadingStudents: "மாணவர்கள் பட்டியல் ஏற்றப்படுகிறது...",
     attendanceSaved: "வருகைப் பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது!",
     qpPublished: "வினாத்தாள் வெற்றிகரமாக வெளியிடப்பட்டது!",
@@ -49,7 +63,7 @@ const tDict = {
     noticePublished: "அறிவிப்பு வெளியிடப்பட்டது!",
     noQp: "வினாத்தாள்கள் எதுவும் இல்லை.",
     noHw: "வீட்டுப்பாடங்கள் எதுவும் இல்லை.",
-    noSub: "சமர்ப்பிப்புகள் எதுவும் இல்லை.",
+    noSub: "வீட்டுப்பாட சமர்ப்பிப்புகள் எதுவும் இல்லை.",
     noExamSub: "இந்தத் தேர்விற்கு எந்த மாணவரும் விடை சமர்ப்பிக்கவில்லை.",
     noMat: "பாடக் குறிப்புகள் எதுவும் இல்லை.",
     noResults: "தேர்வு முடிவுகள் எதுவும் இல்லை.",
@@ -57,13 +71,14 @@ const tDict = {
   }
 };
 
+// Immediate DOM Setup
 document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   setupLanguage();
   setupExamToggles();
 });
 
-// Tab Switcher and Submission Mode Toggle
+// Interactive Tab Switcher
 function setupTabs() {
   const tabBtns = document.querySelectorAll(".nav-tab-btn");
   const panels = document.querySelectorAll(".panel-box");
@@ -91,7 +106,7 @@ function setupTabs() {
     });
   });
 
-  // Toggle between Exam Answers and Homework Answers in Submissions tab
+  // Toggle Submissions View: Exam vs Homework
   const btnSubExam = document.getElementById("btn-sub-type-exam");
   const btnSubHw = document.getElementById("btn-sub-type-hw");
   const boxFilterExam = document.getElementById("box-filter-exam");
@@ -118,6 +133,7 @@ function setupTabs() {
   }
 }
 
+// Exam Question Paper Mode Switcher
 function setupExamToggles() {
   const btnType = document.getElementById("btn-mode-type");
   const btnUpload = document.getElementById("btn-mode-upload");
@@ -151,6 +167,7 @@ function setupExamToggles() {
   }
 }
 
+// Bilingual Support
 function setupLanguage() {
   const btnEn = document.getElementById("btn-en");
   const btnTa = document.getElementById("btn-ta");
@@ -172,13 +189,8 @@ function setupLanguage() {
       renderAttendanceList();
     });
   }
-}
-
-function safeText(id, txt) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = txt;
     }
-// Auth Check & Profile Setup
+// Auth State Observer
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -199,6 +211,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+// Logout Listener
 const btnLogout = document.getElementById("btn-logout");
 if (btnLogout) {
   btnLogout.addEventListener("click", async () => {
@@ -219,14 +232,24 @@ async function refreshAllData() {
   ]);
 }
 
-// 1. STUDENTS ROSTER
+// 1. STUDENTS ROSTER (Filtered Strictly by Teacher's School)
 async function loadStudents() {
   const tbody = document.getElementById("roster-tbody");
   try {
     const q = query(collection(db, "users"), where("role", "==", "student"));
     const snap = await getDocs(q);
+    const teacherSchool = cleanSchoolName(currentTeacher?.schoolName);
+
     cachedStudents = [];
-    snap.forEach((d) => cachedStudents.push({ id: d.id, ...d.data() }));
+    snap.forEach((d) => {
+      const data = d.data();
+      const studentSchool = cleanSchoolName(data.schoolName);
+      
+      // Strict Check: Only include student if school matches teacher's school
+      if (teacherSchool && studentSchool === teacherSchool) {
+        cachedStudents.push({ id: d.id, ...data });
+      }
+    });
 
     safeText("stat-students", cachedStudents.length);
     renderRoster();
@@ -245,8 +268,8 @@ function renderRoster() {
   const secFilter = document.getElementById("roster-sec-filter")?.value || "All";
 
   const list = cachedStudents.filter((s) => {
-    const sCls = (s.className || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
-    const tCls = clsFilter.replace(/^class\s*/i, "").trim().toLowerCase();
+    const sCls = normalizeClassVal(s.className);
+    const tCls = normalizeClassVal(clsFilter);
     const matchCls = clsFilter === "All" || sCls === tCls;
 
     const sSec = (s.section || "").trim().toUpperCase();
@@ -284,17 +307,17 @@ document.getElementById("roster-sec-filter")?.addEventListener("change", renderR
 function renderAttendanceList() {
   const container = document.getElementById("att-student-list");
   if (!container) return;
-  const clsVal = (document.getElementById("att-class-select")?.value || "").trim().toLowerCase();
+  const clsVal = normalizeClassVal(document.getElementById("att-class-select")?.value);
   const secVal = (document.getElementById("att-sec-select")?.value || "").trim().toUpperCase();
 
   const list = cachedStudents.filter((s) => {
-    const sCls = (s.className || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+    const sCls = normalizeClassVal(s.className);
     const sSec = (s.section || "").trim().toUpperCase();
     return sCls === clsVal && sSec === secVal;
   });
 
   if (list.length === 0) {
-    container.innerHTML = `<p style="color:#64748b;font-size:13px;">No students registered for Class ${clsVal} - Sec ${secVal}.</p>`;
+    container.innerHTML = `<p style="color:#64748b;font-size:13px;">No students registered for Class ${clsVal || "-"} - Sec ${secVal || "-"}.</p>`;
     return;
   }
 
@@ -340,7 +363,7 @@ document.getElementById("btn-save-attendance")?.addEventListener("click", async 
     alert("Error: " + err.message);
   }
 });
-     // 3. EXAM QUESTION PAPERS
+// 3. EXAM QUESTION PAPERS
 document.getElementById("form-qp")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const qpType = document.getElementById("qp-exam-type").value;
@@ -395,11 +418,19 @@ async function loadQuestionPapers() {
   const examFilter = document.getElementById("submission-exam-filter");
   try {
     const snap = await getDocs(collection(db, "question_papers"));
+    const teacherSchool = cleanSchoolName(currentTeacher?.schoolName);
+
     cachedQPs = [];
-    snap.forEach((d) => cachedQPs.push({ id: d.id, ...d.data() }));
+    snap.forEach((d) => {
+      const data = d.data();
+      const paperSchool = cleanSchoolName(data.schoolName);
+      if (!teacherSchool || paperSchool === teacherSchool) {
+        cachedQPs.push({ id: d.id, ...data });
+      }
+    });
+
     safeText("stat-exams", cachedQPs.length);
 
-    // Populate Exam selection dropdown in Submissions tab
     if (examFilter) {
       examFilter.innerHTML = cachedQPs.length === 0
         ? `<option value="">No exam papers published</option>`
@@ -426,7 +457,7 @@ async function loadQuestionPapers() {
   }
 }
 
-// 4. EXAM SUBMISSIONS LOADER (Shows Student Answers for Exams)
+// 4. EXAM SUBMISSIONS LOADER
 async function loadExamSubmissions() {
   const tbody = document.getElementById("submission-tbody");
   const qpId = document.getElementById("submission-exam-filter")?.value;
@@ -475,6 +506,7 @@ async function loadExamSubmissions() {
 }
 
 document.getElementById("submission-exam-filter")?.addEventListener("change", loadExamSubmissions);
+
 // 5. HOMEWORK & HOMEWORK SUBMISSIONS
 document.getElementById("form-hw")?.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -505,8 +537,17 @@ async function loadHomeworkList() {
   const filter = document.getElementById("submission-hw-filter");
   try {
     const snap = await getDocs(collection(db, "homework"));
+    const teacherSchool = cleanSchoolName(currentTeacher?.schoolName);
+
     cachedHomework = [];
-    snap.forEach((d) => cachedHomework.push({ id: d.id, ...d.data() }));
+    snap.forEach((d) => {
+      const data = d.data();
+      const hwSchool = cleanSchoolName(data.schoolName);
+      if (!teacherSchool || hwSchool === teacherSchool) {
+        cachedHomework.push({ id: d.id, ...data });
+      }
+    });
+
     safeText("stat-homework", cachedHomework.length);
 
     if (filter) {
@@ -603,21 +644,29 @@ async function loadMaterialsList() {
   if (!container) return;
   try {
     const snap = await getDocs(collection(db, "materials"));
-    if (snap.empty) {
+    const teacherSchool = cleanSchoolName(currentTeacher?.schoolName);
+
+    const materials = [];
+    snap.forEach((d) => {
+      const data = d.data();
+      const mSchool = cleanSchoolName(data.schoolName);
+      if (!teacherSchool || mSchool === teacherSchool) {
+        materials.push(data);
+      }
+    });
+
+    if (materials.length === 0) {
       container.innerHTML = `<p style="color:#64748b;font-size:13px;">${tDict[currentLang].noMat}</p>`;
       return;
     }
 
-    container.innerHTML = snap.docs.map((d) => {
-      const m = d.data();
-      return `
-        <div class="card-entry">
-          <h4>${m.title} - ${m.subject}</h4>
-          <div class="card-meta">Class ${m.className} - Section ${m.section}</div>
-          <a class="link-attach" href="${m.link}" target="_blank">🔗 Open Material Link</a>
-        </div>
-      `;
-    }).join("");
+    container.innerHTML = materials.map((m) => `
+      <div class="card-entry">
+        <h4>${m.title} - ${m.subject}</h4>
+        <div class="card-meta">Class ${m.className} - Section ${m.section}</div>
+        <a class="link-attach" href="${m.link}" target="_blank">🔗 Open Material Link</a>
+      </div>
+    `).join("");
   } catch (err) {
     console.error("Error loading materials:", err);
   }
@@ -652,21 +701,29 @@ async function loadResultsList() {
   if (!container) return;
   try {
     const snap = await getDocs(collection(db, "exam_results"));
-    if (snap.empty) {
+    const teacherSchool = cleanSchoolName(currentTeacher?.schoolName);
+
+    const results = [];
+    snap.forEach((d) => {
+      const data = d.data();
+      const rSchool = cleanSchoolName(data.schoolName);
+      if (!teacherSchool || rSchool === teacherSchool) {
+        results.push(data);
+      }
+    });
+
+    if (results.length === 0) {
       container.innerHTML = `<p style="color:#64748b;font-size:13px;">${tDict[currentLang].noResults}</p>`;
       return;
     }
 
-    container.innerHTML = snap.docs.map((d) => {
-      const r = d.data();
-      return `
-        <div class="card-entry">
-          <h4>${r.examName} - ${r.subject}</h4>
-          <div class="card-meta">Class ${r.className} - Section ${r.section} | Roll No: ${r.rollNumber}</div>
-          <p class="card-desc">Marks: ${r.marksScored} / ${r.totalMarks}</p>
-        </div>
-      `;
-    }).join("");
+    container.innerHTML = results.map((r) => `
+      <div class="card-entry">
+        <h4>${r.examName} - ${r.subject}</h4>
+        <div class="card-meta">Class ${r.className} - Section ${r.section} | Roll No: ${r.rollNumber}</div>
+        <p class="card-desc">Marks: ${r.marksScored} / ${r.totalMarks}</p>
+      </div>
+    `).join("");
   } catch (err) {
     console.error("Error loading results:", err);
   }
@@ -696,22 +753,29 @@ async function loadNoticesList() {
   if (!container) return;
   try {
     const snap = await getDocs(collection(db, "notices"));
-    if (snap.empty) {
+    const teacherSchool = cleanSchoolName(currentTeacher?.schoolName);
+
+    const notices = [];
+    snap.forEach((d) => {
+      const data = d.data();
+      const nSchool = cleanSchoolName(data.schoolName);
+      if (!teacherSchool || nSchool === teacherSchool) {
+        notices.push(data);
+      }
+    });
+
+    if (notices.length === 0) {
       container.innerHTML = `<p style="color:#64748b;font-size:13px;">${tDict[currentLang].noNotices}</p>`;
       return;
     }
 
-    container.innerHTML = snap.docs.map((d) => {
-      const n = d.data();
-      return `
-        <div class="card-entry">
-          <h4>${n.title}</h4>
-          <p class="card-desc">${n.details}</p>
-        </div>
-      `;
-    }).join("");
+    container.innerHTML = notices.map((n) => `
+      <div class="card-entry">
+        <h4>${n.title}</h4>
+        <p class="card-desc">${n.details}</p>
+      </div>
+    `).join("");
   } catch (err) {
     console.error("Error loading notices:", err);
   }
-}
-
+                                          }
