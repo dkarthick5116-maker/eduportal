@@ -1,7 +1,7 @@
-// Service Worker Version & Cache Name
-const CACHE_NAME = "eduportal-v8";
+// Service Worker Cache Version
+const CACHE_NAME = "eduportal-v10";
 
-// Core App Shell Assets to Pre-cache
+// Essential App Shell & Static Assets to Pre-cache
 const ASSETS_TO_CACHE = [
   "/",
   "/login.html",
@@ -14,25 +14,25 @@ const ASSETS_TO_CACHE = [
   "/file_0000000018c8820bbb5ed8b1c124a4c3.png"
 ];
 
-// 1. INSTALL EVENT: Pre-caches essential UI files and activates immediately
+// 1. INSTALL EVENT: Pre-caches shell assets and activates immediately
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[Service Worker] Caching updated app shell and static assets");
+      console.log("[Service Worker] Caching updated app shell & assets");
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
   self.skipWaiting();
 });
 
-// 2. ACTIVATE EVENT: Cleans up obsolete cache versions from previous updates
+// 2. ACTIVATE EVENT: Deletes any old, outdated caches automatically
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keyList) => {
       return Promise.all(
         keyList.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log("[Service Worker] Purging outdated cache:", key);
+            console.log("[Service Worker] Purging old cache:", key);
             return caches.delete(key);
           }
         })
@@ -41,12 +41,11 @@ self.addEventListener("activate", (event) => {
   );
   self.clients.claim();
 });
-
-// 3. FETCH EVENT: Network bypass for dynamic Firebase APIs + Cache-First for static UI
+// 3. FETCH EVENT: Real-time network bypass for Firebase APIs + Cache-first for UI files
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
-  // Directly bypass service worker for live Firebase Auth & Firestore API calls
+  // Strictly bypass service worker caching for Firebase Auth & Firestore live data
   if (
     requestUrl.origin.includes("firestore.googleapis.com") ||
     requestUrl.origin.includes("identitytoolkit.googleapis.com") ||
@@ -56,7 +55,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Non-GET requests (POST, PUT, DELETE) must never be served from cache
+  // Never cache non-GET requests (POST, PUT, DELETE)
   if (event.request.method !== "GET") {
     return;
   }
@@ -64,13 +63,11 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Return cached asset if present
         return cachedResponse;
       }
 
-      // Otherwise fetch from network
       return fetch(event.request).catch(() => {
-        // Offline fallback to login page for navigation requests
+        // Fallback to login page if offline and navigating
         if (event.request.mode === "navigate") {
           return caches.match("/login.html");
         }
