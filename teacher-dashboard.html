@@ -5,296 +5,211 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduPortal - Teacher Dashboard</title>
 
+  <!-- PWA & App Icons -->
   <link rel="icon" type="image/png" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
   <link rel="apple-touch-icon" href="/file_0000000018c8820bbb5ed8b1c124a4c3.png" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#1e1b4b" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { 
-      background-color: #f0f2f5; 
-      margin: 0; 
-      padding: 0; 
-      font-family: system-ui, -apple-system, sans-serif; 
-      color: #1f2937; 
+    body {
+      background-color: #f1f5f9;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1f2937;
     }
-    .top-navbar { 
-      background: #1e1b4b; 
-      color: #fff; 
-      padding: 12px 16px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
+    .top-navbar {
+      background: #1e1b4b;
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-    .brand-container { 
-      display: flex; 
-      align-items: center; 
-      gap: 10px; 
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .brand-logo { 
-      width: 30px; 
-      height: 30px; 
-      border-radius: 6px; 
-      object-fit: cover; 
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      object-fit: cover;
     }
-    .brand-title { 
-      font-size: 17px; 
-      font-weight: 700; 
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
-    .lang-group { 
-      display: flex; 
-      gap: 6px; 
+    .lang-group {
+      display: flex;
+      gap: 6px;
     }
-    .lang-pill { 
-      background: rgba(255,255,255,0.15); 
-      border: 1px solid rgba(255,255,255,0.3); 
-      color: #fff; 
-      padding: 4px 10px; 
-      border-radius: 6px; 
-      font-size: 13px; 
-      cursor: pointer; 
+    .lang-pill {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
     }
-    .lang-pill.active { 
-      background: #ffffff; 
-      color: #1e1b4b; 
-      font-weight: 700; 
+    .lang-pill.active {
+      background: #ffffff;
+      color: #1e1b4b;
+      font-weight: 700;
     }
-    .dashboard-container { 
-      max-width: 650px; 
-      margin: 0 auto; 
-      padding: 16px; 
-      box-sizing: border-box; 
+    .dashboard-container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 16px;
     }
-    .profile-card { 
-      background: #fff; 
-      border-radius: 12px; 
-      padding: 16px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 16px; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08); 
+    .profile-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
     }
-    .profile-info { 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
+    .profile-info h3 {
+      margin: 0 0 4px 0;
+      color: #1e1b4b;
+      font-size: 18px;
     }
-    .avatar-icon { 
-      font-size: 32px; 
+    .profile-info p {
+      margin: 0;
+      color: #64748b;
+      font-size: 14px;
     }
-    .profile-name { 
-      font-size: 17px; 
-      font-weight: 700; 
-      color: #1e1b4b; 
-      margin: 0; 
+    .btn-logout {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
     }
-    .profile-sub { 
-      font-size: 13px; 
-      color: #64748b; 
-      margin: 2px 0 0 0; 
+       .tab-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #cbd5e1;
     }
-    .btn-logout { 
-      background: #dc2626; 
-      color: #fff; 
-      border: none; 
-      padding: 8px 16px; 
-      border-radius: 8px; 
-      font-weight: 600; 
-      font-size: 13px; 
-      cursor: pointer; 
+    .nav-tab-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
     }
-        .stats-grid { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 12px; 
-      margin-bottom: 16px; 
+    .nav-tab-btn.active {
+      background: #1e1b4b;
+      color: #ffffff;
+      border-color: #1e1b4b;
     }
-    .stat-card { 
-      background: #fff; 
-      border: 1px solid #e2e8f0; 
-      border-radius: 10px; 
-      padding: 12px 10px; 
-      text-align: center; 
+    .panel-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
     }
-    .stat-title { 
-      font-size: 11px; 
-      font-weight: 700; 
-      color: #475569; 
-      text-transform: uppercase; 
-      margin-bottom: 4px; 
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e1b4b;
+      margin-top: 0;
+      margin-bottom: 16px;
     }
-    .stat-value { 
-      font-size: 24px; 
-      font-weight: 700; 
-      color: #1e1b4b; 
+    .form-group {
+      margin-bottom: 14px;
     }
-    .tabs-slider { 
-      display: flex; 
-      gap: 8px; 
-      overflow-x: auto; 
-      padding-bottom: 6px; 
-      margin-bottom: 16px; 
-      -webkit-overflow-scrolling: touch; 
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
     }
-    .nav-tab-btn { 
-      background: #fff; 
-      border: 1px solid #cbd5e1; 
-      padding: 8px 14px; 
-      border-radius: 8px; 
-      font-size: 13px; 
-      font-weight: 600; 
-      color: #475569; 
-      cursor: pointer; 
-      white-space: nowrap; 
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      background: #f8fafc;
+      font-family: inherit;
     }
-    .nav-tab-btn.active { 
-      background: #1e1b4b; 
-      color: #fff; 
-      border-color: #1e1b4b; 
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      border-color: #4338ca;
+      background: #ffffff;
     }
-    .panel-box { 
-      background: #fff; 
-      border-radius: 12px; 
-      padding: 18px 16px; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06); 
-      margin-bottom: 24px; 
+    .form-row {
+      display: flex;
+      gap: 12px;
     }
-    .panel-title { 
-      font-size: 16px; 
-      font-weight: 700; 
-      color: #1e1b4b; 
-      margin: 0 0 16px 0; 
+    .form-row .form-group {
+      flex: 1;
     }
-    .field-box { 
-      margin-bottom: 14px; 
+    .btn-submit {
+      width: 100%;
+      background: #1e1b4b;
+      color: #ffffff;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
     }
-    .field-box label { 
-      display: block; 
-      font-size: 13px; 
-      font-weight: 600; 
-      color: #334155; 
-      margin-bottom: 6px; 
+    .card-entry {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
-    .field-box input, .field-box select, .field-box textarea { 
-      width: 100%; 
-      padding: 10px 12px; 
-      border: 1px solid #cbd5e1; 
-      border-radius: 8px; 
-      font-size: 14px; 
-      box-sizing: border-box; 
-      outline: none; 
+    .card-entry h4 {
+      margin: 0 0 6px 0;
+      color: #1e1b4b;
+      font-size: 15px;
     }
-    .flex-filter-row { 
-      display: flex; 
-      gap: 8px; 
+    .card-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 8px;
     }
-    .flex-filter-row .field-box { 
-      flex: 1; 
-    }
-    .btn-action-primary { 
-      width: 100%; 
-      background: #1e1b4b; 
-      color: #fff; 
-      padding: 12px; 
-      border: none; 
-      border-radius: 8px; 
-      font-size: 14px; 
-      font-weight: 600; 
-      cursor: pointer; 
-    }
-    .card-entry { 
-      background: #f8fafc; 
-      border: 1px solid #e2e8f0; 
-      border-radius: 8px; 
-      padding: 12px; 
-      margin-bottom: 10px; 
-    }
-    .card-entry h4 { 
-      margin: 0 0 4px 0; 
-      font-size: 14px; 
-      color: #1e1b4b; 
-    }
-    .card-meta { 
-      font-size: 12px; 
-      color: #64748b; 
-      margin-bottom: 6px; 
-    }
-    .card-desc { 
-      font-size: 13px; 
-      color: #334155; 
-      margin: 0 0 8px 0; 
-      white-space: pre-wrap; 
-    }
-    .link-attach { 
-      color: #2563eb; 
-      font-size: 13px; 
-      font-weight: 500; 
-      text-decoration: none; 
-    }
-    .roster-table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      margin-top: 10px; 
-      font-size: 13px; 
-    }
-    .roster-table th { 
-      background: #f8fafc; 
-      padding: 8px; 
-      text-align: left; 
-      border-bottom: 2px solid #e2e8f0; 
-    }
-    .roster-table td { 
-      padding: 8px; 
-      border-bottom: 1px solid #e2e8f0; 
-    }
-    .att-row { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      padding: 10px 0; 
-      border-bottom: 1px solid #f1f5f9; 
-    }
-    .att-name { 
-      font-size: 14px; 
-      font-weight: 600; 
-    }
-    .att-options { 
-      display: flex; 
-      gap: 12px; 
-      font-size: 13px; 
-    }
-    .tab-mode-selector { 
-      display: flex; 
-      gap: 8px; 
-      margin-bottom: 14px; 
-    }
-    .tab-mode-btn { 
-      flex: 1; 
-      padding: 8px; 
-      border: 1px solid #cbd5e1; 
-      border-radius: 6px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      background: #fff; 
-    }
-    .tab-mode-btn.active { 
-      background: #1e1b4b; 
-      color: #fff; 
-    }
-    .hidden { 
-      display: none !important; 
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div class="top-navbar">
     <div class="brand-container">
       <img src="/file_0000000018c8820bbb5ed8b1c124a4c3.png" alt="EduPortal Logo" class="brand-logo" />
-      <span class="brand-title">Education Portal V2.2</span>
+      <span class="brand-title" id="nav-title">Teacher Portal</span>
     </div>
     <div class="lang-group">
       <button class="lang-pill active" id="btn-en">English</button>
@@ -303,431 +218,544 @@
   </div>
 
   <div class="dashboard-container">
+    <!-- Teacher Profile Banner -->
     <div class="profile-card">
       <div class="profile-info">
-        <div class="avatar-icon">👨‍🏫</div>
-        <div>
-          <h2 class="profile-name" id="teacher-name">Teacher</h2>
-          <p class="profile-sub" id="school-name">EduPortal School</p>
-        </div>
+        <h3 id="teacher-name">Loading Teacher...</h3>
+        <p id="teacher-school">School: -</p>
       </div>
-      <button class="btn-logout" id="btn-logout">Logout</button>
+      <button id="btn-logout" class="btn-logout">Logout</button>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-title">TOTAL STUDENTS</div>
-        <div class="stat-value" id="stat-students">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">CLASSES</div>
-        <div class="stat-value">7</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">HOMEWORK ACTIVE</div>
-        <div class="stat-value" id="stat-homework">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">EXAMS & PAPERS</div>
-        <div class="stat-value" id="stat-exams">0</div>
-      </div>
+    <!-- Navigation Tabs -->
+    <div class="tab-bar">
+      <button class="nav-tab-btn active" data-tab="tab-qp" id="tab-btn-qp">📝 Question Papers</button>
+      <button class="nav-tab-btn" data-tab="tab-hw" id="tab-btn-hw">📚 Assign Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-mat" id="tab-btn-mat">📖 Notes & Materials</button>
+      <button class="nav-tab-btn" data-tab="tab-notices" id="tab-btn-notices">📢 Notice Board</button>
+      <button class="nav-tab-btn" data-tab="tab-results" id="tab-btn-results">📊 Enter Marks</button>
     </div>
+        <!-- 1. EXAM QUESTION PAPERS PANEL -->
+    <div id="tab-qp" class="panel-box">
+      <h2 class="panel-title" id="title-publish-qp">Publish Question Paper</h2>
 
-    <div class="tabs-slider">
-      <button class="nav-tab-btn active" data-tab="tab-roster">👥 Students</button>
-      <button class="nav-tab-btn" data-tab="tab-att">📅 Attendance</button>
-      <button class="nav-tab-btn" data-tab="tab-qp">📝 Question Papers</button>
-      <button class="nav-tab-btn" data-tab="tab-hw">📚 Homework</button>
-      <button class="nav-tab-btn" data-tab="tab-submissions">📥 Submissions</button>
-      <button class="nav-tab-btn" data-tab="tab-mat">📖 Materials</button>
-      <button class="nav-tab-btn" data-tab="tab-results">📊 Exam Results</button>
-      <button class="nav-tab-btn" data-tab="tab-notices">📢 Notices</button>
-    </div>
+      <!-- AI Assistant Card (BYOK Setup) -->
+      <div class="card-entry" style="margin-bottom: 20px; border: 1px solid #c7d2fe; background: #eef2ff;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="margin: 0; color: #1e1b4b; font-size: 15px;">🤖 AI Teaching Assistant</h3>
+          <button type="button" id="btn-open-ai-settings" class="lang-pill" style="color: #1e1b4b; border-color: #a5b4fc; background: #fff;">
+            ⚙️ AI Settings
+          </button>
+        </div>
 
-    <!-- 1. Students Roster -->
-    <div class="panel-box" id="tab-roster">
-      <h3 class="panel-title">Student Roster</h3>
-      <div class="field-box">
-        <input type="text" id="roster-search" placeholder="Search by name / roll..." />
-      </div>
-      <div class="flex-filter-row">
-        <div class="field-box">
-          <select id="roster-class-filter">
-            <option value="All">All Classes</option>
-            <option value="6">Class 6</option>
-            <option value="7">Class 7</option>
-            <option value="8">Class 8</option>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
-        </div>
-        <div class="field-box">
-          <select id="roster-sec-filter">
-            <option value="All">All Sections</option>
-            <option value="A">Section - A</option>
-            <option value="B">Section - B</option>
-            <option value="C">Section - C</option>
-            <option value="D">Section - D</option>
-          </select>
-        </div>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="roster-table">
-          <thead>
-            <tr>
-              <th>Roll No</th>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Section</th>
-              <th>Board</th>
-            </tr>
-          </thead>
-          <tbody id="roster-tbody">
-            <tr><td colspan="5" style="text-align:center;">Loading students...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 2. Attendance -->
-    <div class="panel-box hidden" id="tab-att">
-      <h3 class="panel-title">Mark Attendance</h3>
-      <div class="field-box">
-        <input type="date" id="att-date" />
-      </div>
-      <div class="flex-filter-row">
-        <div class="field-box">
-          <select id="att-class-select">
-            <option value="6">Class 6</option>
-            <option value="7">Class 7</option>
-            <option value="8">Class 8</option>
-            <option value="9">Class 9</option>
-            <option value="10">Class 10</option>
-            <option value="11">Class 11</option>
-            <option value="12">Class 12</option>
-          </select>
-        </div>
-        <div class="field-box">
-          <select id="att-sec-select">
-            <option value="A">Section - A</option>
-            <option value="B">Section - B</option>
-            <option value="C">Section - C</option>
-            <option value="D">Section - D</option>
-          </select>
-        </div>
-      </div>
-      <div id="att-student-list" style="margin-bottom:16px;"></div>
-      <button class="btn-action-primary" id="btn-save-attendance">Save Attendance</button>
-    </div>
-        <!-- 3. Question Papers -->
-    <div class="panel-box hidden" id="tab-qp">
-      <h3 class="panel-title">Create / Upload Question Paper</h3>
-      <form id="form-qp">
-        <div class="flex-filter-row">
-          <div class="field-box">
-            <label>Exam Category</label>
-            <select id="qp-exam-type">
-              <option value="Mid-Term 1">Mid-Term 1</option>
-              <option value="Quarterly Exam">Quarterly Exam</option>
-              <option value="Mid-Term 2">Mid-Term 2</option>
-              <option value="Half-Yearly Exam">Half-Yearly Exam</option>
-              <option value="Annual Exam">Annual Exam</option>
-              <option value="Custom">Custom...</option>
+        <div class="form-row">
+          <div class="form-group">
+            <label>AI Provider</label>
+            <select id="ai-active-provider">
+              <option value="gemini">Google Gemini</option>
+              <option value="openai">OpenAI (ChatGPT)</option>
+              <option value="claude">Anthropic (Claude)</option>
             </select>
           </div>
-          <div class="field-box hidden" id="box-custom-exam">
-            <label>Custom Exam Name</label>
-            <input type="text" id="qp-custom-name" placeholder="Exam Name" />
+          <div class="form-group" style="flex: 2;">
+            <label>Topic / Instructions</label>
+            <input type="text" id="ai-prompt-input" placeholder="e.g. 5 questions on Photosynthesis for Class 6" />
           </div>
         </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
-            <label>Subject</label>
-            <input type="text" id="qp-subject" required />
+
+        <button type="button" class="btn-submit" id="btn-generate-ai-content" style="background: #4338ca;">
+          Generate Questions with AI
+        </button>
+      </div>
+
+      <!-- Question Paper Publish Form -->
+      <form id="form-qp">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Exam Type</label>
+            <select id="qp-type">
+              <option value="Mid-Term 1">Mid-Term 1</option>
+              <option value="Quarterly">Quarterly</option>
+              <option value="Half-Yearly">Half-Yearly</option>
+              <option value="Annual">Annual</option>
+              <option value="Custom">Custom</option>
+            </select>
           </div>
-          <div class="field-box">
+          <div class="form-group hidden" id="qp-custom-name-box">
+            <label>Custom Exam Name</label>
+            <input type="text" id="qp-custom-name" placeholder="e.g. Revision Test" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="qp-subject" placeholder="e.g. Science" required />
+          </div>
+          <div class="form-group">
             <label>Board</label>
             <select id="qp-board">
-              <option value="State Board">State Board</option>
+              <option value="State Board">Tamil Nadu State Board (Samacheer)</option>
               <option value="CBSE">CBSE</option>
+              <option value="ICSE">ICSE</option>
             </select>
           </div>
         </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
+
+        <div class="form-row">
+          <div class="form-group">
             <label>Class</label>
             <select id="qp-class">
-              <option value="6">Class 6</option>
-              <option value="7">Class 7</option>
-              <option value="8">Class 8</option>
-              <option value="9">Class 9</option>
-              <option value="10">Class 10</option>
-              <option value="11">Class 11</option>
-              <option value="12">Class 12</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
             </select>
           </div>
-          <div class="field-box">
+          <div class="form-group">
             <label>Section</label>
-            <select id="qp-sec">
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
+            <select id="qp-section">
+              <option value="All">All Sections</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
             </select>
           </div>
-          <div class="field-box">
+          <div class="form-group">
             <label>Total Marks</label>
-            <input type="number" id="qp-total-marks" value="100" />
+            <input type="number" id="qp-marks" value="100" required />
           </div>
         </div>
-        <div class="field-box">
-          <label>Exam Date</label>
-          <input type="date" id="qp-exam-date" required />
-        </div>
-        <div class="tab-mode-selector">
-          <button type="button" class="tab-mode-btn active" id="btn-mode-type">✍️ Type Questions</button>
-          <button type="button" class="tab-mode-btn" id="btn-mode-upload">📄 Upload Drive Link</button>
-        </div>
-        <div id="mode-type-container" class="field-box">
-          <textarea id="qp-typed-text" rows="6" placeholder="Enter questions here..."></textarea>
-        </div>
-        <div id="mode-upload-container" class="field-box hidden">
-          <input type="url" id="qp-file-link" placeholder="Google Drive URL" />
-        </div>
-        <button type="submit" class="btn-action-primary">Publish Question Paper</button>
-      </form>
-      <div id="qp-list-container" style="margin-top:16px;"></div>
-    </div>
 
-    <!-- 4. Homework -->
-    <div class="panel-box hidden" id="tab-hw">
-      <h3 class="panel-title">Post Homework</h3>
+        <div class="form-group">
+          <label>Exam Date</label>
+          <input type="date" id="qp-date" required />
+        </div>
+
+        <!-- Format Selector -->
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <button type="button" class="nav-tab-btn active" id="btn-mode-type">✍️ Type Questions</button>
+          <button type="button" class="nav-tab-btn" id="btn-mode-upload">📄 Upload Drive Link</button>
+        </div>
+
+        <div class="form-group" id="qp-type-container">
+          <label>Question Paper Content</label>
+          <textarea id="qp-typed-content" rows="6" placeholder="Enter questions or click 'Generate Questions with AI'..."></textarea>
+        </div>
+
+        <div class="form-group hidden" id="qp-upload-container">
+          <label>Google Drive / Document Link</label>
+          <input type="url" id="qp-file-link" placeholder="https://drive.google.com/..." />
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-publish-qp">Publish Question Paper</button>
+      </form>
+
+      <h3 style="margin-top: 24px; color: #1e1b4b; font-size: 16px;">Published Question Papers</h3>
+      <div id="qp-list-container">Loading papers...</div>
+    </div>
+        <!-- 2. HOMEWORK ASSIGNMENT PANEL -->
+    <div id="tab-hw" class="panel-box hidden">
+      <h2 class="panel-title">Assign Homework</h2>
       <form id="form-hw">
-        <div class="field-box">
-          <label>Title</label>
-          <input type="text" id="hw-title" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="hw-subject" placeholder="e.g. Mathematics" required />
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="hw-title" placeholder="e.g. Exercise 3.2 Q1-Q5" required />
+          </div>
         </div>
-        <div class="field-box">
-          <label>Subject</label>
-          <input type="text" id="hw-subject" required />
-        </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
+
+        <div class="form-row">
+          <div class="form-group">
             <label>Class</label>
             <select id="hw-class">
-              <option value="6">Class 6</option>
-              <option value="7">Class 7</option>
-              <option value="8">Class 8</option>
-              <option value="9">Class 9</option>
-              <option value="10">Class 10</option>
-              <option value="11">Class 11</option>
-              <option value="12">Class 12</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
             </select>
           </div>
-          <div class="field-box">
+          <div class="form-group">
             <label>Section</label>
-            <select id="hw-sec">
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
+            <select id="hw-section">
+              <option value="All">All Sections</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="date" id="hw-deadline" required />
+          </div>
         </div>
-        <div class="field-box">
-          <label>Deadline</label>
-          <input type="date" id="hw-deadline" required />
-        </div>
-        <div class="field-box">
+
+        <div class="form-group">
           <label>Instructions</label>
-          <textarea id="hw-instructions" rows="3"></textarea>
+          <textarea id="hw-instructions" rows="3" placeholder="Provide assignment instructions..."></textarea>
         </div>
-        <div class="field-box">
-          <label>Resource Link</label>
-          <input type="url" id="hw-link" />
+
+        <div class="form-group">
+          <label>Resource / Google Drive Link (Optional)</label>
+          <input type="url" id="hw-link" placeholder="https://drive.google.com/..." />
         </div>
-        <button type="submit" class="btn-action-primary">Publish Homework</button>
+
+        <button type="submit" class="btn-submit">Assign Homework</button>
       </form>
-      <div id="hw-list-container" style="margin-top:16px;"></div>
-    </div>
-        <!-- 5. Submissions (Both Exam Answers & Homework Answers) -->
-    <div class="panel-box hidden" id="tab-submissions">
-      <h3 class="panel-title">Review Submissions</h3>
-
-      <!-- Submission Category Switcher -->
-      <div class="tab-mode-selector" style="margin-bottom: 12px;">
-        <button type="button" class="tab-mode-btn active" id="btn-sub-type-exam">📝 Exam Answers</button>
-        <button type="button" class="tab-mode-btn" id="btn-sub-type-hw">📚 Homework Answers</button>
-      </div>
-
-      <!-- Exam Selection Filter -->
-      <div class="field-box" id="box-filter-exam">
-        <label>Select Exam Paper</label>
-        <select id="submission-exam-filter">
-          <option value="">Loading exam papers...</option>
-        </select>
-      </div>
-
-      <!-- Homework Selection Filter -->
-      <div class="field-box hidden" id="box-filter-hw">
-        <label>Select Homework Assignment</label>
-        <select id="submission-hw-filter">
-          <option value="">Loading assignments...</option>
-        </select>
-      </div>
-
-      <div style="overflow-x:auto;">
-        <table class="roster-table">
-          <thead>
-            <tr>
-              <th>Roll No</th>
-              <th>Student</th>
-              <th>Class</th>
-              <th>Submitted Answer / Link</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="submission-tbody">
-            <tr><td colspan="5" style="text-align:center;">Select an exam or assignment above.</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
-    <!-- 6. Materials -->
-    <div class="panel-box hidden" id="tab-mat">
-      <h3 class="panel-title">Upload Study Materials</h3>
+    <!-- 3. NOTES & MATERIALS PANEL -->
+    <div id="tab-mat" class="panel-box hidden">
+      <h2 class="panel-title">Share Study Materials</h2>
       <form id="form-mat">
-        <div class="field-box">
-          <label>Title</label>
-          <input type="text" id="mat-title" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="mat-subject" placeholder="e.g. Social Science" required />
+          </div>
+          <div class="form-group">
+            <label>Chapter / Title</label>
+            <input type="text" id="mat-title" placeholder="e.g. Chapter 4 Notes PDF" required />
+          </div>
         </div>
-        <div class="field-box">
-          <label>Subject</label>
-          <input type="text" id="mat-subject" required />
-        </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
+
+        <div class="form-row">
+          <div class="form-group">
             <label>Class</label>
             <select id="mat-class">
-              <option value="6">Class 6</option>
-              <option value="7">Class 7</option>
-              <option value="8">Class 8</option>
-              <option value="9">Class 9</option>
-              <option value="10">Class 10</option>
-              <option value="11">Class 11</option>
-              <option value="12">Class 12</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
             </select>
           </div>
-          <div class="field-box">
+          <div class="form-group">
             <label>Section</label>
-            <select id="mat-sec">
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
+            <select id="mat-section">
+              <option value="All">All Sections</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
             </select>
           </div>
         </div>
-        <div class="field-box">
-          <label>Drive / PDF Link</label>
-          <input type="url" id="mat-link" required />
+
+        <div class="form-group">
+          <label>Google Drive File Link</label>
+          <input type="url" id="mat-link" placeholder="https://drive.google.com/..." required />
         </div>
-        <button type="submit" class="btn-action-primary">Upload</button>
+
+        <button type="submit" class="btn-submit">Publish Study Material</button>
       </form>
-      <div id="mat-list-container" style="margin-top:16px;"></div>
     </div>
 
-    <!-- 7. Results -->
-    <div class="panel-box hidden" id="tab-results">
-      <h3 class="panel-title">Upload Exam Results</h3>
+    <!-- 4. NOTICE BOARD PANEL -->
+    <div id="tab-notices" class="panel-box hidden">
+      <h2 class="panel-title">Post School Notice</h2>
+      <form id="form-notice">
+        <div class="form-group">
+          <label>Notice Title</label>
+          <input type="text" id="notice-title" placeholder="e.g. Science Exhibition Next Week" required />
+        </div>
+        <div class="form-group">
+          <label>Notice Announcement Details</label>
+          <textarea id="notice-details" rows="4" placeholder="Type school announcement..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Broadcast Notice</button>
+      </form>
+    </div>
+
+    <!-- 5. ENTER EXAM MARKS PANEL -->
+    <div id="tab-results" class="panel-box hidden">
+      <h2 class="panel-title">Enter Student Exam Marks</h2>
       <form id="form-results">
-        <div class="field-box">
-          <label>Exam</label>
-          <select id="res-exam-select">
-            <option value="Mid-Term 1">Mid-Term 1</option>
-            <option value="Quarterly Exam">Quarterly Exam</option>
-            <option value="Annual Exam">Annual Exam</option>
-          </select>
-        </div>
-        <div class="field-box">
-          <label>Subject</label>
-          <input type="text" id="res-subject" required />
-        </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
-            <label>Class</label>
-            <select id="res-class">
-              <option value="6">Class 6</option>
-              <option value="7">Class 7</option>
-              <option value="8">Class 8</option>
-              <option value="9">Class 9</option>
-              <option value="10">Class 10</option>
-              <option value="11">Class 11</option>
-              <option value="12">Class 12</option>
-            </select>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Exam Name</label>
+            <input type="text" id="res-exam-name" placeholder="e.g. Mid-Term 1" required />
           </div>
-          <div class="field-box">
-            <label>Section</label>
-            <select id="res-sec">
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="res-subject" placeholder="e.g. Science" required />
           </div>
         </div>
-        <div class="field-box">
-          <label>Student Roll No</label>
-          <input type="text" id="res-roll" required />
-        </div>
-        <div class="flex-filter-row">
-          <div class="field-box">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Student Roll Number</label>
+            <input type="text" id="res-roll" placeholder="e.g. 6A001" required />
+          </div>
+          <div class="form-group">
             <label>Marks Scored</label>
-            <input type="number" id="res-marks" required />
+            <input type="number" id="res-scored" placeholder="85" required />
           </div>
-          <div class="field-box">
+          <div class="form-group">
             <label>Total Marks</label>
             <input type="number" id="res-total" value="100" required />
           </div>
         </div>
-        <button type="submit" class="btn-action-primary">Save Result</button>
+
+        <button type="submit" class="btn-submit">Save Marks</button>
       </form>
-      <div id="res-list-container" style="margin-top:16px;"></div>
     </div>
-        <!-- 8. Notices -->
-    <div class="panel-box hidden" id="tab-notices">
-      <h3 class="panel-title">School Notices</h3>
-      <form id="form-notice">
-        <div class="field-box">
-          <label>Title</label>
-          <input type="text" id="notice-title" required />
-        </div>
-        <div class="field-box">
-          <label>Details</label>
-          <textarea id="notice-desc" rows="3" required></textarea>
-        </div>
-        <button type="submit" class="btn-action-primary">Publish Notice</button>
-      </form>
-      <div id="notice-list-container" style="margin-top:16px;"></div>
+  </div>
+    <!-- AI API Keys Settings Modal (BYOK Architecture) -->
+  <div id="ai-settings-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: white; border-radius: 12px; padding: 24px; max-width: 440px; width: 90%; box-shadow: 0 4px 14px rgba(0,0,0,0.2);">
+      <h3 style="margin-top: 0; color: #1e1b4b;">Configure AI API Keys</h3>
+      <p style="font-size: 12px; color: #64748b; line-height: 1.4; margin-bottom: 16px;">
+        Keys are stored privately in your browser local storage and are never uploaded to any public database.
+      </p>
+
+      <div class="form-group">
+        <label>Google Gemini API Key</label>
+        <input type="password" id="key-gemini" placeholder="AIzaSy..." />
+      </div>
+
+      <div class="form-group">
+        <label>OpenAI (ChatGPT) API Key</label>
+        <input type="password" id="key-openai" placeholder="sk-..." />
+      </div>
+
+      <div class="form-group">
+        <label>Anthropic (Claude) API Key</label>
+        <input type="password" id="key-claude" placeholder="sk-ant-..." />
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button type="button" class="btn-submit" id="btn-save-ai-keys">Save Keys</button>
+        <button type="button" class="btn-submit" id="btn-close-ai-modal" style="background: #94a3b8;">Close</button>
+      </div>
     </div>
   </div>
 
-  <!-- Dedicated Module Script -->
-  <script type="module" src="./teacher.js"></script>
+  <!-- Dashboard JavaScript Modules -->
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    let currentTeacher = null;
+
+    // Authentication Guard & Profile Loader
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          currentTeacher = snap.data();
+          if (currentTeacher.role !== "teacher") {
+            window.location.href = "student-dashboard.html";
+            return;
+          }
+          document.getElementById("teacher-name").textContent = currentTeacher.fullName || "Teacher";
+          document.getElementById("teacher-school").textContent = `School: ${currentTeacher.schoolName || "EduPortal School"}`;
+        }
+      } catch (err) {
+        console.error("Profile load error:", err);
+      }
+    });
+
+    // Logout
+    document.getElementById("btn-logout")?.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    // Tab Navigation Logic
+    const tabBtns = document.querySelectorAll(".nav-tab-btn[data-tab]");
+    const panels = document.querySelectorAll(".panel-box");
+
+    tabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        panels.forEach((p) => p.classList.add("hidden"));
+
+        btn.classList.add("active");
+        const target = btn.getAttribute("data-tab");
+        document.getElementById(target)?.classList.remove("hidden");
+      });
+    });
+        // Format Mode Toggles for Question Paper
+    let qpFormatMode = "type";
+    const btnModeType = document.getElementById("btn-mode-type");
+    const btnModeUpload = document.getElementById("btn-mode-upload");
+    const containerType = document.getElementById("qp-type-container");
+    const containerUpload = document.getElementById("qp-upload-container");
+
+    btnModeType?.addEventListener("click", () => {
+      qpFormatMode = "type";
+      btnModeType.classList.add("active");
+      btnModeUpload.classList.remove("active");
+      containerType.classList.remove("hidden");
+      containerUpload.classList.add("hidden");
+    });
+
+    btnModeUpload?.addEventListener("click", () => {
+      qpFormatMode = "upload";
+      btnModeUpload.classList.add("active");
+      btnModeType.classList.remove("active");
+      containerUpload.classList.remove("hidden");
+      containerType.classList.add("hidden");
+    });
+
+    // Exam Type Custom Toggle
+    document.getElementById("qp-type")?.addEventListener("change", (e) => {
+      const customBox = document.getElementById("qp-custom-name-box");
+      if (e.target.value === "Custom") {
+        customBox.classList.remove("hidden");
+      } else {
+        customBox.classList.add("hidden");
+      }
+    });
+
+    // BYOK Key Retrieval & Storage
+    function getAiKey(provider) {
+      return localStorage.getItem(`eduportal_ai_key_${provider}`) || "";
+    }
+    function saveAiKey(provider, key) {
+      if (key) localStorage.setItem(`eduportal_ai_key_${provider}`, key.trim());
+    }
+
+    // AI Modal Controls
+    const aiModal = document.getElementById("ai-settings-modal");
+    document.getElementById("btn-open-ai-settings")?.addEventListener("click", () => {
+      document.getElementById("key-gemini").value = getAiKey("gemini");
+      document.getElementById("key-openai").value = getAiKey("openai");
+      document.getElementById("key-claude").value = getAiKey("claude");
+      aiModal.classList.remove("hidden");
+      aiModal.style.display = "flex";
+    });
+
+    document.getElementById("btn-close-ai-modal")?.addEventListener("click", () => {
+      aiModal.classList.add("hidden");
+      aiModal.style.display = "none";
+    });
+
+    document.getElementById("btn-save-ai-keys")?.addEventListener("click", () => {
+      saveAiKey("gemini", document.getElementById("key-gemini").value);
+      saveAiKey("openai", document.getElementById("key-openai").value);
+      saveAiKey("claude", document.getElementById("key-claude").value);
+      alert("AI Keys saved securely in browser!");
+      aiModal.classList.add("hidden");
+      aiModal.style.display = "none";
+    });
+
+    // Direct AI Provider Handlers
+    async function callGemini(apiKey, prompt) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+      if (!res.ok) throw new Error("Gemini API call failed: " + res.statusText);
+      const data = await res.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received.";
+    }
+
+    async function callOpenAI(apiKey, prompt) {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      if (!res.ok) throw new Error("OpenAI API call failed: " + res.statusText);
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content || "No response received.";
+    }
+
+    async function callClaude(apiKey, prompt) {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "dangerously-allow-browser": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-3-haiku-20240307",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      if (!res.ok) throw new Error("Claude API call failed: " + res.statusText);
+      const data = await res.json();
+      return data.content?.[0]?.text || "No response received.";
+    }
+
+    // Generate Question Papers with AI Trigger
+    document.getElementById("btn-generate-ai-content")?.addEventListener("click", async () => {
+      const provider = document.getElementById("ai-active-provider").value;
+      const promptText = document.getElementById("ai-prompt-input").value.trim();
+      const apiKey = getAiKey(provider);
+
+      if (!apiKey) {
+        alert(`Please open 'AI Settings' and add your ${provider.toUpperCase()} API key first.`);
+        return;
+      }
+      if (!promptText) {
+        alert("Please enter a topic or instructions for the AI.");
+        return;
+      }
+
+      const btn = document.getElementById("btn-generate-ai-content");
+      btn.disabled = true;
+      btn.textContent = "Generating...";
+
+      try {
+        const enrichedPrompt = `You are an educational assistant for school teachers. Create structured exam questions based on this prompt:\n${promptText}`;
+        let result = "";
+
+        if (provider === "gemini") {
+          result = await callGemini(apiKey, enrichedPrompt);
+        } else if (provider === "openai") {
+          result = await callOpenAI(apiKey, enrichedPrompt);
+        } else if (provider === "claude") {
+          result = await callClaude(apiKey, enrichedPrompt);
+        }
+
+        const contentBox = document.getElementById("qp-typed-content");
+        if (contentBox) contentBox.value = result;
+
+        // Switch automatically to Typed mode to show content
+        btnModeType.click();
+        alert("Questions generated and placed in the question box!");
+      } catch (err) {
+        alert("AI Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Generate Questions with AI";
+      }
+    });
+  </script>
+
+  <!-- External Form Submission Handlers Script -->
+  <script type="module" src="teacher.js"></script>
 
   <!-- PWA Service Worker Registration -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/service-worker.js")
-          .then(() => console.log("[PWA] Active"))
-          .catch((err) => console.log("[PWA] Error:", err));
+          .then(() => console.log("[PWA] Service Worker active"))
+          .catch((err) => console.log("[PWA] SW error:", err));
       });
     }
   </script>
