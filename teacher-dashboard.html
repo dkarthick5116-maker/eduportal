@@ -218,7 +218,7 @@
   </div>
 
   <div class="dashboard-container">
-    <!-- Teacher Profile Header -->
+    <!-- Teacher Profile Card -->
     <div class="profile-card">
       <div class="profile-info">
         <h3 id="teacher-name">Loading Teacher...</h3>
@@ -227,19 +227,21 @@
       <button id="btn-logout" class="btn-logout">Logout</button>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Complete Navigation Tabs Bar -->
     <div class="tab-bar">
       <button class="nav-tab-btn active" data-tab="tab-qp" id="tab-btn-qp">📝 Question Papers</button>
       <button class="nav-tab-btn" data-tab="tab-hw" id="tab-btn-hw">📚 Assign Homework</button>
       <button class="nav-tab-btn" data-tab="tab-mat" id="tab-btn-mat">📖 Notes & Materials</button>
       <button class="nav-tab-btn" data-tab="tab-notices" id="tab-btn-notices">📢 Notice Board</button>
+      <button class="nav-tab-btn" data-tab="tab-roster" id="tab-btn-roster">👥 Student Roster</button>
+      <button class="nav-tab-btn" data-tab="tab-attendance" id="tab-btn-attendance">📅 Attendance</button>
       <button class="nav-tab-btn" data-tab="tab-results" id="tab-btn-results">📊 Enter Marks</button>
     </div>
         <!-- 1. EXAM QUESTION PAPERS PANEL -->
     <div id="tab-qp" class="panel-box">
       <h2 class="panel-title" id="title-publish-qp">Publish Question Paper</h2>
 
-      <!-- Multi-Model AI Switcher (Zero Keys Required) -->
+      <!-- Free AI Web App Switcher (Gemini, ChatGPT, Claude) -->
       <div class="card-entry" style="margin-bottom: 20px; border: 1px solid #c7d2fe; background: #eef2ff; border-radius: 12px; padding: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <h3 style="margin: 0; color: #1e1b4b; font-size: 15px; font-weight: 700;">🤖 AI Assistant (Free Multi-Model Switcher)</h3>
@@ -357,7 +359,7 @@
       <h3 style="margin-top: 24px; color: #1e1b4b; font-size: 16px;">Published Question Papers</h3>
       <div id="qp-list-container">Loading papers...</div>
     </div>
-        <!-- 2. HOMEWORK ASSIGNMENT PANEL -->
+       <!-- 2. HOMEWORK ASSIGNMENT PANEL -->
     <div id="tab-hw" class="panel-box hidden">
       <h2 class="panel-title">Assign Homework</h2>
       <form id="form-hw">
@@ -472,8 +474,93 @@
         <button type="submit" class="btn-submit">Broadcast Notice</button>
       </form>
     </div>
+        <!-- 5. STUDENT ROSTER PANEL -->
+    <div id="tab-roster" class="panel-box hidden">
+      <h2 class="panel-title" id="title-student-roster">School Student Roster</h2>
+      
+      <div class="form-row" style="margin-bottom: 16px;">
+        <div class="form-group">
+          <label>Filter by Class</label>
+          <select id="roster-filter-class">
+            <option value="All">All Classes</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Filter by Section</label>
+          <select id="roster-filter-sec">
+            <option value="All">All Sections</option>
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+          </select>
+        </div>
+      </div>
 
-    <!-- 5. ENTER EXAM MARKS PANEL -->
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+          <thead>
+            <tr style="background: #e2e8f0; color: #1e1b4b;">
+              <th style="padding: 10px; border: 1px solid #cbd5e1;">Roll No</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;">Student Name</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;">Class & Sec</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;">Curriculum / Board</th>
+            </tr>
+          </thead>
+          <tbody id="roster-tbody">
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 14px; color: #64748b;">Loading students...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 6. DAILY ATTENDANCE PANEL -->
+    <div id="tab-attendance" class="panel-box hidden">
+      <h2 class="panel-title" id="title-mark-attendance">Mark Daily Attendance</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="att-date" required />
+        </div>
+        <div class="form-group">
+          <label>Class</label>
+          <select id="att-class">
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Section</label>
+          <select id="att-sec">
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" class="btn-submit" id="btn-load-att-students" style="margin-bottom: 16px; background: #3b82f6;">
+        Load Students for Attendance
+      </button>
+
+      <div id="att-students-container" style="margin-bottom: 16px;"></div>
+
+      <button type="button" class="btn-submit hidden" id="btn-save-attendance">
+        Save Attendance
+      </button>
+    </div>
+
+    <!-- 7. ENTER EXAM MARKS PANEL -->
     <div id="tab-results" class="panel-box hidden">
       <h2 class="panel-title">Enter Student Exam Marks</h2>
       <form id="form-results">
@@ -542,7 +629,7 @@
       window.location.href = "login.html";
     });
 
-    // Tab Navigation
+    // Tab Navigation Logic
     const tabBtns = document.querySelectorAll(".nav-tab-btn[data-tab]");
     const panels = document.querySelectorAll(".panel-box");
 
@@ -557,7 +644,7 @@
       });
     });
 
-    // Exam Type Custom Toggle
+    // Custom Exam Type Field Toggle
     document.getElementById("qp-type")?.addEventListener("change", (e) => {
       const customBox = document.getElementById("qp-custom-name-box");
       if (e.target.value === "Custom") {
@@ -566,7 +653,8 @@
         customBox.classList.add("hidden");
       }
     });
-          // Format Mode Toggles for Question Paper
+
+    // Format Mode Toggles for Question Paper
     let qpFormatMode = "type";
     const btnModeType = document.getElementById("btn-mode-type");
     const btnModeUpload = document.getElementById("btn-mode-upload");
@@ -589,7 +677,7 @@
       containerType.classList.add("hidden");
     });
 
-    // Multi-Model AI Switcher (Zero API Keys Required)
+    // Direct Web App AI Launcher (Zero Keys Required)
     let lastUsedAI = localStorage.getItem("eduportal_last_ai") || "gemini";
     updateActiveBadge(lastUsedAI);
 
@@ -646,5 +734,3 @@
   </script>
 </body>
 </html>
-
-      
