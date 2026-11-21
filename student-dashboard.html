@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      background-color: #f0f2f5;
+      background-color: #f1f5f9;
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -38,14 +38,15 @@
       gap: 10px;
     }
     .brand-logo {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 6px;
       object-fit: cover;
     }
     .brand-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
+      letter-spacing: 0.5px;
     }
     .lang-group {
       display: flex;
@@ -66,67 +67,56 @@
       font-weight: 700;
     }
     .dashboard-container {
-      max-width: 650px;
-      margin: 0 auto;
-      padding: 16px;
-      box-sizing: border-box;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 16px;
     }
     .profile-card {
       background: #ffffff;
       border-radius: 12px;
-      padding: 16px;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
     }
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .avatar-icon {
-      font-size: 32px;
-    }
-    .profile-name {
-      font-size: 17px;
-      font-weight: 700;
+    .profile-info h3 {
+      margin: 0 0 4px 0;
       color: #1e1b4b;
+      font-size: 18px;
+    }
+    .profile-info p {
       margin: 0;
-    }
-    .profile-sub {
-      font-size: 13px;
       color: #64748b;
-      margin: 2px 0 0 0;
+      font-size: 14px;
     }
-    .badge-info {
+    .badge-class {
       display: inline-block;
-      background: #e0e7ff;
-      color: #4338ca;
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
       margin-top: 6px;
+      font-size: 12px;
+      color: #3730a3;
+      background: #e0e7ff;
+      padding: 3px 8px;
+      border-radius: 4px;
       font-weight: 600;
     }
     .btn-logout {
-      background: #dc2626;
+      background: #ef4444;
       color: #fff;
       border: none;
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 6px;
       font-weight: 600;
-      font-size: 13px;
       cursor: pointer;
     }
-    .tabs-slider {
+       .tab-bar {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 16px;
-      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #cbd5e1;
     }
     .nav-tab-btn {
       background: #ffffff;
@@ -138,9 +128,6 @@
       color: #475569;
       cursor: pointer;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
     .nav-tab-btn.active {
       background: #1e1b4b;
@@ -150,27 +137,28 @@
     .panel-box {
       background: #ffffff;
       border-radius: 12px;
-      padding: 18px 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       margin-bottom: 24px;
     }
     .panel-title {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
       color: #1e1b4b;
-      margin: 0 0 16px 0;
+      margin-top: 0;
+      margin-bottom: 16px;
     }
     .card-entry {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 14px;
       margin-bottom: 14px;
     }
     .card-entry h4 {
-      margin: 0 0 4px 0;
-      font-size: 15px;
+      margin: 0 0 6px 0;
       color: #1e1b4b;
+      font-size: 15px;
     }
     .card-meta {
       font-size: 12px;
@@ -180,83 +168,86 @@
     .card-desc {
       font-size: 13px;
       color: #334155;
-      margin: 0 0 10px 0;
+      margin-bottom: 10px;
       white-space: pre-wrap;
-      background: #ffffff;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
     }
     .link-attach {
-      color: #2563eb;
+      display: inline-block;
       font-size: 13px;
+      color: #2563eb;
       text-decoration: none;
       font-weight: 600;
-      display: inline-block;
       margin-bottom: 10px;
     }
-    .submit-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
-      background: #f1f5f9;
-      padding: 10px;
-      border-radius: 8px;
-    }
-    .submit-box textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 13px;
-      outline: none;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
+    .submit-box textarea,
     .submit-box input[type="text"] {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
-      font-size: 12px;
-      outline: none;
+      font-size: 13px;
+      margin-bottom: 8px;
       box-sizing: border-box;
+      outline: none;
+      font-family: inherit;
     }
     .btn-submit-action {
       background: #1e1b4b;
-      color: #fff;
+      color: #ffffff;
       border: none;
-      padding: 10px 14px;
       border-radius: 6px;
+      padding: 8px 14px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      align-self: flex-start;
     }
-    .btn-submit-action:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+    /* Attendance Metric Grid */
+    .att-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .table-responsive {
-      overflow-x: auto;
-    }
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-top: 8px;
-    }
-    .results-table th {
+    .att-stat-card {
       background: #f8fafc;
-      color: #475569;
-      padding: 8px;
-      text-align: left;
-      border-bottom: 2px solid #e2e8f0;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
     }
-    .results-table td {
-      padding: 8px;
-      border-bottom: 1px solid #e2e8f0;
+    .att-stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .att-stat-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1e1b4b;
+    }
+    .att-stat-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .badge-safe {
+      color: #166534;
+      background: #dcfce7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .badge-danger {
+      color: #991b1b;
+      background: #fee2e2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
     }
     .hidden { display: none !important; }
   </style>
@@ -274,90 +265,165 @@
   </div>
 
   <div class="dashboard-container">
+    <!-- Student Profile Header Banner -->
     <div class="profile-card">
       <div class="profile-info">
-        <div class="avatar-icon">🎓</div>
-        <div>
-          <h2 class="profile-name" id="student-name">Student</h2>
-          <p class="profile-sub" id="student-school">Loading school...</p>
-          <span class="badge-info" id="student-class-info">Loading details...</span>
+        <h3 id="student-name">Loading Student...</h3>
+        <p id="student-school">School: -</p>
+        <span class="badge-class" id="student-class-info">Class - | Section -</span>
+      </div>
+      <button id="btn-logout" class="btn-logout">Logout</button>
+    </div>
+
+    <!-- Complete Navigation Tabs Bar Including Attendance -->
+    <div class="tab-bar">
+      <button class="nav-tab-btn active" data-tab="tab-qp" id="tab-btn-qp">📝 Question Papers</button>
+      <button class="nav-tab-btn" data-tab="tab-hw" id="tab-btn-hw">📚 My Homework</button>
+      <button class="nav-tab-btn" data-tab="tab-attendance" id="tab-btn-attendance">📅 My Attendance</button>
+      <button class="nav-tab-btn" data-tab="tab-mat" id="tab-btn-mat">📖 Study Notes</button>
+      <button class="nav-tab-btn" data-tab="tab-notices" id="tab-btn-notices">📢 Notices</button>
+      <button class="nav-tab-btn" data-tab="tab-results" id="tab-btn-results">📊 Report Card</button>
+    </div>
+        <!-- 1. EXAM QUESTION PAPERS & SUBMISSION PANEL -->
+    <div id="tab-qp" class="panel-box">
+      <h2 class="panel-title" id="title-exam-qp">Exam Question Papers & Write Answers</h2>
+      <div id="qp-container">Loading question papers...</div>
+    </div>
+
+    <!-- 2. HOMEWORK ASSIGNMENTS PANEL -->
+    <div id="tab-hw" class="panel-box hidden">
+      <h2 class="panel-title" id="title-my-hw">Assigned Homework</h2>
+      <div id="hw-container">Loading homework assignments...</div>
+    </div>
+        <!-- 3. STUDENT ATTENDANCE & PERCENTAGE ANALYTICS PANEL -->
+    <div id="tab-attendance" class="panel-box hidden">
+      <h2 class="panel-title" id="title-my-attendance">My Attendance & Academic Eligibility</h2>
+      
+      <!-- Key Metric Highlights Grid -->
+      <div class="att-grid">
+        <div class="att-stat-card" style="border-top: 4px solid #4338ca;">
+          <div class="att-stat-label" id="lbl-att-pct">Attendance %</div>
+          <div class="att-stat-val" id="stat-att-percentage">--%</div>
+          <div class="att-stat-sub" id="stat-att-badge"><span class="badge-safe">Status: -</span></div>
+        </div>
+
+        <div class="att-stat-card" style="border-top: 4px solid #059669;">
+          <div class="att-stat-label" id="lbl-present-days">Present Days</div>
+          <div class="att-stat-val" id="stat-present-count" style="color: #059669;">0</div>
+          <div class="att-stat-sub" id="stat-total-working">out of 0 working days</div>
+        </div>
+
+        <div class="att-stat-card" style="border-top: 4px solid #dc2626;">
+          <div class="att-stat-label" id="lbl-absent-days">Absent Days</div>
+          <div class="att-stat-val" id="stat-absent-count" style="color: #dc2626;">0</div>
+          <div class="att-stat-sub">unexcused leaves</div>
+        </div>
+
+        <div class="att-stat-card" style="border-top: 4px solid #d97706;">
+          <div class="att-stat-label" id="lbl-late-days">Late Days</div>
+          <div class="att-stat-val" id="stat-late-count" style="color: #d97706;">0</div>
+          <div class="att-stat-sub">delayed arrivals</div>
+        </div>
+
+        <div class="att-stat-card" style="border-top: 4px solid #6366f1;">
+          <div class="att-stat-label" id="lbl-min-pct">Min Requirement</div>
+          <div class="att-stat-val" style="color: #4f46e5;">75%</div>
+          <div class="att-stat-sub">Exam Eligibility</div>
         </div>
       </div>
-      <button class="btn-logout" id="btn-logout">Logout</button>
-    </div>
 
-    <!-- Navigation Tabs -->
-    <div class="tabs-slider">
-      <button class="nav-tab-btn active" data-tab="tab-exam-qp" id="tab-btn-qp">📝 Question Papers</button>
-      <button class="nav-tab-btn" data-tab="tab-my-hw" id="tab-btn-hw">📚 My Homework</button>
-      <button class="nav-tab-btn" data-tab="tab-my-mat" id="tab-btn-mat">📖 Study Notes</button>
-      <button class="nav-tab-btn" data-tab="tab-my-notices" id="tab-btn-notices">📢 Notices</button>
-      <button class="nav-tab-btn" data-tab="tab-my-results" id="tab-btn-results">📊 Report Card</button>
-    </div>
-
-    <!-- 1. Question Papers -->
-    <div class="panel-box" id="tab-exam-qp">
-      <h3 class="panel-title" id="title-exam-qp">Exam Question Papers & Write Answers</h3>
-      <div id="qp-container">
-        <p style="color: #64748b; font-size: 13px;">Loading question papers...</p>
+      <!-- Eligibility Notice Alert Banner -->
+      <div id="att-eligibility-banner" style="padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; background: #e0e7ff; color: #3730a3; font-weight: 500;">
+        Loading attendance records for your school...
       </div>
-    </div>
 
-    <!-- 2. Homework -->
-    <div class="panel-box hidden" id="tab-my-hw">
-      <h3 class="panel-title" id="title-my-hw">Assigned Homework</h3>
-      <div id="hw-container">
-        <p style="color: #64748b; font-size: 13px;">Loading homework...</p>
-      </div>
-    </div>
-
-    <!-- 3. Study Notes -->
-    <div class="panel-box hidden" id="tab-my-mat">
-      <h3 class="panel-title" id="title-my-mat">Class Study Notes</h3>
-      <div id="mat-container">
-        <p style="color: #64748b; font-size: 13px;">Loading study notes...</p>
-      </div>
-    </div>
-
-    <!-- 4. Notices -->
-    <div class="panel-box hidden" id="tab-my-notices">
-      <h3 class="panel-title" id="title-my-notices">School Notice Board</h3>
-      <div id="notices-container">
-        <p style="color: #64748b; font-size: 13px;">Loading notices...</p>
-      </div>
-    </div>
-
-    <!-- 5. Report Card -->
-    <div class="panel-box hidden" id="tab-my-results">
-      <h3 class="panel-title" id="title-my-results">My Exam Marks</h3>
-      <div class="table-responsive">
-        <table class="results-table">
+      <h3 style="font-size: 15px; color: #1e1b4b; margin-top: 16px; margin-bottom: 10px;" id="title-att-history">
+        Recent Attendance Log
+      </h3>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
           <thead>
+            <tr style="background: #e2e8f0; color: #1e1b4b;">
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-att-date">Date</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-att-status">Status</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-att-session">Class & Section</th>
+            </tr>
+          </thead>
+          <tbody id="att-history-tbody">
             <tr>
-              <th id="th-exam-name">Exam Name</th>
-              <th id="th-subject">Subject</th>
-              <th id="th-score">Score</th>
-              <th id="th-total">Total</th>
+              <td colspan="3" style="text-align: center; padding: 14px; color: #64748b;">Loading session logs...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+        <!-- 4. STUDY NOTES PANEL -->
+    <div id="tab-mat" class="panel-box hidden">
+      <h2 class="panel-title" id="title-my-mat">Class Study Notes</h2>
+      <div id="mat-container">Loading study materials...</div>
+    </div>
+
+    <!-- 5. NOTICE BOARD PANEL -->
+    <div id="tab-notices" class="panel-box hidden">
+      <h2 class="panel-title" id="title-my-notices">School Notice Board</h2>
+      <div id="notices-container">Loading announcements...</div>
+    </div>
+
+    <!-- 6. EXAM REPORT CARD PANEL -->
+    <div id="tab-results" class="panel-box hidden">
+      <h2 class="panel-title" id="title-my-results">My Exam Marks</h2>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+          <thead>
+            <tr style="background: #e2e8f0; color: #1e1b4b;">
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-exam-name">Exam Name</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-subject">Subject</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-score">Score</th>
+              <th style="padding: 10px; border: 1px solid #cbd5e1;" id="th-total">Total</th>
             </tr>
           </thead>
           <tbody id="results-tbody">
-            <tr><td colspan="4" style="text-align: center; color: #64748b;">Loading exam marks...</td></tr>
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 14px; color: #64748b;">Loading report card...</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+    <!-- Navigation Tab Switching Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabBtns = document.querySelectorAll(".nav-tab-btn[data-tab]");
+      const panels = document.querySelectorAll(".panel-box");
 
-  <!-- Dedicated Module Script -->
-  <script type="module" src="./student.js"></script>
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          tabBtns.forEach((b) => b.classList.remove("active"));
+          panels.forEach((p) => p.classList.add("hidden"));
+
+          btn.classList.add("active");
+          const target = btn.getAttribute("data-tab");
+          const targetPanel = document.getElementById(target);
+          if (targetPanel) {
+            targetPanel.classList.remove("hidden");
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- Complete Logic Modular Script -->
+  <script type="module" src="student.js"></script>
 
   <!-- PWA Service Worker Registration -->
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/service-worker.js")
-          .then(() => console.log("[PWA] Active"))
-          .catch((err) => console.log("[PWA] Error:", err));
+          .then(() => console.log("[PWA] Student Portal SW active"))
+          .catch((err) => console.log("[PWA] SW error:", err));
       });
     }
   </script>
