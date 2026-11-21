@@ -9,6 +9,7 @@ import {
   getDocs,
   addDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { sendTeacherNotification, loadStudentNotifications } from "./notifications.js";
 
 let currentStudent = null;
 let currentLang = "en";
@@ -285,7 +286,8 @@ async function loadStudentData() {
     loadStudentAttendance(),
     loadMaterials(),
     loadNotices(),
-    loadResults()
+    loadResults(),
+    loadStudentNotifications(currentStudent)
   ]);
 }
 // 1. QUESTION PAPERS (FLEXIBLE BOARD MATCHING + STRICT SCHOOL ISOLATION)
@@ -343,7 +345,8 @@ async function loadQuestionPapers() {
             data-qpid="${qp.id}" 
             data-exam="${qp.examName}" 
             data-subject="${qp.subject}"
-            data-marks="${qp.totalMarks}">
+            data-marks="${qp.totalMarks}"
+            data-teacherid="${qp.teacherId || ''}">
             ${t.submitAnswersBtn}
           </button>
         </div>
@@ -356,6 +359,7 @@ async function loadQuestionPapers() {
         const examName = btn.getAttribute("data-exam");
         const subject = btn.getAttribute("data-subject");
         const totalMarks = btn.getAttribute("data-marks");
+        const teacherId = btn.getAttribute("data-teacherid");
 
         const writtenText = document.getElementById(`text_ans_${qpId}`)?.value.trim() || "";
         const driveLink = document.getElementById(`drive_ans_${qpId}`)?.value.trim() || "";
@@ -385,6 +389,15 @@ async function loadQuestionPapers() {
             driveLink: driveLink,
             submittedAt: new Date().toISOString()
           });
+
+          // Send targeted notification to teacher
+          await sendTeacherNotification(
+            currentStudent,
+            teacherId || "ALL",
+            `Exam Answer Submitted: ${examName}`,
+            `${currentStudent.fullName} (Roll: ${currentStudent.rollNumber}) submitted answers for ${subject}.`,
+            "exam_sub"
+          );
 
           alert(t.examSubmitSuccess);
           btn.textContent = "Submitted ✓";
@@ -445,7 +458,9 @@ async function loadHomework() {
         ${hw.link ? `<a class="link-attach" href="${hw.link}" target="_blank">${t.viewResource}</a>` : ""}
         <div class="submit-box">
           <input type="text" id="ans_${hw.id}" placeholder="Paste your answer or Google Drive link..." />
-          <button type="button" class="btn-submit-action btn-submit-hw" data-hwid="${hw.id}">${t.submitHwBtn}</button>
+          <button type="button" class="btn-submit-action btn-submit-hw" data-hwid="${hw.id}" data-title="${hw.title}" data-teacherid="${hw.teacherId || ''}">
+            ${t.submitHwBtn}
+          </button>
         </div>
       </div>
     `).join("");
@@ -453,6 +468,8 @@ async function loadHomework() {
     container.querySelectorAll(".btn-submit-hw").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const hwId = e.target.getAttribute("data-hwid");
+        const hwTitle = e.target.getAttribute("data-title");
+        const teacherId = e.target.getAttribute("data-teacherid");
         const ansInput = document.getElementById(`ans_${hwId}`);
         const answer = ansInput?.value.trim() || "";
 
@@ -473,6 +490,16 @@ async function loadHomework() {
             answer: answer,
             submittedAt: new Date().toISOString()
           });
+
+          // Send targeted notification to teacher
+          await sendTeacherNotification(
+            currentStudent,
+            teacherId || "ALL",
+            `Homework Submitted: ${hwTitle}`,
+            `${currentStudent.fullName} (Roll: ${currentStudent.rollNumber}) submitted homework.`,
+            "hw_sub"
+          );
+
           alert(t.hwSuccessAlert);
           if (ansInput) ansInput.value = "";
         } catch (err) {
@@ -483,8 +510,8 @@ async function loadHomework() {
   } catch (err) {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
-                 }
-            // 3. STUDENT ATTENDANCE ANALYTICS (STRICT SCHOOL & ROLL ISOLATION)
+                           }
+// 3. STUDENT ATTENDANCE ANALYTICS (STRICT SCHOOL & ROLL ISOLATION)
 async function loadStudentAttendance() {
   const t = dict[currentLang];
   const tbody = document.getElementById("att-history-tbody");
@@ -739,13 +766,13 @@ async function loadResults() {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error: ${err.message}</td></tr>`;
   }
 }
-// 7. DOWNLOADABLE PDF FORMAT FOR EXAM REPORT SLIDE
+// 7. DOWNLOADABLE PDF FORMAT (CORRECTED MARGINS, WRAPPING & ALIGNMENT)
 function setupPdfDownloadListener() {
   document.getElementById("btn-download-report-pdf")?.addEventListener("click", () => {
     const t = dict[currentLang];
 
     if (!window.jspdf) {
-      alert("PDF library is loading. Please check your internet connection and try again.");
+      alert("PDF library is loading. Please check your internet connection.");
       return;
     }
     if (!currentStudent) {
@@ -760,8 +787,8 @@ function setupPdfDownloadListener() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-    // Header banner with institutional navy fill
-    doc.setFillColor(30, 27, 75); // #1e1b4b
+    // 1. Header Banner
+    doc.setFillColor(30, 27, 75); // Navy #1e1b4b
     doc.rect(0, 0, 210, 36, "F");
 
     doc.setTextColor(255, 255, 255);
@@ -773,35 +800,38 @@ function setupPdfDownloadListener() {
     doc.setFontSize(11);
     doc.text(t.pdfReportTitle, 105, 26, { align: "center" });
 
-    // Student information card block
+    // 2. Student Info (3 rows: ensures long board names don't clip at the right edge)
     doc.setTextColor(31, 41, 55);
     doc.setFontSize(10);
 
+    // Row 1: Student Name and Class
     doc.setFont("helvetica", "bold");
     doc.text("Student Name:", 14, 46);
     doc.setFont("helvetica", "normal");
     doc.text(currentStudent.fullName || "-", 45, 46);
 
     doc.setFont("helvetica", "bold");
-    doc.text("Roll Number:", 14, 53);
-    doc.setFont("helvetica", "normal");
-    doc.text(currentStudent.rollNumber || "-", 45, 53);
-
-    doc.setFont("helvetica", "bold");
     doc.text("Class & Section:", 120, 46);
     doc.setFont("helvetica", "normal");
     doc.text(`Class ${currentStudent.className || "-"} - ${currentStudent.section || "-"}`, 155, 46);
 
+    // Row 2: Roll Number
     doc.setFont("helvetica", "bold");
-    doc.text("Curriculum/Board:", 120, 53);
+    doc.text("Roll Number:", 14, 53);
     doc.setFont("helvetica", "normal");
-    doc.text(currentStudent.board || "State Board", 155, 53);
+    doc.text((currentStudent.rollNumber || "-").toString(), 45, 53);
 
-    // Divider line
+    // Row 3: Curriculum/Board (Full width across to eliminate cutoff)
+    doc.setFont("helvetica", "bold");
+    doc.text("Curriculum/Board:", 14, 60);
+    doc.setFont("helvetica", "normal");
+    doc.text(currentStudent.board || "Tamil Nadu State Board (Samacheer)", 50, 60);
+
+    // Horizontal Divider
     doc.setDrawColor(203, 213, 225);
-    doc.line(14, 59, 196, 59);
+    doc.line(14, 65, 196, 65);
 
-    // Compute aggregate marks and percentages
+    // 3. Compute Totals
     let totalScored = 0;
     let totalPossible = 0;
 
@@ -823,16 +853,19 @@ function setupPdfDownloadListener() {
 
     const overallPct = totalPossible > 0 ? ((totalScored / totalPossible) * 100).toFixed(1) + "%" : "-";
 
-    // AutoTable structured tabular report
+    // 4. Structured AutoTable (Set margins and width to match 14mm-196mm boundary)
     doc.autoTable({
-      startY: 65,
+      startY: 70,
+      margin: { left: 14, right: 14 },
+      tableWidth: 182,
       head: [["Exam Name", "Subject", "Marks Scored", "Max Marks", "Percentage"]],
       body: tableBody,
       theme: "striped",
       headStyles: {
-        fillColor: [67, 56, 202], // Indigo header
+        fillColor: [67, 56, 202],
         textColor: [255, 255, 255],
-        fontStyle: "bold"
+        fontStyle: "bold",
+        halign: "left"
       },
       styles: {
         font: "helvetica",
@@ -840,30 +873,32 @@ function setupPdfDownloadListener() {
         cellPadding: 4
       },
       columnStyles: {
-        0: { cellWidth: 45 },
-        1: { cellWidth: 45 },
-        2: { halign: "center" },
-        3: { halign: "center" },
-        4: { halign: "center" }
+        0: { cellWidth: 42 },
+        1: { cellWidth: 50 },
+        2: { halign: "center", cellWidth: 30 },
+        3: { halign: "center", cellWidth: 30 },
+        4: { halign: "center", cellWidth: 30 }
       }
     });
 
-    // Summary Card Box
-    const finalY = doc.lastAutoTable.finalY + 10;
+    // 5. Summary Card (Aligned at 14mm with 182mm width)
+    const finalY = doc.lastAutoTable.finalY + 8;
 
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(203, 213, 225);
     doc.roundedRect(14, finalY, 182, 22, 3, 3, "FD");
 
+    doc.setTextColor(30, 27, 75);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.text(`Total Marks: ${totalScored} / ${totalPossible}`, 20, finalY + 9);
     doc.text(`Overall Percentage: ${overallPct}`, 20, finalY + 16);
 
     doc.setFont("helvetica", "normal");
-    doc.text(`Generated On: ${new Date().toLocaleDateString()}`, 130, finalY + 12);
+    doc.setTextColor(71, 85, 105);
+    doc.text(`Generated On: ${new Date().toLocaleDateString()}`, 135, finalY + 13);
 
-    // Save and trigger browser download
+    // 6. Save PDF
     const filename = `${(currentStudent.rollNumber || "Student")}_Report_Card.pdf`;
     doc.save(filename);
   });
