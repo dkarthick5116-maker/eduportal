@@ -12,6 +12,7 @@ import {
 
 let currentStudent = null;
 let currentLang = "en";
+let fetchedResults = [];
 
 // Strict multi-tenant normalizers
 function cleanSchool(s) {
@@ -91,7 +92,10 @@ const dict = {
     thAttSession: "Class & Section",
     noAttendance: "No attendance records submitted for your class yet.",
     attEligible: "✓ Excellent! Your attendance satisfies the minimum 75% exam criterion.",
-    attShortage: "⚠️ Attendance Shortage! Your attendance is below the 75% requirement. Please contact your class teacher."
+    attShortage: "⚠️ Attendance Shortage! Your attendance is below the 75% requirement. Please contact your class teacher.",
+    btnDownloadPdf: "📥 Download PDF Report",
+    pdfReportTitle: "Official Student Academic Progress Report",
+    pdfNoData: "No exam records found to generate report."
   },
   ta: {
     navTitle: "கல்வி தளம் பதிப்பு 2.2",
@@ -141,12 +145,16 @@ const dict = {
     thAttSession: "வகுப்பு & பிரிவு",
     noAttendance: "உங்கள் வகுப்பிற்கு வருகைப் பதிவு விவரங்கள் எதுவும் இல்லை.",
     attEligible: "✓ சிறப்பு! உங்கள் வருகை குறைந்தபட்ச 75% தேர்வு தகுதி வரம்பை பூர்த்தி செய்கிறது.",
-    attShortage: "⚠️ வருகைப் பற்றாக்குறை! உங்கள் வருகை 75% வரம்பிற்கு கீழ் உள்ளது. உங்கள் வகுப்பு ஆசிரியரை அணுகவும்."
+    attShortage: "⚠️ வருகைப் பற்றாக்குறை! உங்கள் வருகை 75% வரம்பிற்கு கீழ் உள்ளது. உங்கள் வகுப்பு ஆசிரியரை அணுகவும்.",
+    btnDownloadPdf: "📥 PDF பதிவிறக்கு",
+    pdfReportTitle: "அதிகாரப்பூர்வ மாணவர் கல்வி முன்னேற்ற அறிக்கை",
+    pdfNoData: "அறிக்கையை உருவாக்க தேர்வு பதிவுகள் எதுவும் இல்லை."
   }
 };
-   document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   setupLanguage();
+  setupPdfDownloadListener();
 });
 
 function setupTabs() {
@@ -225,6 +233,9 @@ function applyTranslations() {
   safeText("th-subject", t.thSubject);
   safeText("th-score", t.thScore);
   safeText("th-total", t.thTotal);
+
+  const dlBtn = document.getElementById("btn-download-report-pdf");
+  if (dlBtn) dlBtn.textContent = t.btnDownloadPdf;
 }
 
 function safeText(id, txt) {
@@ -276,7 +287,7 @@ async function loadStudentData() {
     loadNotices(),
     loadResults()
   ]);
-           }
+}
 // 1. QUESTION PAPERS (FLEXIBLE BOARD MATCHING + STRICT SCHOOL ISOLATION)
 async function loadQuestionPapers() {
   const container = document.getElementById("qp-container");
@@ -298,7 +309,7 @@ async function loadQuestionPapers() {
       const targetSec = (data.section || "All").trim().toUpperCase();
       const targetBoard = data.board || "";
 
-      // Strict institutional, class and board match
+      // Strict school, class and board match
       const matchesSchool = Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool;
       const matchesClass = targetClass === studentClass;
       const matchesSec = targetSec === "ALL" || targetSec === studentSec;
@@ -392,6 +403,7 @@ async function loadQuestionPapers() {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
 }
+
 // 2. HOMEWORK (STRICT SCHOOL ISOLATION)
 async function loadHomework() {
   const container = document.getElementById("hw-container");
@@ -471,9 +483,8 @@ async function loadHomework() {
   } catch (err) {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
-}
-
-// 3. STUDENT ATTENDANCE ANALYTICS (STRICT SCHOOL & ROLL ISOLATION)
+                 }
+            // 3. STUDENT ATTENDANCE ANALYTICS (STRICT SCHOOL & ROLL ISOLATION)
 async function loadStudentAttendance() {
   const t = dict[currentLang];
   const tbody = document.getElementById("att-history-tbody");
@@ -506,7 +517,6 @@ async function loadStudentAttendance() {
       // Strict school, class and section filtering
       if (Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool) {
         if (targetClass === studentClass && (targetSec === "ALL" || targetSec === studentSec)) {
-          // Look for this student's specific entry in the records array
           const studentEntry = (data.records || []).find((r) => {
             const matchUid = r.uid && r.uid === myUid;
             const matchRoll = r.rollNumber && r.rollNumber.trim().toLowerCase() === myRoll;
@@ -525,7 +535,6 @@ async function loadStudentAttendance() {
       }
     });
 
-    // Sort sessions chronologically descending
     sessions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (sessions.length === 0) {
@@ -550,8 +559,7 @@ async function loadStudentAttendance() {
       else if (st === "absent") absentCount++;
       else if (st === "late") {
         lateCount++;
-        // Late counts towards partial presence credit (0.5 day)
-        presentCount += 0.5;
+        presentCount += 0.5; // Partial attendance credit
       } else {
         presentCount++;
       }
@@ -688,6 +696,7 @@ async function loadNotices() {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
 }
+
 // 6. EXAM RESULTS (STRICT ROLL NUMBER & SCHOOL ISOLATION)
 async function loadResults() {
   const tbody = document.getElementById("results-tbody");
@@ -711,6 +720,8 @@ async function loadResults() {
       }
     });
 
+    fetchedResults = items; // Stored for PDF generation
+
     if (items.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#64748b;">${t.noResults}</td></tr>`;
       return;
@@ -728,10 +739,140 @@ async function loadResults() {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error: ${err.message}</td></tr>`;
   }
 }
+// 7. DOWNLOADABLE PDF FORMAT FOR EXAM REPORT SLIDE
+function setupPdfDownloadListener() {
+  document.getElementById("btn-download-report-pdf")?.addEventListener("click", () => {
+    const t = dict[currentLang];
+
+    if (!window.jspdf) {
+      alert("PDF library is loading. Please check your internet connection and try again.");
+      return;
+    }
+    if (!currentStudent) {
+      alert("Student profile not loaded yet.");
+      return;
+    }
+    if (!fetchedResults || fetchedResults.length === 0) {
+      alert(t.pdfNoData);
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+    // Header banner with institutional navy fill
+    doc.setFillColor(30, 27, 75); // #1e1b4b
+    doc.rect(0, 0, 210, 36, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(currentStudent.schoolName || "EduPortal School", 105, 16, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.text(t.pdfReportTitle, 105, 26, { align: "center" });
+
+    // Student information card block
+    doc.setTextColor(31, 41, 55);
+    doc.setFontSize(10);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Student Name:", 14, 46);
+    doc.setFont("helvetica", "normal");
+    doc.text(currentStudent.fullName || "-", 45, 46);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Roll Number:", 14, 53);
+    doc.setFont("helvetica", "normal");
+    doc.text(currentStudent.rollNumber || "-", 45, 53);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Class & Section:", 120, 46);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Class ${currentStudent.className || "-"} - ${currentStudent.section || "-"}`, 155, 46);
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Curriculum/Board:", 120, 53);
+    doc.setFont("helvetica", "normal");
+    doc.text(currentStudent.board || "State Board", 155, 53);
+
+    // Divider line
+    doc.setDrawColor(203, 213, 225);
+    doc.line(14, 59, 196, 59);
+
+    // Compute aggregate marks and percentages
+    let totalScored = 0;
+    let totalPossible = 0;
+
+    const tableBody = fetchedResults.map((item) => {
+      const scored = Number(item.marksScored) || 0;
+      const max = Number(item.totalMarks) || 100;
+      totalScored += scored;
+      totalPossible += max;
+      const pct = max > 0 ? ((scored / max) * 100).toFixed(1) + "%" : "-";
+
+      return [
+        item.examName || "-",
+        item.subject || "-",
+        scored.toString(),
+        max.toString(),
+        pct
+      ];
+    });
+
+    const overallPct = totalPossible > 0 ? ((totalScored / totalPossible) * 100).toFixed(1) + "%" : "-";
+
+    // AutoTable structured tabular report
+    doc.autoTable({
+      startY: 65,
+      head: [["Exam Name", "Subject", "Marks Scored", "Max Marks", "Percentage"]],
+      body: tableBody,
+      theme: "striped",
+      headStyles: {
+        fillColor: [67, 56, 202], // Indigo header
+        textColor: [255, 255, 255],
+        fontStyle: "bold"
+      },
+      styles: {
+        font: "helvetica",
+        fontSize: 10,
+        cellPadding: 4
+      },
+      columnStyles: {
+        0: { cellWidth: 45 },
+        1: { cellWidth: 45 },
+        2: { halign: "center" },
+        3: { halign: "center" },
+        4: { halign: "center" }
+      }
+    });
+
+    // Summary Card Box
+    const finalY = doc.lastAutoTable.finalY + 10;
+
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(203, 213, 225);
+    doc.roundedRect(14, finalY, 182, 22, 3, 3, "FD");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(`Total Marks: ${totalScored} / ${totalPossible}`, 20, finalY + 9);
+    doc.text(`Overall Percentage: ${overallPct}`, 20, finalY + 16);
+
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated On: ${new Date().toLocaleDateString()}`, 130, finalY + 12);
+
+    // Save and trigger browser download
+    const filename = `${(currentStudent.rollNumber || "Student")}_Report_Card.pdf`;
+    doc.save(filename);
+  });
+}
 
 // Module exports
 export {
   loadStudentData,
   loadStudentAttendance,
+  loadResults,
   currentStudent
 };
