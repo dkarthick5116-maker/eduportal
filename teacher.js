@@ -6,15 +6,13 @@ import {
   getDocs, 
   doc, 
   getDoc,
-  query,
-  where,
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let currentTeacher = null;
 let currentLang = "en";
 
-// Text translations dictionary
+// Localization Dictionary
 const tDict = {
   en: {
     navTitle: "Teacher Portal",
@@ -52,7 +50,7 @@ const tDict = {
   }
 };
 
-// String cleaning helpers for multi-tenant matching
+// Strict Normalizers for multi-tenant data isolation
 function cleanSchool(s) {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 }
@@ -101,7 +99,7 @@ function applyTeacherTranslations() {
   setTxt("tab-btn-results", t.tabResults);
 }
 
-// Auth State Monitor
+// Authentication Monitor
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -113,7 +111,7 @@ onAuthStateChanged(auth, async (user) => {
     if (userDoc.exists()) {
       currentTeacher = userDoc.data();
 
-      // Guard check: role must be teacher
+      // Guard check: role must strictly be teacher
       if (currentTeacher.role !== "teacher") {
         window.location.href = "student-dashboard.html";
         return;
@@ -176,7 +174,7 @@ if (formQp) {
     const formatMode = isUploadMode ? "upload" : "type";
 
     if (formatMode === "type" && !typedContent) {
-      alert("Please enter the question paper questions or use the AI generator.");
+      alert("Please enter the question paper questions or draft with AI.");
       return;
     }
 
@@ -212,7 +210,7 @@ if (formQp) {
       alert(tDict[currentLang].qpPublished);
       formQp.reset();
 
-      // Reset format selectors
+      // Reset format selectors back to typed mode default
       document.getElementById("btn-mode-type")?.click();
       await loadQuestionPapersList();
     } catch (err) {
@@ -239,7 +237,7 @@ async function loadQuestionPapersList() {
       const data = docSnap.data();
       const paperSchool = cleanSchool(data.schoolName);
 
-      // School isolation matching
+      // Multi-tenant school isolation
       if (Boolean(paperSchool) && Boolean(teacherSchool) && paperSchool === teacherSchool) {
         items.push({ id: docSnap.id, ...data });
       }
@@ -271,7 +269,7 @@ async function loadQuestionPapersList() {
       </div>
     `).join("");
 
-    // Delete paper event attachment
+    // Attach Delete Listeners
     container.querySelectorAll(".btn-delete-qp").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const paperId = btn.getAttribute("data-id");
@@ -293,7 +291,6 @@ async function loadQuestionPapersList() {
     container.innerHTML = `<p style="font-size:13px; color:#dc2626;">Error: ${err.message}</p>`;
   }
 }
-
 // 3. ASSIGN HOMEWORK
 const formHw = document.getElementById("form-hw");
 
@@ -423,8 +420,9 @@ if (formResults) {
   });
 }
 
-// Export for module accessibility
+// Export for module integration
 export {
   loadQuestionPapersList,
   currentTeacher
 };
+
