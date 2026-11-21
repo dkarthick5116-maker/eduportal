@@ -6,11 +6,23 @@ import {
   getDocs, 
   doc, 
   getDoc,
-  deleteDoc
+  deleteDoc,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let currentTeacher = null;
 let currentLang = "en";
+let attendanceRecords = [];
+
+// Strict multi-tenant normalizers
+function cleanSchool(s) {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+}
+
+function cleanClass(v) {
+  return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
+}
 
 // Localization Dictionary
 const tDict = {
@@ -21,15 +33,21 @@ const tDict = {
     tabHw: "📚 Assign Homework",
     tabMat: "📖 Notes & Materials",
     tabNotices: "📢 Notice Board",
+    tabRoster: "👥 Student Roster",
+    tabAttendance: "📅 Attendance",
     tabResults: "📊 Enter Marks",
     qpPublished: "Question paper published successfully!",
     hwAssigned: "Homework assigned successfully!",
     matPublished: "Study material shared successfully!",
     noticePosted: "School notice broadcasted successfully!",
+    attendanceSaved: "Attendance saved successfully!",
     marksSaved: "Exam marks saved successfully!",
     confirmDelete: "Are you sure you want to delete this question paper?",
     deleteSuccess: "Question paper deleted successfully!",
-    noPapers: "No question papers published by your school yet."
+    noPapers: "No question papers published by your school yet.",
+    noStudentsRoster: "No students found for your school under this selection.",
+    noStudentsAttendance: "No students registered for this class and section.",
+    selectDateAlert: "Please select a date for attendance."
   },
   ta: {
     navTitle: "ஆசிரியர் தளம்",
@@ -38,28 +56,31 @@ const tDict = {
     tabHw: "📚 வீட்டுப்பாடம் வழங்கு",
     tabMat: "📖 பாடக் குறிப்புகள்",
     tabNotices: "📢 அறிவிப்புப் பலகை",
+    tabRoster: "👥 மாணவர் பட்டியல்",
+    tabAttendance: "📅 வருகைப் பதிவு",
     tabResults: "📊 மதிப்பெண் பதிவேற்று",
     qpPublished: "வினாத்தாள் வெற்றிகரமாக பதிவேற்றப்பட்டது!",
     hwAssigned: "வீட்டுப்பாடம் வெற்றிகரமாக ஒதுக்கப்பட்டது!",
     matPublished: "பாடக் குறிப்பு வெற்றிகரமாக பகிரப்பட்டது!",
     noticePosted: "பள்ளி அறிவிப்பு வெற்றிகரமாக வெளியிடப்பட்டது!",
+    attendanceSaved: "வருகைப் பதிவு வெற்றிகரமாக சேமிக்கப்பட்டது!",
     marksSaved: "தேர்வு மதிப்பெண்கள் வெற்றிகரமாக சேமிக்கப்பட்டது!",
     confirmDelete: "இந்த வினாத்தாளை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
     deleteSuccess: "வினாத்தாள் வெற்றிகரமாக நீக்கப்பட்டது!",
-    noPapers: "உங்கள் பள்ளிக்கான வினாத்தாள்கள் எதுவும் இல்லை."
+    noPapers: "உங்கள் பள்ளிக்கான வினாத்தாள்கள் எதுவும் இல்லை.",
+    noStudentsRoster: "உங்கள் பள்ளியில் இந்த வகுப்பில் மாணவர்கள் யாரும் இல்லை.",
+    noStudentsAttendance: "இந்த வகுப்பிற்கு மாணவர்கள் பதிவு செய்யப்படவில்லை.",
+    selectDateAlert: "வருகைப் பதிவிற்கு ஒரு தேதியைத் தேர்ந்தெடுக்கவும்."
   }
 };
-
-// Strict Normalizers for multi-tenant data isolation
-function cleanSchool(s) {
-  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
-}
-
-function cleanClass(v) {
-  return (v || "").toString().replace(/^class\s*/i, "").trim().toLowerCase();
-}
 document.addEventListener("DOMContentLoaded", () => {
   setupLanguageHandlers();
+  
+  // Set default attendance date to today
+  const attDateInput = document.getElementById("att-date");
+  if (attDateInput) {
+    attDateInput.value = new Date().toISOString().split("T")[0];
+  }
 });
 
 function setupLanguageHandlers() {
@@ -96,10 +117,12 @@ function applyTeacherTranslations() {
   setTxt("tab-btn-hw", t.tabHw);
   setTxt("tab-btn-mat", t.tabMat);
   setTxt("tab-btn-notices", t.tabNotices);
+  setTxt("tab-btn-roster", t.tabRoster);
+  setTxt("tab-btn-attendance", t.tabAttendance);
   setTxt("tab-btn-results", t.tabResults);
 }
 
-// Authentication Monitor
+// Authentication State Monitor with Strict Role Verification
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -111,7 +134,7 @@ onAuthStateChanged(auth, async (user) => {
     if (userDoc.exists()) {
       currentTeacher = userDoc.data();
 
-      // Guard check: role must strictly be teacher
+      // Guard: Role must strictly be teacher
       if (currentTeacher.role !== "teacher") {
         window.location.href = "student-dashboard.html";
         return;
@@ -130,6 +153,12 @@ onAuthStateChanged(auth, async (user) => {
   } catch (err) {
     console.error("Teacher authentication error:", err);
   }
+});
+
+// Logout handler
+document.getElementById("btn-logout")?.addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "login.html";
 });
 // 1. PUBLISH EXAM QUESTION PAPER
 const formQp = document.getElementById("form-qp");
@@ -169,7 +198,6 @@ if (formQp) {
     const typedContent = document.getElementById("qp-typed-content")?.value.trim() || "";
     const fileLink = document.getElementById("qp-file-link")?.value.trim() || "";
 
-    // Determine chosen format mode (typed vs drive link)
     const isUploadMode = document.getElementById("btn-mode-upload")?.classList.contains("active");
     const formatMode = isUploadMode ? "upload" : "type";
 
@@ -210,7 +238,6 @@ if (formQp) {
       alert(tDict[currentLang].qpPublished);
       formQp.reset();
 
-      // Reset format selectors back to typed mode default
       document.getElementById("btn-mode-type")?.click();
       await loadQuestionPapersList();
     } catch (err) {
@@ -222,7 +249,7 @@ if (formQp) {
       }
     }
   });
-}
+        }
 // 2. LOAD PUBLISHED QUESTION PAPERS (STRICT SCHOOL FILTER)
 async function loadQuestionPapersList() {
   const container = document.getElementById("qp-list-container");
@@ -237,7 +264,7 @@ async function loadQuestionPapersList() {
       const data = docSnap.data();
       const paperSchool = cleanSchool(data.schoolName);
 
-      // Multi-tenant school isolation
+      // Strict institutional match
       if (Boolean(paperSchool) && Boolean(teacherSchool) && paperSchool === teacherSchool) {
         items.push({ id: docSnap.id, ...data });
       }
@@ -269,7 +296,6 @@ async function loadQuestionPapersList() {
       </div>
     `).join("");
 
-    // Attach Delete Listeners
     container.querySelectorAll(".btn-delete-qp").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const paperId = btn.getAttribute("data-id");
@@ -291,7 +317,198 @@ async function loadQuestionPapersList() {
     container.innerHTML = `<p style="font-size:13px; color:#dc2626;">Error: ${err.message}</p>`;
   }
 }
-// 3. ASSIGN HOMEWORK
+
+// 3. STUDENT ROSTER (STRICT SCHOOL ISOLATION)
+async function loadStudentRoster() {
+  const tbody = document.getElementById("roster-tbody");
+  if (!tbody || !currentTeacher?.schoolName) return;
+
+  const teacherSchool = cleanSchool(currentTeacher.schoolName);
+  const filterClass = document.getElementById("roster-filter-class")?.value || "All";
+  const filterSec = document.getElementById("roster-filter-sec")?.value || "All";
+
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("role", "==", "student")
+    );
+    const snap = await getDocs(q);
+    const students = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const studentSchool = cleanSchool(data.schoolName);
+
+      // Strict school match: zero cross-institution leakage
+      const matchesSchool = Boolean(teacherSchool) && Boolean(studentSchool) && teacherSchool === studentSchool;
+
+      if (matchesSchool) {
+        const sClass = cleanClass(data.className);
+        const sSec = (data.section || "").trim().toUpperCase();
+
+        const matchClass = filterClass === "All" || sClass === cleanClass(filterClass);
+        const matchSec = filterSec === "All" || sSec === filterSec.toUpperCase();
+
+        if (matchClass && matchSec) {
+          students.push(data);
+        }
+      }
+    });
+
+    students.sort((a, b) => (a.rollNumber || "").localeCompare(b.rollNumber || ""));
+
+    if (students.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 14px; color: #64748b;">${tDict[currentLang].noStudentsRoster}</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = students.map((s) => `
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: 600;">${s.rollNumber || "-"}</td>
+        <td style="padding: 10px; border: 1px solid #cbd5e1;">${s.fullName || "-"}</td>
+        <td style="padding: 10px; border: 1px solid #cbd5e1;">Class ${s.className || "-"} - ${s.section || "-"}</td>
+        <td style="padding: 10px; border: 1px solid #cbd5e1;">${s.board || "State Board"}</td>
+      </tr>
+    `).join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #dc2626; padding: 14px;">Error: ${err.message}</td></tr>`;
+  }
+}
+
+document.getElementById("roster-filter-class")?.addEventListener("change", loadStudentRoster);
+document.getElementById("roster-filter-sec")?.addEventListener("change", loadStudentRoster);
+document.getElementById("tab-btn-roster")?.addEventListener("click", loadStudentRoster);
+// 4. DAILY ATTENDANCE (STRICT SCHOOL ISOLATION)
+document.getElementById("btn-load-att-students")?.addEventListener("click", async () => {
+  const container = document.getElementById("att-students-container");
+  const saveBtn = document.getElementById("btn-save-attendance");
+  const selectedClass = cleanClass(document.getElementById("att-class")?.value);
+  const selectedSec = (document.getElementById("att-sec")?.value || "").trim().toUpperCase();
+
+  if (!container || !currentTeacher?.schoolName) return;
+  const teacherSchool = cleanSchool(currentTeacher.schoolName);
+
+  container.innerHTML = "<p style='color: #64748b; font-size: 13px;'>Loading students...</p>";
+
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("role", "==", "student")
+    );
+    const snap = await getDocs(q);
+    const students = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const studentSchool = cleanSchool(data.schoolName);
+
+      // Strict school match
+      if (Boolean(teacherSchool) && Boolean(studentSchool) && teacherSchool === studentSchool) {
+        if (cleanClass(data.className) === selectedClass && (data.section || "").trim().toUpperCase() === selectedSec) {
+          students.push({ uid: docSnap.id, ...data });
+        }
+      }
+    });
+
+    students.sort((a, b) => (a.rollNumber || "").localeCompare(b.rollNumber || ""));
+
+    if (students.length === 0) {
+      container.innerHTML = `<p style="color: #64748b; font-size: 13px;">${tDict[currentLang].noStudentsAttendance}</p>`;
+      if (saveBtn) saveBtn.classList.add("hidden");
+      return;
+    }
+
+    // Default status: Present
+    attendanceRecords = students.map((s) => ({
+      uid: s.uid,
+      rollNumber: s.rollNumber,
+      fullName: s.fullName,
+      status: "Present"
+    }));
+
+    container.innerHTML = `
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+        <thead>
+          <tr style="background: #e2e8f0; color: #1e1b4b;">
+            <th style="padding: 10px; border: 1px solid #cbd5e1;">Roll No</th>
+            <th style="padding: 10px; border: 1px solid #cbd5e1;">Student Name</th>
+            <th style="padding: 10px; border: 1px solid #cbd5e1; text-align: center;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${students.map((s, idx) => `
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: 600;">${s.rollNumber}</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1;">${s.fullName}</td>
+              <td style="padding: 10px; border: 1px solid #cbd5e1; text-align: center;">
+                <label style="margin-right: 12px; cursor: pointer; color: #166534; font-weight: 600;">
+                  <input type="radio" name="att_status_${idx}" value="Present" checked data-idx="${idx}" class="att-radio" /> Present
+                </label>
+                <label style="cursor: pointer; color: #991b1b; font-weight: 600;">
+                  <input type="radio" name="att_status_${idx}" value="Absent" data-idx="${idx}" class="att-radio" /> Absent
+                </label>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+
+    container.querySelectorAll(".att-radio").forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        const idx = Number(e.target.getAttribute("data-idx"));
+        if (attendanceRecords[idx]) {
+          attendanceRecords[idx].status = e.target.value;
+        }
+      });
+    });
+
+    if (saveBtn) saveBtn.classList.remove("hidden");
+  } catch (err) {
+    container.innerHTML = `<p style="color: #dc2626; font-size: 13px;">Error: ${err.message}</p>`;
+  }
+});
+
+document.getElementById("btn-save-attendance")?.addEventListener("click", async () => {
+  const dateVal = document.getElementById("att-date")?.value;
+  const classVal = document.getElementById("att-class")?.value;
+  const secVal = document.getElementById("att-sec")?.value;
+  const saveBtn = document.getElementById("btn-save-attendance");
+
+  if (!dateVal) {
+    alert(tDict[currentLang].selectDateAlert);
+    return;
+  }
+
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+  }
+
+  try {
+    await addDoc(collection(db, "attendance"), {
+      date: dateVal,
+      className: classVal,
+      section: secVal,
+      records: attendanceRecords,
+      schoolName: currentTeacher?.schoolName || "",
+      teacherId: auth.currentUser ? auth.currentUser.uid : "",
+      createdAt: new Date().toISOString()
+    });
+
+    alert(tDict[currentLang].attendanceSaved);
+    document.getElementById("att-students-container").innerHTML = "<p style='color: #166534; font-size: 13px; font-weight: 600;'>✓ Attendance saved successfully for this session.</p>";
+    if (saveBtn) saveBtn.classList.add("hidden");
+  } catch (err) {
+    alert("Error saving attendance: " + err.message);
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Attendance";
+    }
+  }
+});
+// 5. ASSIGN HOMEWORK
 const formHw = document.getElementById("form-hw");
 
 if (formHw) {
@@ -328,7 +545,7 @@ if (formHw) {
   });
 }
 
-// 4. PUBLISH STUDY MATERIALS & NOTES
+// 6. PUBLISH STUDY MATERIALS & NOTES
 const formMat = document.getElementById("form-mat");
 
 if (formMat) {
@@ -360,7 +577,8 @@ if (formMat) {
     }
   });
 }
-// 5. POST SCHOOL NOTICE
+
+// 7. POST SCHOOL NOTICE
 const formNotice = document.getElementById("form-notice");
 
 if (formNotice) {
@@ -387,7 +605,7 @@ if (formNotice) {
   });
 }
 
-// 6. RECORD STUDENT EXAM MARKS
+// 8. RECORD STUDENT EXAM MARKS
 const formResults = document.getElementById("form-results");
 
 if (formResults) {
@@ -420,9 +638,10 @@ if (formResults) {
   });
 }
 
-// Export for module integration
+// Module exports
 export {
   loadQuestionPapersList,
+  loadStudentRoster,
   currentTeacher
 };
 
