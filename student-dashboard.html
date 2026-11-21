@@ -110,7 +110,7 @@
       font-weight: 600;
       cursor: pointer;
     }
-       .tab-bar {
+        .tab-bar {
       display: flex;
       gap: 8px;
       overflow-x: auto;
@@ -201,7 +201,7 @@
       font-weight: 600;
       cursor: pointer;
     }
-    /* Attendance Metric Grid */
+    /* Attendance Statistics Grid */
     .att-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -275,7 +275,7 @@
       <button id="btn-logout" class="btn-logout">Logout</button>
     </div>
 
-    <!-- Complete Navigation Tabs Bar Including Attendance -->
+    <!-- Complete Navigation Tabs Bar -->
     <div class="tab-bar">
       <button class="nav-tab-btn active" data-tab="tab-qp" id="tab-btn-qp">📝 Question Papers</button>
       <button class="nav-tab-btn" data-tab="tab-hw" id="tab-btn-hw">📚 My Homework</button>
@@ -369,9 +369,15 @@
       <div id="notices-container">Loading announcements...</div>
     </div>
 
-    <!-- 6. EXAM REPORT CARD PANEL -->
+    <!-- 6. EXAM REPORT CARD PANEL (WITH PDF DOWNLOAD) -->
     <div id="tab-results" class="panel-box hidden">
-      <h2 class="panel-title" id="title-my-results">My Exam Marks</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+        <h2 class="panel-title" id="title-my-results" style="margin-bottom: 0;">My Exam Marks</h2>
+        <button type="button" id="btn-download-report-pdf" class="btn-submit-action" style="background: #4338ca; display: flex; align-items: center; gap: 6px; padding: 8px 16px;">
+          📥 Download PDF Report
+        </button>
+      </div>
+
       <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
           <thead>
@@ -414,7 +420,11 @@
     });
   </script>
 
-  <!-- Complete Logic Modular Script -->
+  <!-- jsPDF & AutoTable for client-side PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Complete Student Logic Modular Script -->
   <script type="module" src="student.js"></script>
 
   <!-- PWA Service Worker Registration -->
