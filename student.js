@@ -13,7 +13,7 @@ import {
 let currentStudent = null;
 let currentLang = "en";
 
-// Strict normalizers
+// Strict multi-tenant normalizers
 function cleanSchool(s) {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 }
@@ -48,11 +48,13 @@ const dict = {
     logout: "Logout",
     tabQp: "📝 Question Papers",
     tabHw: "📚 My Homework",
+    tabAttendance: "📅 My Attendance",
     tabMat: "📖 Study Notes",
     tabNotices: "📢 Notices",
     tabResults: "📊 Report Card",
     titleQp: "Exam Question Papers & Write Answers",
     titleHw: "Assigned Homework",
+    titleAttendance: "My Attendance & Academic Eligibility",
     titleMat: "Class Study Notes",
     titleNotices: "School Notice Board",
     titleResults: "My Exam Marks",
@@ -78,18 +80,31 @@ const dict = {
     driveOptionalPlaceholder: "Or paste handwritten answer sheet Google Drive link (Optional)...",
     examSubmitSuccess: "Exam answers submitted successfully!",
     hwSuccessAlert: "Homework submitted successfully!",
-    enterAnswerAlert: "Please write an answer or paste a drive link first."
+    enterAnswerAlert: "Please write an answer or paste a drive link first.",
+    lblAttPct: "Attendance %",
+    lblPresentDays: "Present Days",
+    lblAbsentDays: "Absent Days",
+    lblLateDays: "Late Days",
+    lblMinPct: "Min Requirement",
+    thAttDate: "Date",
+    thAttStatus: "Status",
+    thAttSession: "Class & Section",
+    noAttendance: "No attendance records submitted for your class yet.",
+    attEligible: "✓ Excellent! Your attendance satisfies the minimum 75% exam criterion.",
+    attShortage: "⚠️ Attendance Shortage! Your attendance is below the 75% requirement. Please contact your class teacher."
   },
   ta: {
     navTitle: "கல்வி தளம் பதிப்பு 2.2",
     logout: "வெளியேறு",
     tabQp: "📝 வினாத்தாள்கள்",
     tabHw: "📚 என் வீட்டுப்பாடம்",
+    tabAttendance: "📅 என் வருகைப் பதிவு",
     tabMat: "📖 பாடக் குறிப்புகள்",
     tabNotices: "📢 அறிவிப்புகள்",
     tabResults: "📊 மதிப்பெண் அட்டை",
     titleQp: "வினாத்தாள்கள் & விடை எழுதுதல்",
     titleHw: "வழங்கப்பட்ட வீட்டுப்பாடங்கள்",
+    titleAttendance: "என் வருகைப் பதிவு & தேர்வு தகுதி",
     titleMat: "வகுப்பு பாடக் குறிப்புகள்",
     titleNotices: "பள்ளி அறிவிப்புப் பலகை",
     titleResults: "என் தேர்வு மதிப்பெண்கள்",
@@ -115,11 +130,21 @@ const dict = {
     driveOptionalPlaceholder: "அல்லது கையால் எழுதிய விடைத்தாள் டிரைவ் இணைப்பை உள்ளிடவும்...",
     examSubmitSuccess: "தேர்வு விடைகள் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
     hwSuccessAlert: "வீட்டுப்பாடம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",
-    enterAnswerAlert: "முதலில் உங்கள் விடை அல்லது இணைப்பை உள்ளிடவும்."
+    enterAnswerAlert: "முதலில் உங்கள் விடை அல்லது இணைப்பை உள்ளிடவும்.",
+    lblAttPct: "வருகை %",
+    lblPresentDays: "வந்த நாட்கள்",
+    lblAbsentDays: "வராத நாட்கள்",
+    lblLateDays: "தாமதமான நாட்கள்",
+    lblMinPct: "குறைந்தபட்ச தேவை",
+    thAttDate: "தேதி",
+    thAttStatus: "நிலை",
+    thAttSession: "வகுப்பு & பிரிவு",
+    noAttendance: "உங்கள் வகுப்பிற்கு வருகைப் பதிவு விவரங்கள் எதுவும் இல்லை.",
+    attEligible: "✓ சிறப்பு! உங்கள் வருகை குறைந்தபட்ச 75% தேர்வு தகுதி வரம்பை பூர்த்தி செய்கிறது.",
+    attShortage: "⚠️ வருகைப் பற்றாக்குறை! உங்கள் வருகை 75% வரம்பிற்கு கீழ் உள்ளது. உங்கள் வகுப்பு ஆசிரியரை அணுகவும்."
   }
 };
-
-document.addEventListener("DOMContentLoaded", () => {
+   document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   setupLanguage();
 });
@@ -174,15 +199,27 @@ function applyTranslations() {
 
   safeText("tab-btn-qp", t.tabQp);
   safeText("tab-btn-hw", t.tabHw);
+  safeText("tab-btn-attendance", t.tabAttendance);
   safeText("tab-btn-mat", t.tabMat);
   safeText("tab-btn-notices", t.tabNotices);
   safeText("tab-btn-results", t.tabResults);
 
   safeText("title-exam-qp", t.titleQp);
   safeText("title-my-hw", t.titleHw);
+  safeText("title-my-attendance", t.titleAttendance);
   safeText("title-my-mat", t.titleMat);
   safeText("title-my-notices", t.titleNotices);
   safeText("title-my-results", t.titleResults);
+
+  safeText("lbl-att-pct", t.lblAttPct);
+  safeText("lbl-present-days", t.lblPresentDays);
+  safeText("lbl-absent-days", t.lblAbsentDays);
+  safeText("lbl-late-days", t.lblLateDays);
+  safeText("lbl-min-pct", t.lblMinPct);
+
+  safeText("th-att-date", t.thAttDate);
+  safeText("th-att-status", t.thAttStatus);
+  safeText("th-att-session", t.thAttSession);
 
   safeText("th-exam-name", t.thExamName);
   safeText("th-subject", t.thSubject);
@@ -234,12 +271,12 @@ async function loadStudentData() {
   await Promise.allSettled([
     loadQuestionPapers(),
     loadHomework(),
+    loadStudentAttendance(),
     loadMaterials(),
     loadNotices(),
     loadResults()
   ]);
-}
-
+           }
 // 1. QUESTION PAPERS (FLEXIBLE BOARD MATCHING + STRICT SCHOOL ISOLATION)
 async function loadQuestionPapers() {
   const container = document.getElementById("qp-container");
@@ -261,7 +298,7 @@ async function loadQuestionPapers() {
       const targetSec = (data.section || "All").trim().toUpperCase();
       const targetBoard = data.board || "";
 
-      // Strict school and class match
+      // Strict institutional, class and board match
       const matchesSchool = Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool;
       const matchesClass = targetClass === studentClass;
       const matchesSec = targetSec === "ALL" || targetSec === studentSec;
@@ -354,7 +391,7 @@ async function loadQuestionPapers() {
   } catch (err) {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
-    }
+}
 // 2. HOMEWORK (STRICT SCHOOL ISOLATION)
 async function loadHomework() {
   const container = document.getElementById("hw-container");
@@ -436,7 +473,143 @@ async function loadHomework() {
   }
 }
 
-// 3. STUDY MATERIALS (STRICT SCHOOL ISOLATION)
+// 3. STUDENT ATTENDANCE ANALYTICS (STRICT SCHOOL & ROLL ISOLATION)
+async function loadStudentAttendance() {
+  const t = dict[currentLang];
+  const tbody = document.getElementById("att-history-tbody");
+  const pctEl = document.getElementById("stat-att-percentage");
+  const presentEl = document.getElementById("stat-present-count");
+  const absentEl = document.getElementById("stat-absent-count");
+  const lateEl = document.getElementById("stat-late-count");
+  const totalWorkingEl = document.getElementById("stat-total-working");
+  const badgeEl = document.getElementById("stat-att-badge");
+  const bannerEl = document.getElementById("att-eligibility-banner");
+
+  if (!tbody || !currentStudent) return;
+
+  try {
+    const studentSchool = cleanSchool(currentStudent.schoolName);
+    const studentClass = cleanClass(currentStudent.className);
+    const studentSec = (currentStudent.section || "").trim().toUpperCase();
+    const myRoll = (currentStudent.rollNumber || "").trim().toLowerCase();
+    const myUid = auth.currentUser.uid;
+
+    const snap = await getDocs(collection(db, "attendance"));
+    const sessions = [];
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const targetSchool = cleanSchool(data.schoolName);
+      const targetClass = cleanClass(data.className);
+      const targetSec = (data.section || "").trim().toUpperCase();
+
+      // Strict school, class and section filtering
+      if (Boolean(targetSchool) && Boolean(studentSchool) && targetSchool === studentSchool) {
+        if (targetClass === studentClass && (targetSec === "ALL" || targetSec === studentSec)) {
+          // Look for this student's specific entry in the records array
+          const studentEntry = (data.records || []).find((r) => {
+            const matchUid = r.uid && r.uid === myUid;
+            const matchRoll = r.rollNumber && r.rollNumber.trim().toLowerCase() === myRoll;
+            return matchUid || matchRoll;
+          });
+
+          if (studentEntry) {
+            sessions.push({
+              date: data.date || "Unknown",
+              status: studentEntry.status || "Present",
+              className: data.className,
+              section: data.section
+            });
+          }
+        }
+      }
+    });
+
+    // Sort sessions chronologically descending
+    sessions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (sessions.length === 0) {
+      if (pctEl) pctEl.textContent = "100%";
+      if (presentEl) presentEl.textContent = "0";
+      if (absentEl) absentEl.textContent = "0";
+      if (lateEl) lateEl.textContent = "0";
+      if (totalWorkingEl) totalWorkingEl.textContent = "out of 0 working days";
+      if (badgeEl) badgeEl.innerHTML = `<span class="badge-safe">Status: No records</span>`;
+      if (bannerEl) bannerEl.innerHTML = t.noAttendance;
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:14px;color:#64748b;">${t.noAttendance}</td></tr>`;
+      return;
+    }
+
+    let presentCount = 0;
+    let absentCount = 0;
+    let lateCount = 0;
+
+    sessions.forEach((s) => {
+      const st = (s.status || "").toLowerCase();
+      if (st === "present") presentCount++;
+      else if (st === "absent") absentCount++;
+      else if (st === "late") {
+        lateCount++;
+        // Late counts towards partial presence credit (0.5 day)
+        presentCount += 0.5;
+      } else {
+        presentCount++;
+      }
+    });
+
+    const totalDays = sessions.length;
+    const percentage = Math.round((presentCount / totalDays) * 100);
+
+    if (pctEl) pctEl.textContent = `${percentage}%`;
+    if (presentEl) presentEl.textContent = Math.floor(presentCount);
+    if (absentEl) absentEl.textContent = absentCount;
+    if (lateEl) lateEl.textContent = lateCount;
+    if (totalWorkingEl) totalWorkingEl.textContent = `out of ${totalDays} working days`;
+
+    // 75% minimum threshold evaluation
+    if (percentage >= 75) {
+      if (badgeEl) badgeEl.innerHTML = `<span class="badge-safe">Eligible (≥75%)</span>`;
+      if (bannerEl) {
+        bannerEl.style.background = "#dcfce7";
+        bannerEl.style.color = "#166534";
+        bannerEl.innerHTML = t.attEligible;
+      }
+    } else {
+      if (badgeEl) badgeEl.innerHTML = `<span class="badge-danger">Shortage (&lt;75%)</span>`;
+      if (bannerEl) {
+        bannerEl.style.background = "#fee2e2";
+        bannerEl.style.color = "#991b1b";
+        bannerEl.innerHTML = t.attShortage;
+      }
+    }
+
+    tbody.innerHTML = sessions.map((s) => {
+      let badgeHtml = "";
+      const st = (s.status || "").toLowerCase();
+      if (st === "present") {
+        badgeHtml = `<span class="badge-safe">Present</span>`;
+      } else if (st === "absent") {
+        badgeHtml = `<span class="badge-danger">Absent</span>`;
+      } else if (st === "late") {
+        badgeHtml = `<span style="background:#fef3c7;color:#b45309;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">Late</span>`;
+      } else {
+        badgeHtml = `<span class="badge-safe">${s.status}</span>`;
+      }
+
+      return `
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 10px; border: 1px solid #cbd5e1; font-weight: 600;">${s.date}</td>
+          <td style="padding: 10px; border: 1px solid #cbd5e1;">${badgeHtml}</td>
+          <td style="padding: 10px; border: 1px solid #cbd5e1;">Class ${s.className} - ${s.section}</td>
+        </tr>
+      `;
+    }).join("");
+  } catch (err) {
+    if (bannerEl) bannerEl.innerHTML = `Error loading attendance: ${err.message}`;
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#dc2626;padding:14px;">Error: ${err.message}</td></tr>`;
+  }
+}
+// 4. STUDY MATERIALS (STRICT SCHOOL ISOLATION)
 async function loadMaterials() {
   const container = document.getElementById("mat-container");
   const t = dict[currentLang];
@@ -481,7 +654,7 @@ async function loadMaterials() {
   }
 }
 
-// 4. NOTICES (STRICT SCHOOL ISOLATION)
+// 5. NOTICES (STRICT SCHOOL ISOLATION)
 async function loadNotices() {
   const container = document.getElementById("notices-container");
   const t = dict[currentLang];
@@ -515,8 +688,7 @@ async function loadNotices() {
     container.innerHTML = `<p style="color:#dc2626;font-size:13px;">Error: ${err.message}</p>`;
   }
 }
-
-// 5. EXAM RESULTS (STRICT ROLL NUMBER & SCHOOL ISOLATION)
+// 6. EXAM RESULTS (STRICT ROLL NUMBER & SCHOOL ISOLATION)
 async function loadResults() {
   const tbody = document.getElementById("results-tbody");
   const t = dict[currentLang];
@@ -555,5 +727,11 @@ async function loadResults() {
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error: ${err.message}</td></tr>`;
   }
-                                                         }
-          
+}
+
+// Module exports
+export {
+  loadStudentData,
+  loadStudentAttendance,
+  currentStudent
+};
